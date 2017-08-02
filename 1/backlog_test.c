@@ -71,6 +71,9 @@ int main(int argc,char* argv[]){
 
 	int ret = bind( sock,( struct sockaddr* )&address,sizeof( address ) );
 	assert( ret !=1 );
+	
+	ret = listen(sock,backlog);
+	assert(ret !=1);
 
 	/*等待连接，直到sigterm信号中断*/
 
