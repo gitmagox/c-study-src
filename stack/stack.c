@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include <string.h>
-#include <stack.h>
+#include "stack.h"
 
 //私有函数
 static void StackGrow( stack *s)
