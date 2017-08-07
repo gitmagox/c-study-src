@@ -136,5 +136,60 @@ HTTP_CODE parse_headers( char* temp )
 	return NO_REQUEST;
 }
 
+/* 分析http请求 的入口函数 */
+HTTP_CODE parse_content( char* buffer, int& checked_indes, CHECK_STATE& 
+			 checkstate, int& read_index, int& start_line )
+{
+	LINE_STATUS linestatus = LINE_OK //记录当前行的读取状态
+	HTT_CODE retcode = NO_REQUEST; //记录http请求的处理结果
+	/* 主状态机 用于从buffer中取出所有完整的行 */
+	while( ( linestatus = parse_line( buffer, checked_index, read_index ) ) == LINE_OK )
+	{
+		char* temp = buffer + start_line; //start_line是行在buffer中的起始位置
+		start_line = checked_index;     //记录下一行的起始位置
+		/* checkstate 记录主状态机当前的状态 */
+		switch ( checkstate )
+		{
+			case CHECK_STATE_REQUESTLINE: //第一个状态,分析请求行
+			{
+				retcode = parse_requestline( temp, checkstate );
+				if( retcode == BAD_REQUEST )
+				{
+					return BAD_REQUEST;
+				}
+				break;	
+			}
+			case CHECK_STATE_HEADER:      //第二个状态，分析头部字段
+			{
+				retcode = parse_headers( temp );
+				if( retcode == BAD_REQUEST )
+				{
+					return BAD_REQUEST;
+				}
+				else if ( retcode == GET_REQUEST )
+				{
+					return GET_REQUEST;
+				}
+				break;
+			}
+			default:
+			{
+				return INTERNAL_ERROR;
+			}
+		}
+		/* 如果没有读取到一个完整的行,则表示还需要继续读取客户数据才能进一步分析 */
+		if( linestatus == LINE_OPEN )
+		{
+			return NO_REQUEST;
+		}
+		else
+		{
+			return BAD_REQUEST;
+		}
+	}
 
+
+
+
+}
 
