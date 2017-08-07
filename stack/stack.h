@@ -6,7 +6,7 @@ typedef struct
 	int allocLength; //允许的长度
 }stack;
 
-void StackNew( stack *s, int elemSize  );
+void StackNew( stack *s, int allocLength , int elemSize  );
 void StackDipose( stack *s );
 void StackPush( stack *s, void *elemAddr );
 void StackPop( stack *s ,void *elemAddr );
