@@ -56,7 +56,7 @@ LINE_STATUS parse_line( char* buffer, int& checked_index, int& read_index ){
 		{
 			if( buffer[ checked-1 ] == '\r' && checked_index > 1  )
 			{
-				buffer[ checked_index ] = '\0';
+				buffer[ checked_index-- ] = '\0';
 				buffer[ checked_index++ ] = '\0';
 				return LINE_OK;
 			}
@@ -64,3 +64,55 @@ LINE_STATUS parse_line( char* buffer, int& checked_index, int& read_index ){
 	}
 	return LINE_OPEN;
 }
+
+/* 分析请求行 */
+HTTP_CODE parse_requestline( char* temp, CHECK_STATE& checkstate )
+{
+	char* url = strpbrk( temp, " \t" );
+	/* 如果请求行中没有空白字符或"\t"字符,则http请求必有问题 */
+	if ( ! url )
+	{
+		return BAD_REQUEST;
+	}
+	*url++ = '\0';
+
+	char* method = temp;
+	if ( strcasecmp( method, "GET" ) == 0 ) /* 仅支持GET方法 */
+	{
+		printf( "The request method is GET\n" );
+	}
+	else
+	{
+		return BAD_REQUEST;
+	}
+
+	url += strspn( url, " \t" );
+	char* version = strpbrk( url, " \t" );
+	if ( ! version )
+	{
+		return BAD_REQUEST;
+	}
+	*version++ = '\0';
+	version += strspn( version, " \t" );
+	/* 仅支持 HTTP/1.1 */
+	if ( strcasecmp( version, "HTTP/1.1" ) != 0 )
+	{
+		return BAD_REQUEST;
+	}
+	/* 检查 url 是否合法 */
+	if ( strncasecmp( url, "http://", 7  ) == 0 )
+	{
+		url += 7;
+		url = strchr( url, '/' );
+	}
+	if( ! url || url[ 0 ] != '/' )
+	{
+		return	BAD_REQUEST;
+	}
+	printf( "The request URL is : %s\n", url );
+	/* HTTP 请求行处理完毕,状态转移到头部字段的分析 */
+	checkstate = CHECK_STATE_HEADER;
+	return NO_REQUEST;
+}
+
+
