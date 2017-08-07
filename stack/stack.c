@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <assert.h>
 #include <string.h>
 #include "stack.h"
@@ -14,9 +15,9 @@ void StackNew( stack *s, int allocLength , int elemSize )
 {
 	assert( elemSize > 0 );
 	assert( allocLength > 0  );
-	if( allocLength <= 0 )
+	if ( allocLength <= 0 )	
 	{
-		alloclength = 4;		
+		allocLength = 4;		
 	}
 	s->elemSize = elemSize;
 	s->logLength = 0;
@@ -27,7 +28,7 @@ void StackNew( stack *s, int allocLength , int elemSize )
 //desroy stack
 void StackDipose( stack *s )
 {
-	free( *s->elems );
+	free( s->elems );
 }
 
 //push elements
@@ -45,9 +46,10 @@ void StackPush( stack *s, void *elemAddr )
 //pop element
 //*elemAddr:弹出一元素。
 void StackPop( stack *s, void *elemAddr )
-{
+{	
+	assert( s->logLength  > 0 );
 	void *source = (char *)s->elems + ( s->logLength-1 )*s->elemSize;
 	memcpy( elemAddr, source, s->elemSize );
-	s->logLength --；
+	s->logLength--;
 }
 
