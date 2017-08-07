@@ -10,13 +10,14 @@ static void StackGrow( stack *s)
 	s->elems = realloc( s->elems, s->allocLength*s->elemSize );
 }
 //new stack
-void StackNew( stack *s, int elemSize )
+void StackNew( stack *s, int allocLength , int elemSize )
 {
 	assert( elemSize > 0 );
+	assert( allocLength > 0  );
 	s->elemSize = elemSize;
 	s->logLength = 0;
-	s->allocLenght = 4;
-	s->elems = malloc( 4*elemSize );
+	s->allocLength = allocLength;
+	s->elems = malloc( allocLength*elemSize );
 	assert( s->elems != NULL );
 }
 //desroy stack
