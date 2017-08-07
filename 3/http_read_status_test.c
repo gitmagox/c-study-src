@@ -31,3 +31,36 @@ enum HTTP_CODE {
 };
 /*  此处简化应答 */
 static const char* szret[] = { "I get a correct request\n", "something wrong\n"  };
+
+/* 从状态机 */
+LINE_STATUS parse_line( char* buffer, int& checked_index, int& read_index ){
+
+	for( ;checked_index < read_index; ++checkked_index )
+	{	
+		//当前字符
+		temp = buffer[ checked_index ];
+		if( temp == "\r" )
+		{
+			if ( ( checked_index +1 ) == read_index )
+			{
+				return LINE_OPEN;
+			}
+			else if ( buffer[ checked_index +1 ] == '\n' )
+			{
+				buffer[ checked_index++ ] = '\0';
+				buffer[ checked_index++ ] = '\0';
+			       	return LINE_OK
+			}
+		}
+		else if( temp == "\n" )
+		{
+			if( buffer[ checked-1 ] == '\r' && checked_index > 1  )
+			{
+				buffer[ checked_index ] = '\0';
+				buffer[ checked_index++ ] = '\0';
+				return LINE_OK;
+			}
+		}
+	}
+	return LINE_OPEN;
+}
