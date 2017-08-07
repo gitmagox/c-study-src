@@ -14,6 +14,10 @@ void StackNew( stack *s, int allocLength , int elemSize )
 {
 	assert( elemSize > 0 );
 	assert( allocLength > 0  );
+	if( allocLength <= 0 )
+	{
+		alloclength = 4;		
+	}
 	s->elemSize = elemSize;
 	s->logLength = 0;
 	s->allocLength = allocLength;
