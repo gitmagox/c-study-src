@@ -37,6 +37,7 @@ void _c_list_push_front( cList *list, cListNode *nd );
 
 /* 在当前节点后添加一个节点的内容 */
 void c_list_push_back( cList *list, void *data, int size );
+
 /* 在当前节点前添加一个节点的内容 */
 void c_list_push_front( cList *list, void *data, int size );
 
