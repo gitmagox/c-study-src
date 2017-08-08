@@ -1,22 +1,24 @@
 /*双向环形链表*/
-#ifndef C_LIST_H_1
 #define C_LIST_H_1
 
+typedef struct cListNode cListNode;
+typedef struct cList cList;
+
 //节点
-typedef struct cListNode
+struct cListNode
 {
 	cListNode *pre;
 	cListNode *next;
 	void *data;
 };
 //链表
-typedef struct cList
+struct cList
 {
-	cList *head;
-	cList *tail;
+	cListNode *head;
+	cListNode *tail;
 	cList *iterator;
 	uint32_t size;
-}
+};
 
 //方法
 

@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <assert.h>
-
+#include <string.h>
 #include "c_list_1.h"
 
 cListNode * c_list_node_create( int size )
@@ -123,7 +123,7 @@ void c_list_free_front( cList *list )
     nd = NULL;
 }
 
-void c_list_free( cList *list, cListNode *nd )
+void c_list_free_node( cList *list, cListNode *nd )
 {
     cListNode *now = list->head->next;
 
@@ -157,10 +157,10 @@ cListNode *_c_list_read_head( cList *list )
 
 void *c_list_read_back( cList *list )
 {
-    return ( _c_list_read_back( list )->data );
+    return (_c_list_read_tail(list))->data;
 }
 
 void *c_list_read_front( cList *list )
 {
-    return ( _c_list_read_front( list )->data );
+    return (_c_list_read_head(list))->data;
 }
