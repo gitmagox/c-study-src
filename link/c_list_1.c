@@ -112,7 +112,7 @@ void _c_list_free_back( cList *list )
     list->tail->pre = ( nd )->pre;
     ( nd )->pre->next = list->tail;
 }
-void list_free_front( cList *list )
+void c_list_free_front( cList *list )
 {
     cListNode *nd = list->head->next;
 
@@ -123,7 +123,7 @@ void list_free_front( cList *list )
     nd = NULL;
 }
 
-void list_free( cList *list, cListNode *nd )
+void c_list_free( cList *list, cListNode *nd )
 {
     cListNode *now = list->head->next;
 
