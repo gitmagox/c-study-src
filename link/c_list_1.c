@@ -23,7 +23,7 @@ cList * c_list_init( int size )
     cList *list = ( cList* )malloc( sizeof( cList ) );
 
     cListNode *head = c_list_node_create( size ),
-   						*tail = c_list_node_create( size );
+                *tail = c_list_node_create( size );
     int i = 0;
 
     assert(list != NULL );
@@ -62,6 +62,30 @@ void c_list_free(cList *list)
 
     free(list);
 
+}
+
+void _c_list_push_back(cList *list, cListNode *nd)
+{
+
+    assert(nd != NULL);
+    assert(list != NULL);
+
+    list->tail->pre ->next = nd;
+    nd->next = list->tail;
+    nd->pre = list->tail->pre;
+    list->tail->pre = nd;
+    list->size++;
+}
+
+void _c_list_push_front(cList *list, cListNode *nd)
+{
+
+   assert(list != NULL);
+   assert(nd != NULL);
+   
+   list->head->next ->pre = nd;
+   nd->next = list->head->next;
+   nd->pre = list->head;
 }
 
 
