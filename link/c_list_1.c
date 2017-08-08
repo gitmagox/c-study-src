@@ -9,7 +9,7 @@ cListNode * c_list_node_create( int size )
 {
     cListNode *nd = ( cListNode* )malloc( sizeof(cListNode) );
 
-    assert( nd->data!=NULL );
+    assert( nd->data != NULL );
     if ( nd )
     {
         memset( nd, 0, sizeof( cListNode ) );
@@ -26,23 +26,24 @@ cList * c_list_init( int size )
                 *tail = c_list_node_create( size );
     int i = 0;
 
-    assert(list != NULL );
-    assert(head != NULL );
-    assert(tail != NULL );
+    assert( list != NULL );
+    assert( head != NULL );
+    assert( tail != NULL );
 
-    memset(list,0,sizeof(cList));
+    memset( list, 0, sizeof( cList ) );
 
     list->head = head;
     list->tail = tail;
-
+    //首尾相链
     list->head->next = list->tail;
-    list->tail ->pre = list->head;
+    list->tail->pre = list->head;
 
     list->size = 0;
 
     return list;
 }
-void c_list_free(cList *list)
+
+void c_list_free( cList *list )
 {
     uint32_t    i = 0;
 
@@ -125,7 +126,7 @@ void list_free_front( cList *list )
 void list_free( cList *list, cListNode *nd )
 {
     cListNode *now = list->head->next;
-    
+
     assert( nd != list->head && nd != list->tail );
 
     while ( now )
@@ -140,4 +141,26 @@ void list_free( cList *list, cListNode *nd )
         now = now->next;
     }
 
+}
+
+cListNode *_c_list_read_tail( cList *list )
+{
+    assert( list );
+    return list->tail;
+}
+
+cListNode *_c_list_read_head( cList *list )
+{
+    assert( list );
+    return list->head;
+}
+
+void *c_list_read_back( cList *list )
+{
+    return ( _c_list_read_back( list )->data );
+}
+
+void *c_list_read_front( cList *list )
+{
+    return ( _c_list_read_front( list )->data );
 }
