@@ -54,21 +54,21 @@ void c_list_free(cList *list)
 
     while ( node )
     {
-        free(node->data);
+        free( node->data );
         tmp = node->next;
-        free(node);
+        free( node );
         node = tmp;
     }
 
-    free(list);
+    free( list );
 
 }
 
-void _c_list_push_back(cList *list, cListNode *nd)
+void _c_list_push_back( cList *list, cListNode *nd )
 {
 
-    assert(nd != NULL);
-    assert(list != NULL);
+    assert( nd != NULL );
+    assert( list != NULL );
 
     list->tail->pre ->next = nd;
     nd->next = list->tail;
@@ -80,12 +80,26 @@ void _c_list_push_back(cList *list, cListNode *nd)
 void _c_list_push_front(cList *list, cListNode *nd)
 {
 
-   assert(list != NULL);
-   assert(nd != NULL);
-   
+   assert( list != NULL );
+   assert( nd != NULL );
+
    list->head->next ->pre = nd;
    nd->next = list->head->next;
    nd->pre = list->head;
 }
 
+void c_list_push_back( cList *list, void *value, int size )
+{
+    uint32_t pos = list->size;
+    cListNode *nd = c_list_node_create( size );
+    memcpy( nd->data, value, size );
+    _c_list_push_back( list, nd );
+
+}
+void c_list_push_front( cList *list, void *value, int size )
+{
+    cListNode *nd = c_list_node_create( size );
+    memcpy( nd->data, value, size );
+    _c_list_push_front( list, nd );
+}
 
