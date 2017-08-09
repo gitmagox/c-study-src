@@ -35,7 +35,7 @@ int  main ( int argc, char* argv[] )
 	ret = listen( listenfd, 5 );
 
 	struct sockaddr_in client_address;
-	socklen_t client_addrlength = sizeof( clent_address );
+	socklen_t client_addrlength = sizeof( client_address );
 
 	int connfd = accept( listenfd, ( struct sockaddr* )&client_address, &client_addrlength );
 
@@ -45,7 +45,7 @@ int  main ( int argc, char* argv[] )
 		close( listenfd );
 	}
 
-	char_buf[1024];
+	char buf[1024];
 	fd_set read_fds;
 	fd_set exception_fds;
 	FD_ZERO( &read_fds );
@@ -56,8 +56,8 @@ int  main ( int argc, char* argv[] )
 		memset( buf, '\0', sizeof( buf ) );
 		/* 每次调用select 前都要重新在 read_fds 和exception_fds中设置文件描述符connfd
 		因为事件发之后，文件描述符集合将被内核修改 */
-		FD_ZERO( connfd, &read_fds );
-		FD_ZERO( connfd, &exception_fds );
+		FD_SET( connfd, &read_fds );
+		FD_SET( connfd, &exception_fds );
 		ret = select( connfd +1, &read_fds, NULL, &exception_fds, NULL);
 		if ( ret < 0 )
 		{
@@ -75,7 +75,7 @@ int  main ( int argc, char* argv[] )
 			printf("get %d bytes of normal data: %s\n", ret, buf );
 		}
 		/* 对于异常用事件，采用带msg_oob标专的recv读取带外数据 */
-		else if ( PD_ISSET( connfd, &exception_fds ) )
+		else if ( FD_ISSET( connfd, &exception_fds ) )
 		{
 			ret = recv( connfd, buf, sizeof( buf )-1, MSG_OOB );
 			if ( ret <=0 )
