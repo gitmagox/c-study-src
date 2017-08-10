@@ -58,3 +58,49 @@ void addfd( int epollfd, int fd, _Bool enable_et )
 	//设置文件为非阻塞方式
 	setnonblocking( fd );
 }
+
+/* LT模式的工作流程 */
+void lt( epoll_event* events, int number, int epollfd, int listenfd )
+{
+	char buf[ BUFFER_SIZE ];
+
+	for ( int i = 0; i < number; i++ )
+	{
+		int sockfd = events[i].data.fd;
+		//如果是临听的fd
+		if( sockfd == listenfd )
+		{
+			struct sockaddr_in client_address;
+			socklen_t client_addrlength = sizeof( client_address );
+			int connfd = accept( listenfd, ( struct sockaddr* )&client_address,
+									&client_addrlength );
+			addfd( epollfd, connfd, false ); /* 对connfd禁用ET模式 */
+		}
+		else if ( events[i].events & EPOLLIN )
+		{
+			/* 只要socket 读取缓存中还有没读出的数据，这段代码就被触发 */
+			printf( "event trigger once\n" );
+			memset( buf, '\0', BUFFER_SIZE );
+			int ret = recv( sockfd, buf, BUFFER_SIZE-1, 0 );
+			if( ret <= 0 )
+			{
+				close( sockfd );
+				continue;
+			}
+
+			printf("event trigger once\n");
+			memset( buf, '\0', BUFFER_SIZE );
+			int ret = recv( sockfd, buf, BUFFER_SIZE, 0 );
+			if ( ret <= 0 )
+			{
+				close( sockfd );
+				continue;
+			}
+			printf( "get %d bytes of content: %s\n", ret, buf );
+		}
+		else
+		{
+			printf( "Something else happened\n" );
+		}
+	}
+}
