@@ -12,9 +12,11 @@
 #include <stdlib.h>
 #include <sys/epoll.h>
 #include <pthread.h>
+#include <stdbool.h>
 
 #define MAX_EVENT_NUMBER 1024
 #define BUFFER_SIZE 10
+typedef struct epoll_event epoll_event;
 /* 将文件描述符设置成非阻塞 */
 int setnonblocking( int fd )
 {
@@ -27,9 +29,9 @@ int setnonblocking( int fd )
 参数enable_et 指定是否对fd启用ET模式  */
 void addfd( int epollfd, int fd, _Bool enable_et )
 {
-	epool_event event;
+	epoll_event event;
 	/*
-		struct epool_event 
+		struct epoll_event 
 		{
 			_uint32_t events; //epoll事件
 			epoll_data_t data; //用户数据
@@ -63,8 +65,9 @@ void addfd( int epollfd, int fd, _Bool enable_et )
 void lt( epoll_event* events, int number, int epollfd, int listenfd )
 {
 	char buf[ BUFFER_SIZE ];
+	int i;
 
-	for ( int i = 0; i < number; i++ )
+	for ( i = 0; i < number; i++ )
 	{
 		int sockfd = events[i].data.fd;
 		//如果是临听的fd
@@ -90,7 +93,7 @@ void lt( epoll_event* events, int number, int epollfd, int listenfd )
 
 			printf("event trigger once\n");
 			memset( buf, '\0', BUFFER_SIZE );
-			int ret = recv( sockfd, buf, BUFFER_SIZE, 0 );
+			ret = recv( sockfd, buf, BUFFER_SIZE, 0 );
 			if ( ret <= 0 )
 			{
 				close( sockfd );
@@ -109,13 +112,14 @@ void lt( epoll_event* events, int number, int epollfd, int listenfd )
 void et( epoll_event*events, int number, int epollfd, int listenfd )
 {
 	char buf[ BUFFER_SIZE ];
-	for ( int i = 0; i < number; i++ )
+	int i;
+	for ( i = 0; i < number; i++ )
 	{
 		int sockfd = events[i].data.fd;
 		if( sockfd == listenfd )
 		{
 			struct sockaddr_in client_address;
-			socklen_l client_addrlength = sizeof( client_address );
+			socklen_t client_addrlength = sizeof( client_address );
 			int connfd = accept( listenfd,  ( struct sockaddr* )&client_address,
 								&client_addrlength );
 			addfd( epollfd,  connfd, true ); /*对connfd开启ET模式*/
@@ -126,7 +130,7 @@ void et( epoll_event*events, int number, int epollfd, int listenfd )
 			printf("event trigger once \n");
 			while( 1 )
 			{
-				memset( buf, '\0', BUFFER_SIZE ),
+				memset( buf, '\0', BUFFER_SIZE );
 				int ret = recv( sockfd, buf, BUFFER_SIZE-1, 0 );
 				if( ret < 0 )
 				{
@@ -197,7 +201,7 @@ int main( int argc, char* argv[] )
 			break;
 		}
 		lt( events, ret, epollfd, listenfd ); //lt模式
-		// et( events, ret, epollfd, listenfd );
+		//et( events, ret, epollfd, listenfd );
 	}
 	
 	close( listenfd );
