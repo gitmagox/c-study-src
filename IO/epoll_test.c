@@ -104,3 +104,56 @@ void lt( epoll_event* events, int number, int epollfd, int listenfd )
 		}
 	}
 }
+
+/* ET模式的工作流程 */
+void et( epoll_event*events, int number, int epollfd, int listenfd )
+{
+	char buf[ BUFFER_SIZE ];
+	for ( int i = 0; i < number; i++ )
+	{
+		int sockfd = events[i].data.fd;
+		if( sockfd == listenfd )
+		{
+			struct sockaddr_in client_address;
+			socklen_l client_addrlength = sizeof( client_address );
+			int connfd = accept( listenfd,  ( struct sockaddr* )&client_address,
+								&client_addrlength );
+			addfd( epollfd,  connfd, true ); /*对connfd开启ET模式*/
+		}
+		else if( events[i].events & EPOLLIN )
+		{
+			/* 这些代码不会被重复触发，所以我们的读取数据，以确保把socket 读缓存中的所有数据读出 */
+			printf("event trigger once \n");
+			while( 1 )
+			{
+				memset( buf, '\0', BUFFER_SIZE ),
+				int ret = recv( sockfd, buf, BUFFER_SIZE-1, 0 );
+				if( ret < 0 )
+				{
+					memset( buf, '\0', BUFFER_SIZE );
+					int ret = recv( sockfd, buf, BUFFER_SIZE-1, 0 );
+					if( ret < 0 )
+					{
+						/* 对于非阻塞IO， 下面的条件成立表示数据已经全部读取完毕。此后
+						epoll 就能再次触发 sockfd 上的EPOOLIN事件，以驱动下一次读操作 */
+						if( ( errno == EAGAIN ) || ( errno == EWOULDBLOCK ) )
+						{
+							printf("read later\n");
+							break;
+						}
+						close( sockfd );
+						break;
+					}
+					else if ( ret == 0 )
+					{
+						close( sockfd );
+					}
+					else
+					{
+						printf("get %d bytes of content: %s\n", ret, buf );
+					}
+				}
+			}
+		}
+	}
+}
