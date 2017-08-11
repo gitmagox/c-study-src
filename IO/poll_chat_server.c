@@ -59,8 +59,31 @@ int main( int argc, char* argv[] )
 	assert( ret != -1 );
 
 	/* 创建数组分配FD_LIMITW */
-	//c++中的写法;
+	//c++中的写法; client_data* users = new client_data[FD_LIMIT]
 	client_data* users = ( client_data * )malloc( ( FD_LIMIT )*sizeof( client_data ) );
+	/*限制POLl数量*/
+	pollfd fds[USER_LIMIT+1];
+	int user_counter = 0;
+	int i;
+	for ( i=1; i <= USER_LIMIT; ++i )
+	{
+		fds[i].fd = -1;
+		fds[i].events = 0;
+	}
+	fds[0].fd = listenfd;
+	fds[0].events = POLLIN | POLLERR;
+	fds[0].revents = 0;
+
+	while(1)
+	{
+		ret = poll( fds, user_counter+1, -1 );
+		if( ret < 0  )
+		{
+			printf("poll failure\n");
+			break;
+		}
+		
+	}
 
 	return 1;
 }
