@@ -171,7 +171,7 @@ int main( int argc, char* argv[] )
 		}
 		else if( fds[i].revents & POLLOUT )
 		{
-			it connfd = fds[i].fd;
+			int connfd = fds[i].fd;
 			if( ! users[connfd].write_buf )
 			{
 				continue;
