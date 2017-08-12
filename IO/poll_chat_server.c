@@ -123,6 +123,52 @@ int main( int argc, char* argv[] )
 			}
 			continue;
 		}
+		else if( fds[i].revents & POLLRDHUP )
+		{
+			users[fds[i].fd] = users[fds[user_counter].fd];
+			close( fds[i].fd );
+			fds[i] = fds[user_counter];
+			i--;
+			user_counter--;
+			printf("a client left \n");
+		}
+		else if( fds[i].revents & POLLIN )
+		{
+			int connfd = fds[i].fd;
+			memset( users[connfd].buf, '\0', BUFFER_SIZE );
+			ret = recv( connfd, users[connfd].buf, BUFFER_SIZE-1, 0 );
+			printf("get %d bytes of client data %s from  %d \n", ret, users[connfd].buf, connfd );
+			if( ret < 0 )
+			{
+				if( errno != EAGAIN )
+				{
+					close( connfd );
+					users[fds[i].fd] = users[fds[user_counter].fd];
+					fds[i] = fds[user_counter];
+					i--;
+					user_counter--;
+				}
+			}
+			else if( ret == 0 )
+			{
+
+			}  
+			else
+			{
+				//如果接收到客户数据，则通知其他socket 连接准备写数据
+				for( int j = 1; j<=user_counter; ++j )
+				{
+					if( fds[j].fd == connfd )
+					{
+						continue;
+					}
+					fds[j].events |= ~POLLIN;
+					fds[j].events |= POLLOUT;
+					users[fds[j].fd].write_buf = users[connfd].buf;
+				}
+			}
+		}
+		
 		
 	}
 
