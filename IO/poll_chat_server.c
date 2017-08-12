@@ -82,6 +82,35 @@ int main( int argc, char* argv[] )
 			printf("poll failure\n");
 			break;
 		}
+		for( i=0; i<user_counter+1; ++i )
+		{
+			struct sockaddr_in client_address;
+			socklen_t client_addrlength = sizeof( client_address );
+			int connfd = accept( listenfd, ( struct sockaddr )&client_address, &client_addrlength )
+			if( connfd < 0 )
+			{
+				printf("errno is : %d\n", errno );
+				continue;
+			}
+			//如果请求太多，则关闭新到的连接
+			if( user_counter >= USER_LIMIT )
+			{
+				const char* info = "too many users\n";
+				printf("%s\n", info );
+				send( connfd, info, strlen( info ), 0 );
+				close( connfd );
+				continue;
+			}
+			//对于新的连接，同时修改fds users所组。前进文已经提到，users[connfd]	
+			//对应于新连接文件描述connfd 的客户数据。
+			user_counter++;
+			users[connfd].address = client_address;
+			setnonblocking( connfd );
+			fds[user_counter].fd = connfd;
+			fds[user_counter].events = POLLIN | POLLRDHUP | POLLERR;
+			fds[user_counter].revents = 0;
+			printf("comes a new user,now have %d users\n", user_counter );				
+		}
 		
 	}
 
