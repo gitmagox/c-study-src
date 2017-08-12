@@ -155,8 +155,9 @@ int main( int argc, char* argv[] )
 			}  
 			else
 			{
+				int j;
 				//如果接收到客户数据，则通知其他socket 连接准备写数据
-				for( int j = 1; j<=user_counter; ++j )
+				for( j = 1; j<=user_counter; ++j )
 				{
 					if( fds[j].fd == connfd )
 					{
@@ -168,9 +169,23 @@ int main( int argc, char* argv[] )
 				}
 			}
 		}
-		
+		else if( fds[i].revents & POLLOUT )
+		{
+			it connfd = fds[i].fd;
+			if( ! users[connfd].write_buf )
+			{
+				continue;
+			}
+			ret = send( connfd, users[connfd].write_buf, strlen( users[connfd].write_buf ), 0 );
+			users[connfd].write_buf = NULL;
+
+			fds[i].events |= ~POLLOUT;
+			fds[i].events |= POLLIN;
+		}
 		
 	}
 
-	return 1;
+	delete [] users;
+	close( listenfd );
+	return 0;
 }
