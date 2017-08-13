@@ -1,4 +1,6 @@
 /* 二叉树 */
+#include <assert.h>
+
 typedef struct b_tree_node b_tree_node;
 typedef int Type;
 
@@ -35,3 +37,26 @@ void pre_order_b_tree( b_tree_node *node );
 void in_order_b_tree( b_tree_node *node );
 //后序遍历
 void post_order_b_tree( b_tree_node *node );
+
+//函数实现
+b_tree_node _new_tree_node( Type key )
+{
+	b_tree_node *nd = ( b_tree_node* )malloc( sizeof(b_tree_node) );
+	assert( nd != NULL );
+    if ( nd )
+    {
+        memset( nd, 0, sizeof( b_tree_node ) );
+    }
+    nd->key = key;
+    return nd;
+}
+//新建树,返回树的节点
+b_tree_root new_b_tree( Type key )
+{
+	b_tree_root *root = ( b_tree_root* )malloc( sizeof(b_tree_root) );
+	assert( root != NULL );
+	b_tree_node *node = _new_tree_node( key );
+	assert( node != NULL );
+	root->root = node;
+	return root;
+}
