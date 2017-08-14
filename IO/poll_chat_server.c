@@ -12,13 +12,15 @@
 #include <stdlib.h>
 #include <poll.h>
 
+typedef struct pollfd pollfd;
+
 #define USER_LIMIT 5 /* 最大用户数量 */
 #define BUFFER_SIZE 64 /* 读缓冲区的大小 */
 #define FD_LIMIT 65535 /* 文件描述符数量限制 */
 /* 客户数据; 客户端socket 地址,待写到客户端的数据的位置,从客户端读入的数据 */
 struct client_data
 {
-	sockaddr_in address;
+	struct sockaddr_in address;
 	char* write_buf;
 	char buf[ BUFFER_SIZE ];
 };
@@ -42,7 +44,7 @@ int main( int argc, char* argv[] )
 	const char* ip = argv[1];
 	int port = atoi( argv[2] );
 
-	int ret = 0
+	int ret = 0;
 	struct sockaddr_in address;
 	bzero( &address, sizeof( address ) );
 	address.sin_family = AF_INET;
@@ -86,7 +88,7 @@ int main( int argc, char* argv[] )
 		{
 			struct sockaddr_in client_address;
 			socklen_t client_addrlength = sizeof( client_address );
-			int connfd = accept( listenfd, ( struct sockaddr )&client_address, &client_addrlength )
+			int connfd = accept( listenfd, ( struct sockaddr* )&client_address, &client_addrlength );
 			if( connfd < 0 )
 			{
 				printf("errno is : %d\n", errno );
