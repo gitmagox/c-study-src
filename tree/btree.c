@@ -177,3 +177,25 @@ void post_order_b_tree( b_tree_root *root )
 		printf("%d\n",name->key );
 	}
 }
+//销毁一颗树
+void destroy_b_tree( b_tree_root *root )
+{
+	stack S;
+	StackNew( &S, MAX_TREE_NODES, sizeof( b_tree_node ) );
+	StackPush( &S, root->root );
+	b_tree_node * name;
+	while( S->logLength > 0 )
+	{	
+		if( name->left != NULL )
+		{
+			StackPush( &S, name->left );
+		}	
+		if ( name->right != NULL )
+		{
+			StackPush( &S, name->right );
+		}
+		StackPop( &s, name );
+		free( name );
+	}
+	free( root );
+}
