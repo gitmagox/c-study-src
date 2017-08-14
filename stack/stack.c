@@ -23,6 +23,7 @@ void StackNew( stack *s, int allocLength , int elemSize )
 	s->logLength = 0;
 	s->allocLength = allocLength;
 	s->elems = malloc( allocLength*elemSize );
+	memset( s->elems, 0, allocLength*elemSize);
 	assert( s->elems != NULL );
 }
 //desroy stack
