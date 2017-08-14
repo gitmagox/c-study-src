@@ -35,11 +35,11 @@ void add_b_tree_node( b_tree_root *root Type key );
 void delete_b_tree_node( b_tree_root *root Type key );
 
 //前序遍历
-void pre_order_b_tree( b_tree_node *node );
+void pre_order_b_tree( b_tree_root *root );
 //中序遍历
-void in_order_b_tree( b_tree_node *node );
+void in_order_b_tree( b_tree_root *root );
 //后序遍历
-void post_order_b_tree( b_tree_node *node );
+void post_order_b_tree( b_tree_root *root );
 
 //函数实现
 b_tree_node _new_tree_node( Type key )
@@ -113,4 +113,25 @@ void add_b_tree_node( b_tree_root *root Type key )
 				
 	}
 
+}
+//前序遍历
+void pre_order_b_tree( b_tree_root *root )
+{
+	stack S;
+	StackNew( &S, MAX_TREE_NODES, sizeof( b_tree_node ) );
+	StackPush( &S, root->root );
+	b_tree_node * name;
+	while( S->logLength > 0 )
+	{	
+		StackPop( &s, name );
+		printf("%d\n",name->key );
+		if( name->left != NULL )
+		{
+			StackPush( &S, name->left );
+		}	
+		if ( name->right != NULL )
+		{
+			StackPush( &S, name->right );
+		}
+	}			
 }
