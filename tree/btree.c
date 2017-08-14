@@ -135,3 +135,24 @@ void pre_order_b_tree( b_tree_root *root )
 		}
 	}			
 }
+//中序遍历
+void in_order_b_tree( b_tree_root *root )
+{
+	stack S;
+	StackNew( &S, MAX_TREE_NODES, sizeof( b_tree_node ) );
+	StackPush( &S, root->root );
+	b_tree_node * name;
+	while( S->logLength > 0 )
+	{	
+		if( name->left != NULL )
+		{
+			StackPush( &S, name->left );
+		}	
+		StackPop( &s, name );
+		printf("%d\n",name->key );
+		if ( name->right != NULL )
+		{
+			StackPush( &S, name->right );
+		}
+	}
+}
