@@ -1,4 +1,4 @@
-/*双向环形链表*/
+/*队列*/
 #define C_QUEUE_H_1
 
 typedef struct queue queue;
