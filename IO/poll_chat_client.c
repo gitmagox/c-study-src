@@ -11,11 +11,11 @@
 #include <poll.h>
 #include <fcntl.h>
 
-#define BUFFER_SIZE 64
-
+#define BUFFER_SIZE 64 
+typedef struct pollfd pollfd;
 int main ( int argc, char* argv[])
 {
-	if( argv <= 2 )
+	if( argc <= 2 )
 	{
 		printf( "usage: %s ip_address port_number\n", basename( argv[0] ) );
 		return 1;
@@ -43,7 +43,7 @@ int main ( int argc, char* argv[])
 	fds[1].events = POLLIN | POLLRDHUP;
 	fds[1].revents = 0;
 
-	char read_buf( BUFFER_SIZE );
+	char read_buf[ BUFFER_SIZE ];
 	int pipefd[2];
 	int ret = pipe( pipefd );
 	assert( ret != -1 );
@@ -64,7 +64,7 @@ int main ( int argc, char* argv[])
 		else if( fds[1].revents & POLLIN )
 		{
 			memset( read_buf, '\0', BUFFER_SIZE );
-			recv( fds[1],fd, read_buf, BUFFER_SIZE-1, 0 );
+			recv( fds[1].fd, read_buf, BUFFER_SIZE-1, 0 );
 			printf("%s\n", read_buf);
 		}
 		if( fds[0].revents & POLLIN )
