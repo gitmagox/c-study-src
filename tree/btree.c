@@ -14,6 +14,8 @@ struct b_tree_node {
 
 struct b_tree_root {
 	b_tree_node *root;
+	int logLength; //当前二叉树的大小
+	int allocLength;//当前二叉树的允许的最大长度
 }
 
 
@@ -59,12 +61,14 @@ b_tree_root new_b_tree( Type key )
 	b_tree_node *node = _new_tree_node( key );
 	assert( node != NULL );
 	root->root = node;
+	root->allocLength = MAX_TREE_NODES;
+	root->logLength = 0;
 	return root;
 }
 //添加一个节点,使用栈来处理
 void add_b_tree_node( b_tree_root *root Type key )
 {
-	
+	/* 新建一个栈来处理遍历过程 */
 	stack S;
 	StackNew( &S, MAX_TREE_NODES, sizeof( b_tree_node ) );
 	StackPush( &S, root->root );
@@ -75,6 +79,7 @@ void add_b_tree_node( b_tree_root *root Type key )
 		if( name->key == key )
 		{
 			name->key = key;
+			root->logLength ++;
 			return 1;
 		}
 		else if( name->key < key )
@@ -87,6 +92,7 @@ void add_b_tree_node( b_tree_root *root Type key )
 			{
 				b_tree_node *node = _new_tree_node( key );
 				name->left = node;
+				root->logLength ++;
 				return 1; 
 			}
 		}
@@ -100,6 +106,7 @@ void add_b_tree_node( b_tree_root *root Type key )
 			{
 				b_tree_node *node = _new_tree_node( key );
 				name->right = node;
+				root->logLength ++;
 				return 1;
 			}
 		}
