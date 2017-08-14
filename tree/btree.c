@@ -1,6 +1,7 @@
 /* 二叉树 */
 #include <assert.h>
 #include "stack.h"
+#include "c_queue_1.h"
 typedef struct b_tree_node b_tree_node;
 typedef int Type;
 #define MAX_TREE_NODES 120;
@@ -40,6 +41,8 @@ void pre_order_b_tree( b_tree_root *root );
 void in_order_b_tree( b_tree_root *root );
 //后序遍历
 void post_order_b_tree( b_tree_root *root );
+//层序遍历
+void level_order_b_tree( b_tree_root *root );
 
 //函数实现
 b_tree_node _new_tree_node( Type key )
@@ -198,4 +201,24 @@ void destroy_b_tree( b_tree_root *root )
 		free( name );
 	}
 	free( root );
+}
+//层序遍历---广度优先
+void level_order_b_tree( b_tree_root *root ){
+	queue Q;
+	new_queue( &Q, MAX_TREE_NODES, sizeof( b_tree_node ) );
+	queue_push( &Q, root->root );
+	b_tree_node *name;
+	while( Q->logLength >0 )
+	{
+		if( name->left != NULL )
+		{
+			queue_push( &Q, name->left );
+		}	
+		if ( name->right != NULL )
+		{
+			queue_push( &Q, name->right );
+		}
+		queue_pop( &Q, name );
+		printf("%d\n",name->key );
+	}
 }
