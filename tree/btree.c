@@ -83,6 +83,7 @@ void add_b_tree_node( b_tree_root *root Type key )
 		{
 			name->key = key;
 			root->logLength ++;
+			StackDipose( &S );
 			return 1;
 		}
 		else if( name->key < key )
@@ -96,6 +97,7 @@ void add_b_tree_node( b_tree_root *root Type key )
 				b_tree_node *node = _new_tree_node( key );
 				name->left = node;
 				root->logLength ++;
+				StackDipose( &S );
 				return 1; 
 			}
 		}
@@ -110,6 +112,7 @@ void add_b_tree_node( b_tree_root *root Type key )
 				b_tree_node *node = _new_tree_node( key );
 				name->right = node;
 				root->logLength ++;
+				StackDipose( &S );
 				return 1;
 			}
 		}
@@ -136,7 +139,8 @@ void pre_order_b_tree( b_tree_root *root )
 		{
 			StackPush( &S, name->right );
 		}
-	}			
+	}
+	StackDipose( &S );			
 }
 //中序遍历
 void in_order_b_tree( b_tree_root *root )
@@ -158,6 +162,7 @@ void in_order_b_tree( b_tree_root *root )
 			StackPush( &S, name->right );
 		}
 	}
+	StackDipose( &S );
 }
 //后序遍历
 void post_order_b_tree( b_tree_root *root )
@@ -179,6 +184,7 @@ void post_order_b_tree( b_tree_root *root )
 		StackPop( &s, name );
 		printf("%d\n",name->key );
 	}
+	StackDipose( &S );
 }
 //销毁一颗树
 void destroy_b_tree( b_tree_root *root )
@@ -200,6 +206,7 @@ void destroy_b_tree( b_tree_root *root )
 		StackPop( &s, name );
 		free( name );
 	}
+	StackDipose( &S );
 	free( root );
 }
 //层序遍历---广度优先
