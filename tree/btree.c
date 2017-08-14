@@ -1,8 +1,9 @@
 /* 二叉树 */
 #include <assert.h>
-
+#include "stack.h"
 typedef struct b_tree_node b_tree_node;
 typedef int Type;
+#define MAX_TREE_NODES 120;
 
 struct b_tree_node {
 	b_tree_node *parent;
@@ -59,4 +60,50 @@ b_tree_root new_b_tree( Type key )
 	assert( node != NULL );
 	root->root = node;
 	return root;
+}
+//添加一个节点,使用栈来处理
+void add_b_tree_node( b_tree_root *root Type key )
+{
+	
+	stack S;
+	StackNew( &S, MAX_TREE_NODES, sizeof( b_tree_node ) );
+	StackPush( &S, root->root );
+	b_tree_node * name;
+	while( S->logLength > 0 )
+	{	
+		StackPop( &s, name );
+		if( name->key == key )
+		{
+			name->key = key;
+			return 1;
+		}
+		else if( name->key < key )
+		{
+			if( name->left != NULL )
+			{
+				StackPush( &S, name->left );
+			}
+			else
+			{
+				b_tree_node *node = _new_tree_node( key );
+				name->left = node;
+				return 1; 
+			}
+		}
+		else if( name->key > key )
+		{
+			if ( name->right != NULL )
+			{
+				StackPush( &S, name->right );
+			}
+			else
+			{
+				b_tree_node *node = _new_tree_node( key );
+				name->right = node;
+				return 1;
+			}
+		}
+				
+	}
+
 }
