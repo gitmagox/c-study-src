@@ -191,7 +191,7 @@ int main( int argc, char* argv[] )
 		
 	}
 
-	delete [] users;
+	free ( users );
 	close( listenfd );
 	return 0;
 }
