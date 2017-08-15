@@ -33,7 +33,7 @@ void queue_dispose( queue *Q );
 static void queue_grow( queue *Q)
 {
 	Q->allocLength += 2;
-	Q->elems = realloc( Q->elems, Q->allocLength*Q->size );
+	Q->tail = realloc( Q->tail, Q->allocLength*Q->size );
 }
 /* 新建一个队列 */
 void new_queue( queue *Q, int allocLength, int size )
@@ -49,7 +49,7 @@ void new_queue( queue *Q, int allocLength, int size )
 	Q->allocLength = allocLength;
 	Q->elems = malloc( allocLength*size );
 	memset( Q->elems, 0, allocLength*size );
-	Q->head = Q->elems+Q->size;
+	Q->head = Q->elems;
 	Q->tail = Q->elems;
 }
 /* 入队 */
@@ -59,10 +59,22 @@ void queue_push( queue *Q, void *node )
 	{
 		queue_grow( Q );
 	}
-	void * target = (char *)Q->head +Q->logLength*Q->size;
+	void *target;
+	if( Q->logLength == 0 )
+	{
+		target = (char *)Q->head;
+	}
+	else
+	{
+		target = (char *)Q->head +Q->size; 
+	}
 	memcpy( target, node, Q->size );
 	Q->head  = target;
 	Q->logLength ++;
+	if( Q->logLength == 1 )
+	{
+		Q->tail = Q->head;
+	}
 }
 
 /* 出队 */
