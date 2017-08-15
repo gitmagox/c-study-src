@@ -231,3 +231,5 @@ void level_order_b_tree( b_tree_root *root ){
 		printf("%d\n",name->key );
 	}
 }
+
+#endif
