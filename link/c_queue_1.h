@@ -1,4 +1,8 @@
 /*队列*/
+#include <stdio.h>
+#include <stdlib.h>
+#include <assert.h>
+#include <string.h>
 #define C_QUEUE_H_1
 
 typedef struct queue queue;
@@ -28,8 +32,8 @@ void queue_dispose( queue *Q );
 //私有函数
 static void queue_grow( queue *Q)
 {
-	s->allocLength += 1;
-	s->elems = realloc( s->tail, s->allocLength*s->size );
+	Q->allocLength += 2;
+	Q->elems = realloc( Q->elems, Q->allocLength*Q->size );
 }
 /* 新建一个队列 */
 void new_queue( queue *Q, int allocLength, int size )
@@ -38,41 +42,41 @@ void new_queue( queue *Q, int allocLength, int size )
 	assert( allocLength > 0 );
 	if( allocLength <=0 )
 	{
-		allocLength = 1;
+		allocLength = 2;
 	}
 	Q->size = size;
 	Q->logLength = 0;
 	Q->allocLength = allocLength;
 	Q->elems = malloc( allocLength*size );
 	memset( Q->elems, 0, allocLength*size );
-	Q->head = Q->elems;
+	Q->head = Q->elems+Q->size;
 	Q->tail = Q->elems;
 }
 /* 入队 */
 void queue_push( queue *Q, void *node )
 {
-	if( s->logLength == s->allocLength )
+	if( Q->logLength == Q->allocLength )
 	{
 		queue_grow( Q );
 	}
-	void * target = (char *)Q->elems +Q->logLength*Q->size;
+	void * target = (char *)Q->head +Q->logLength*Q->size;
 	memcpy( target, node, Q->size );
-	Q->head = target;
+	Q->head  = target;
 	Q->logLength ++;
 }
 
 /* 出队 */
 void queue_pop( queue *Q, void *node )
 {
-	assert( s->logLength > 0 );
-	memcpy( node, Q->head, Q->size );
-	memset( Q->elems, '\0', size );
-	Q->elems = Q->head = Q->elems + Q->size; 
+	assert( Q->logLength > 0 );
+	memcpy( node, Q->elems, Q->size );
+	memset( Q->elems, '\0', Q->size );
+	Q->tail = Q->elems = Q->elems+Q->size; 
 	Q->logLength --;
 }
 
 /* 销毁队列 */
 void queue_dispose( queue *Q )
 {
-	free( Q->queue );
+	free( Q->elems );
 }
