@@ -1,3 +1,6 @@
+/*
+ *  栈结构	
+ */
 #ifndef MAGOX_STACK_A
 #define MAGOX_STACK_A
 #include <stdio.h>
