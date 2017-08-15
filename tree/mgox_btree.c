@@ -1,7 +1,9 @@
 /* 二叉树 */
+#ifndef MAGOX_BTREE_A
+#define MAGOX_BTREE_A
 #include <assert.h>
-#include "stack.h"
-#include "c_queue_1.h"
+#include "mgox_stack.h"
+#include "mgox_queue.h"
 typedef struct b_tree_node b_tree_node;
 typedef int Type;
 #define MAX_TREE_NODES 120;

@@ -1,11 +1,10 @@
 /*队列*/
-#ifndef C_QUEUE_H_1
-#define C_QUEUE_H_1
+#ifndef MAGOX_QUEUE_A
+#define MAGOX_QUEUE_A
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
 #include <string.h>
-
 
 typedef struct queue queue;
 
