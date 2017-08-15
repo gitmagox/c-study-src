@@ -16,11 +16,13 @@ struct queue
 
 //方法
 /* 新建一个队列 */
-queue new_queue( int size );
+void new_queue( queue *Q, int allocLength, int size );
 /* 入队 */
 void queue_push( queue *Q, void *node);
 /* 出队 */
 void queue_pop( queue *Q, void *node);
+/* destory queue */
+void queue_dispose( queue *Q );
 
 
 //私有函数
