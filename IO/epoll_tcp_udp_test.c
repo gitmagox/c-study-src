@@ -72,7 +72,7 @@ int main( int argc, char* argv[] )
 	assert( ret != -1 );
 
 	epoll_event events[ MAX_EVENT_NUMBER ];
-	int epollfd = epll_create( 5 );
+	int epollfd = epoll_create( 5 );
 	assert( epollfd != -1 );
 	//注册两个可读事件
 	addfd( epollfd, listenfd );
@@ -97,7 +97,7 @@ int main( int argc, char* argv[] )
 				socklen_t client_addrlength = sizeof( client_address );
 				int connfd = accept( listenfd, ( struct sockaddr* )
 								&client_address, &client_addrlength );
-				addfd( epllfd,connfd );
+				addfd( epollfd,connfd );
 			}
 			else if ( sockfd == udpfd )
 			{
@@ -110,7 +110,7 @@ int main( int argc, char* argv[] )
 				if( ret > 0 )
 				{
 					sendto( udpfd, buf, UDP_BUFFER_SIZE-1, 0,
-							( struct sockaddr* )&client_address, &client_addrlength );
+							( struct sockaddr* )&client_address, client_addrlength );
 				}
 			}
 			else if ( events[i].events & EPOLLIN )
