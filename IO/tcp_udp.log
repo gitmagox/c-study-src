@@ -1,58 +1,81 @@
 execve("./epoll_tcp_udp_test", ["./epoll_tcp_udp_test", "0.0.0.0", "12345"], [/* 25 vars */]) = 0
-brk(0)                                  = 0x1a5d000
-mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7f3697b42000
+brk(0)                                  = 0x18de000
+mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7f5cb8d03000
 access("/etc/ld.so.preload", R_OK)      = -1 ENOENT (No such file or directory)
 open("/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3
 fstat(3, {st_mode=S_IFREG|0644, st_size=40429, ...}) = 0
-mmap(NULL, 40429, PROT_READ, MAP_PRIVATE, 3, 0) = 0x7f3697b38000
+mmap(NULL, 40429, PROT_READ, MAP_PRIVATE, 3, 0) = 0x7f5cb8cf9000
 close(3)                                = 0
 open("/lib64/libc.so.6", O_RDONLY|O_CLOEXEC) = 3
 read(3, "\177ELF\2\1\1\3\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0@\34\2\0\0\0\0\0"..., 832) = 832
 fstat(3, {st_mode=S_IFREG|0755, st_size=2118128, ...}) = 0
-mmap(NULL, 3932672, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x7f3697563000
-mprotect(0x7f3697719000, 2097152, PROT_NONE) = 0
-mmap(0x7f3697919000, 24576, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x1b6000) = 0x7f3697919000
-mmap(0x7f369791f000, 16896, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x7f369791f000
+mmap(NULL, 3932672, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x7f5cb8724000
+mprotect(0x7f5cb88da000, 2097152, PROT_NONE) = 0
+mmap(0x7f5cb8ada000, 24576, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x1b6000) = 0x7f5cb8ada000
+mmap(0x7f5cb8ae0000, 16896, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x7f5cb8ae0000
 close(3)                                = 0
-mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7f3697b37000
-mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7f3697b35000
-arch_prctl(ARCH_SET_FS, 0x7f3697b35740) = 0
-mprotect(0x7f3697919000, 16384, PROT_READ) = 0
+mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7f5cb8cf8000
+mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7f5cb8cf6000
+arch_prctl(ARCH_SET_FS, 0x7f5cb8cf6740) = 0
+mprotect(0x7f5cb8ada000, 16384, PROT_READ) = 0
 mprotect(0x601000, 4096, PROT_READ)     = 0
-mprotect(0x7f3697b43000, 4096, PROT_READ) = 0
-munmap(0x7f3697b38000, 40429)           = 0
+mprotect(0x7f5cb8d04000, 4096, PROT_READ) = 0
+munmap(0x7f5cb8cf9000, 40429)           = 0
 socket(PF_INET, SOCK_STREAM, IPPROTO_IP) = 3
 bind(3, {sa_family=AF_UNSPEC, sa_data="09\0\0\0\0\0\0\0\0\0\0\0\0"}, 16) = 0
 listen(3, 5)                            = 0
 socket(PF_INET, SOCK_DGRAM, IPPROTO_IP) = 4
 epoll_create(5)                         = 5
-epoll_ctl(5, EPOLL_CTL_ADD, 3, {EPOLLIN|EPOLLET, {u32=3, u64=10931451565214531587}}) = 0
+epoll_ctl(5, EPOLL_CTL_ADD, 3, {EPOLLIN|EPOLLET, {u32=3, u64=13317251060000096259}}) = 0
 fcntl(3, F_GETFL)                       = 0x2 (flags O_RDWR)
 fcntl(3, F_SETFL, O_RDWR|O_NONBLOCK)    = 0
-epoll_ctl(5, EPOLL_CTL_ADD, 4, {EPOLLIN|EPOLLET, {u32=4, u64=10931451565214531588}}) = 0
+epoll_ctl(5, EPOLL_CTL_ADD, 4, {EPOLLIN|EPOLLET, {u32=4, u64=13317251060000096260}}) = 0
 fcntl(4, F_GETFL)                       = 0x2 (flags O_RDWR)
 fcntl(4, F_SETFL, O_RDWR|O_NONBLOCK)    = 0
-epoll_wait(5, {{EPOLLIN, {u32=3, u64=10931451565214531587}}}, 1024, -1) = 1
-accept(3, {sa_family=AF_INET, sin_port=htons(42092), sin_addr=inet_addr("127.0.0.1")}, [16]) = 6
-epoll_ctl(5, EPOLL_CTL_ADD, 6, {EPOLLIN|EPOLLET, {u32=6, u64=10931451565214531590}}) = 0
+epoll_wait(5, {{EPOLLIN, {u32=3, u64=13317251060000096259}}}, 1024, -1) = 1
+accept(3, {sa_family=AF_INET, sin_port=htons(42100), sin_addr=inet_addr("127.0.0.1")}, [16]) = 6
+epoll_ctl(5, EPOLL_CTL_ADD, 6, {EPOLLIN|EPOLLET, {u32=6, u64=13317251060000096262}}) = 0
 fcntl(6, F_GETFL)                       = 0x2 (flags O_RDWR)
 fcntl(6, F_SETFL, O_RDWR|O_NONBLOCK)    = 0
-epoll_wait(5, {{EPOLLIN, {u32=6, u64=10931451565214531590}}}, 1024, -1) = 1
-recvfrom(6, "fdfdf\r\n", 511, 0, NULL, NULL) = 7
-sendto(6, "fdfdf\r\n", 7, 0, NULL, 0)   = 7
-recvfrom(6, 0x7ffca6d65ef0, 511, 0, 0, 0) = -1 EAGAIN (Resource temporarily unavailable)
-epoll_wait(5, {{EPOLLIN, {u32=6, u64=10931451565214531590}}}, 1024, -1) = 1
-recvfrom(6, "fdfd\r\n", 511, 0, NULL, NULL) = 6
-sendto(6, "fdfd\r\n", 6, 0, NULL, 0)    = 6
-recvfrom(6, 0x7ffca6d65ef0, 511, 0, 0, 0) = -1 EAGAIN (Resource temporarily unavailable)
-epoll_wait(5, {{EPOLLIN, {u32=6, u64=10931451565214531590}}}, 1024, -1) = 1
-recvfrom(6, "fdfd\r\n", 511, 0, NULL, NULL) = 6
-sendto(6, "fdfd\r\n", 6, 0, NULL, 0)    = 6
-recvfrom(6, 0x7ffca6d65ef0, 511, 0, 0, 0) = -1 EAGAIN (Resource temporarily unavailable)
-epoll_wait(5, {{EPOLLIN, {u32=6, u64=10931451565214531590}}}, 1024, -1) = 1
-recvfrom(6, "fdfd\r\n", 511, 0, NULL, NULL) = 6
-sendto(6, "fdfd\r\n", 6, 0, NULL, 0)    = 6
-recvfrom(6, 0x7ffca6d65ef0, 511, 0, 0, 0) = -1 EAGAIN (Resource temporarily unavailable)
-epoll_wait(5, 7ffca6d66330, 1024, -1)   = -1 EINTR (Interrupted system call)
---- SIGINT {si_signo=SIGINT, si_code=SI_KERNEL, si_value={int=3791763032, ptr=0x7fcbe201b658}} ---
+epoll_wait(5, {{EPOLLIN, {u32=6, u64=13317251060000096262}}}, 1024, -1) = 1
+recvfrom(6, "dffddf\n", 511, 0, NULL, NULL) = 7
+sendto(6, "dffddf\n", 7, 0, NULL, 0)    = 7
+recvfrom(6, 0x7ffffbea1b20, 511, 0, 0, 0) = -1 EAGAIN (Resource temporarily unavailable)
+epoll_wait(5, {{EPOLLIN, {u32=6, u64=13317251060000096262}}}, 1024, -1) = 1
+recvfrom(6, "hgfhfgh\n", 511, 0, NULL, NULL) = 8
+sendto(6, "hgfhfgh\n", 8, 0, NULL, 0)   = 8
+recvfrom(6, 0x7ffffbea1b20, 511, 0, 0, 0) = -1 EAGAIN (Resource temporarily unavailable)
+epoll_wait(5, {{EPOLLIN, {u32=6, u64=13317251060000096262}}}, 1024, -1) = 1
+recvfrom(6, "sdds\n", 511, 0, NULL, NULL) = 5
+sendto(6, "sdds\n", 5, 0, NULL, 0)      = 5
+recvfrom(6, 0x7ffffbea1b20, 511, 0, 0, 0) = -1 EAGAIN (Resource temporarily unavailable)
+epoll_wait(5, {{EPOLLIN, {u32=3, u64=13317251060000096259}}}, 1024, -1) = 1
+accept(3, {sa_family=AF_INET, sin_port=htons(42102), sin_addr=inet_addr("127.0.0.1")}, [16]) = 7
+epoll_ctl(5, EPOLL_CTL_ADD, 7, {EPOLLIN|EPOLLET, {u32=7, u64=13317251060000096263}}) = 0
+fcntl(7, F_GETFL)                       = 0x2 (flags O_RDWR)
+fcntl(7, F_SETFL, O_RDWR|O_NONBLOCK)    = 0
+epoll_wait(5, {{EPOLLIN, {u32=7, u64=13317251060000096263}}}, 1024, -1) = 1
+recvfrom(7, "\350\276\205\345\257\274\350\276\205\345\257\274\r\n", 511, 0, NULL, NULL) = 14
+sendto(7, "\350\276\205\345\257\274\350\276\205\345\257\274\r\n", 14, 0, NULL, 0) = 14
+recvfrom(7, 0x7ffffbea1b20, 511, 0, 0, 0) = -1 EAGAIN (Resource temporarily unavailable)
+epoll_wait(5, {{EPOLLIN, {u32=6, u64=13317251060000096262}}}, 1024, -1) = 1
+recvfrom(6, "gffdg\n", 511, 0, NULL, NULL) = 6
+sendto(6, "gffdg\n", 6, 0, NULL, 0)     = 6
+recvfrom(6, 0x7ffffbea1b20, 511, 0, 0, 0) = -1 EAGAIN (Resource temporarily unavailable)
+epoll_wait(5, {{EPOLLIN, {u32=7, u64=13317251060000096263}}}, 1024, -1) = 1
+recvfrom(7, "\344\275\233\346\214\241\346\235\200\344\275\233\r\n", 511, 0, NULL, NULL) = 14
+sendto(7, "\344\275\233\346\214\241\346\235\200\344\275\233\r\n", 14, 0, NULL, 0) = 14
+recvfrom(7, 0x7ffffbea1b20, 511, 0, 0, 0) = -1 EAGAIN (Resource temporarily unavailable)
+epoll_wait(5, {{EPOLLIN, {u32=7, u64=13317251060000096263}}}, 1024, -1) = 1
+recvfrom(7, "", 511, 0, NULL, NULL)     = 0
+close(7)                                = 0
+recvfrom(7, 0x7ffffbea1b20, 511, 0, 0, 0) = -1 EBADF (Bad file descriptor)
+close(7)                                = -1 EBADF (Bad file descriptor)
+epoll_wait(5, {{EPOLLIN, {u32=6, u64=13317251060000096262}}}, 1024, -1) = 1
+recvfrom(6, "", 511, 0, NULL, NULL)     = 0
+close(6)                                = 0
+recvfrom(6, 0x7ffffbea1b20, 511, 0, 0, 0) = -1 EBADF (Bad file descriptor)
+close(6)                                = -1 EBADF (Bad file descriptor)
+epoll_wait(5, 7ffffbea1f60, 1024, -1)   = -1 EINTR (Interrupted system call)
+--- SIGINT {si_signo=SIGINT, si_code=SI_KERNEL, si_value={int=335885912, ptr=0x7f6c14053658}} ---
 +++ killed by SIGINT +++
