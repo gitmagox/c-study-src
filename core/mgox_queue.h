@@ -91,6 +91,7 @@ void queue_pop( queue *Q, void *node )
 /* 销毁队列 */
 void queue_dispose( queue *Q )
 {
+	int i;
 	for( i=0; i < Q->logLength ; i ++)
 	{
 		free( Q->elems+i );
