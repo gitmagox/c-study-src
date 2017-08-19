@@ -44,7 +44,10 @@ void StackNew( stack *s, int allocLength , int elemSize )
 //desroy stack
 void StackDipose( stack *s )
 {
-	free( s->elems );
+	for( i=0; i < s->logLength ; i ++)
+	{
+		free( s->elems+i );
+	}
 }
 
 //push elements
