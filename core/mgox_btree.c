@@ -362,7 +362,7 @@ void delete_b_tree_node( b_tree_root *root Type key )
 			new->left = node ->left;
 			new->right = node->right;
 			free( node );
-
+			root->logLength --;
 		}
 		else 
 		{
@@ -370,7 +370,7 @@ void delete_b_tree_node( b_tree_root *root Type key )
 			new->left = node->left;
 			new->right = node->right;
 			free( node );
-			
+			root->logLength --;
 		}
 	}
 }
