@@ -243,4 +243,16 @@ b_tree_node get_min_tree_node(b_tree_root *root)
 	return name;
 }
 
+//找二叉树最大节点
+b_tree_node get_max_tree_node(b_tree_root *root)
+{
+	b_tree_node *name;
+	name = root;
+	while ( name->right != NULL )
+	{
+		name = name->right;
+	}
+	return name;
+}
+
 #endif
