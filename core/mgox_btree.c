@@ -231,5 +231,16 @@ void level_order_b_tree( b_tree_root *root ){
 		printf("%d\n",name->key );
 	}
 }
+//找二叉树最小节点
+b_tree_node get_min_tree_node(b_tree_root *root)
+{
+	b_tree_node *name;
+	name = root;
+	while ( name->left != NULL )
+	{
+		name = name->left;
+	}
+	return name;
+}
 
 #endif
