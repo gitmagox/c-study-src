@@ -34,6 +34,9 @@ void destroy_b_tree( b_tree_root *root );
 //添加一个节点
 void add_b_tree_node( b_tree_root *root Type key );
 
+//查找一个节点
+b_tree_node search_b_tree( b_tree_root *root Type key );
+
 //册除一个节点
 void delete_b_tree_node( b_tree_root *root Type key );
 
