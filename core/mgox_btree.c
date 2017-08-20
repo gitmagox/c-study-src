@@ -255,4 +255,31 @@ b_tree_node get_max_tree_node(b_tree_root *root)
 	return name;
 }
 
+//册二叉树最大节点
+b_tree_node delete_max_tree_node(b_tree_root *root)
+{
+	b_tree_node *name;
+	name = root;
+	while ( name->right != NULL )
+	{
+		name = name->right;
+	}
+	name->parent->right = NULL;
+	return name;
+}
+//册二叉树最小节点返回
+b_tree_node delete_min_tree_node(b_tree_root *root)
+{
+	b_tree_node *name;
+	name = root;
+	while ( name->left != NULL )
+	{
+		name = name->left;
+	}
+	name->parent->left = NULL;
+	return name;
+}
+//册二叉树的节点
+
+
 #endif
