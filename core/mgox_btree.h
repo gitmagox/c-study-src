@@ -23,7 +23,7 @@ struct b_tree_root {
 
 
 //新建一个节点
-b_tree_node _new_tree_node( Type key );
+b_tree_node new_b_tree_node( Type key );
 
 //新建树,返回树的节点
 b_tree_root new_b_tree( Type key );
@@ -47,7 +47,7 @@ void post_order_b_tree( b_tree_root *root );
 void level_order_b_tree( b_tree_root *root );
 
 //函数实现
-b_tree_node _new_tree_node( Type key )
+b_tree_node new_b_tree_node( Type key )
 {
 	b_tree_node *nd = ( b_tree_node* )malloc( sizeof(b_tree_node) );
 	assert( nd != NULL );
@@ -55,7 +55,7 @@ b_tree_node _new_tree_node( Type key )
     {
         memset( nd, 0, sizeof( b_tree_node ) );
     }
-    nd->key = key;
+    nd.key = key;
     return nd;
 }
 //新建树,返回树的节点
@@ -63,7 +63,7 @@ b_tree_root new_b_tree( Type key )
 {
 	b_tree_root *root = ( b_tree_root* )malloc( sizeof(b_tree_root) );
 	assert( root != NULL );
-	b_tree_node *node = _new_tree_node( key );
+	b_tree_node *node = new_b_tree_node( key );
 	assert( node != NULL );
 	root->root = node;
 	root->allocLength = MAX_TREE_NODES;
@@ -81,14 +81,14 @@ void add_b_tree_node( b_tree_root *root Type key )
 	while( S->logLength > 0 )
 	{	
 		StackPop( &s, name );
-		if( name->key == key )
+		if( name.key == key )
 		{
-			name->key = key;
+			name.key = key;
 			root->logLength ++;
 			StackDipose( &S );
 			return 1;
 		}
-		else if( name->key < key )
+		else if( name.key < key )
 		{
 			if( name->left != NULL )
 			{
@@ -96,14 +96,14 @@ void add_b_tree_node( b_tree_root *root Type key )
 			}
 			else
 			{
-				b_tree_node *node = _new_tree_node( key );
+				b_tree_node *node = new_b_tree_node( key );
 				name->left = node;
 				root->logLength ++;
 				StackDipose( &S );
 				return 1; 
 			}
 		}
-		else if( name->key > key )
+		else if( name.key > key )
 		{
 			if ( name->right != NULL )
 			{
@@ -111,7 +111,7 @@ void add_b_tree_node( b_tree_root *root Type key )
 			}
 			else
 			{
-				b_tree_node *node = _new_tree_node( key );
+				b_tree_node *node = new_b_tree_node( key );
 				name->right = node;
 				root->logLength ++;
 				StackDipose( &S );
@@ -132,7 +132,7 @@ void pre_order_b_tree( b_tree_root *root )
 	while( S->logLength > 0 )
 	{	
 		StackPop( &s, name );
-		printf("%d\n",name->key );
+		printf("%d\n",name.key );
 		if( name->left != NULL )
 		{
 			StackPush( &S, name->left );
@@ -158,7 +158,7 @@ void in_order_b_tree( b_tree_root *root )
 			StackPush( &S, name->left );
 		}	
 		StackPop( &s, name );
-		printf("%d\n",name->key );
+		printf("%d\n",name.key );
 		if ( name->right != NULL )
 		{
 			StackPush( &S, name->right );
@@ -184,7 +184,7 @@ void post_order_b_tree( b_tree_root *root )
 			StackPush( &S, name->right );
 		}
 		StackPop( &s, name );
-		printf("%d\n",name->key );
+		printf("%d\n",name.key );
 	}
 	StackDipose( &S );
 }
@@ -228,7 +228,7 @@ void level_order_b_tree( b_tree_root *root ){
 			queue_push( &Q, name->right );
 		}
 		queue_pop( &Q, name );
-		printf("%d\n",name->key );
+		printf("%d\n",name.key );
 	}
 }
 
