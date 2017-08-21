@@ -157,7 +157,7 @@ b_tree_node search_b_tree( b_tree_root *root Type key )
 	while( S->logLength > 0 )
 	{	
 		StackPop( &s, name );
-		if( name->key == key )
+		if( name.key == key )
 		{
 			return name;
 		}
