@@ -12,6 +12,18 @@ START_TEST(test_new_b_tree_node)
 }
 END_TEST
 
+START_TEST(test_new_b_tree)
+{
+    b_tree_root *tree;
+
+    tree = new_b_tree( 5 );
+    ck_assert_int_eq(tree->root->key, 5);
+    ck_assert_int_eq(tree->logLength, 0);
+    ck_assert_int_eq(tree->allocLength, MAX_TREE_NODES);
+    destroy_b_tree( tree );
+}
+END_TEST
+
 Suite * magox_btree_suite(void)
 {
     Suite *s;
@@ -22,7 +34,8 @@ Suite * magox_btree_suite(void)
     /* Core test case */
     tc_core = tcase_create("Core");
 
-    tcase_add_test(tc_core, test_new_b_tree_node);
+    tcase_add_test( tc_core, test_new_b_tree_node );
+    tcase_add_test( tc_core, test_new_b_tree );
     suite_add_tcase(s, tc_core);
 
     return s;
