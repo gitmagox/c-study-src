@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include <check.h>
+#include "check.h"
 #include "../mgox_btree.h"
 
 START_TEST(test_new_b_tree_node)
