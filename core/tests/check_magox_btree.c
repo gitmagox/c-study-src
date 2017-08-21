@@ -19,8 +19,9 @@ START_TEST(test_new_b_tree)
     tree = new_b_tree( 5 );
     ck_assert_int_eq(tree->root->key, 5);
     ck_assert_int_eq(tree->logLength, 0);
-    ck_assert_int_eq(tree->allocLength, MAX_TREE_NODES);
-    destroy_b_tree( tree );
+    ck_assert_int_eq(tree->allocLength, 120 );
+    free( tree->root );
+    free( tree );
 }
 END_TEST
 
