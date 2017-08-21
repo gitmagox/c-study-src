@@ -5,6 +5,7 @@
 #include "mgox_stack.h"
 #include "mgox_queue.h"
 typedef struct b_tree_node b_tree_node;
+typedef struct b_tree_root b_tree_root;
 typedef int Type;
 #define MAX_TREE_NODES 120;
 
@@ -23,10 +24,10 @@ struct b_tree_root {
 
 
 //新建一个节点
-b_tree_node new_b_tree_node( Type key );
+b_tree_node* new_b_tree_node( Type key );
 
 //新建树,返回树的节点
-b_tree_root new_b_tree( Type key );
+b_tree_root* new_b_tree( Type key );
 
 //销毁一颗树
 void destroy_b_tree( b_tree_root *root );
@@ -35,7 +36,7 @@ void destroy_b_tree( b_tree_root *root );
 void add_b_tree_node( b_tree_root *root Type key );
 
 //查找一个节点
-b_tree_node search_b_tree( b_tree_root *root Type key );
+b_tree_node* search_b_tree( b_tree_root *root Type key );
 
 //册除一个节点
 void delete_b_tree_node( b_tree_root *root Type key );
@@ -50,7 +51,7 @@ void post_order_b_tree( b_tree_root *root );
 void level_order_b_tree( b_tree_root *root );
 
 //函数实现
-b_tree_node new_b_tree_node( Type key )
+b_tree_node* new_b_tree_node( Type key )
 {
 	b_tree_node *nd = ( b_tree_node* )malloc( sizeof(b_tree_node) );
 	assert( nd != NULL );
@@ -62,7 +63,7 @@ b_tree_node new_b_tree_node( Type key )
     return nd;
 }
 //新建树,返回树的节点
-b_tree_root new_b_tree( Type key )
+b_tree_root* new_b_tree( Type key )
 {
 	b_tree_root *root = ( b_tree_root* )malloc( sizeof(b_tree_root) );
 	assert( root != NULL );
@@ -148,7 +149,7 @@ void pre_order_b_tree( b_tree_root *root )
 	StackDipose( &S );			
 }
 //查找一个节点
-b_tree_node search_b_tree( b_tree_root *root Type key )
+b_tree_node* search_b_tree( b_tree_root *root Type key )
 {
 	stack S;
 	StackNew( &S, MAX_TREE_NODES, sizeof( b_tree_node ) );
@@ -261,7 +262,7 @@ void level_order_b_tree( b_tree_root *root ){
 	}
 }
 //找二叉树最小节点
-b_tree_node get_min_tree_node(b_tree_root *root)
+b_tree_node* get_min_tree_node(b_tree_root *root)
 {
 	b_tree_node *name;
 	name = root;
@@ -273,7 +274,7 @@ b_tree_node get_min_tree_node(b_tree_root *root)
 }
 
 //找二叉树最大节点
-b_tree_node get_max_tree_node(b_tree_root *root)
+b_tree_node* get_max_tree_node(b_tree_root *root)
 {
 	b_tree_node *name;
 	name = root;
@@ -285,7 +286,7 @@ b_tree_node get_max_tree_node(b_tree_root *root)
 }
 
 //册二叉树最大节点
-b_tree_node delete_max_tree_node(b_tree_root *root)
+b_tree_node* delete_max_tree_node(b_tree_root *root)
 {
 	b_tree_node *name;
 	name = root;
@@ -297,7 +298,7 @@ b_tree_node delete_max_tree_node(b_tree_root *root)
 	return name;
 }
 //册二叉树最小节点返回
-b_tree_node delete_min_tree_node(b_tree_root *root)
+b_tree_node* delete_min_tree_node(b_tree_root *root)
 {
 	b_tree_node *name;
 	name = root;
