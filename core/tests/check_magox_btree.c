@@ -24,6 +24,19 @@ START_TEST(test_new_b_tree)
     free( tree );
 }
 END_TEST
+//检测内存是否已经干净
+START_TEST(test_destroy_b_tree)
+{
+    b_tree_root *tree;
+    tree = new_b_tree( 5 );
+    b_tree_root *new = new_b_tree( 5 );
+    memset( tree,'\0',sizeof( b_tree_root ) );
+    destroy_b_tree( tree );
+    ck_assert_mem_eq( tree, new , sizeof( b_tree_root ));
+
+}
+
+END_TEST
 
 Suite * magox_btree_suite(void)
 {
