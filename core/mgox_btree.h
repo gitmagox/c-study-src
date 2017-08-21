@@ -13,7 +13,7 @@ struct b_tree_node {
 	b_tree_node *parent;
 	b_tree_node *left;
 	b_tree_node *right;
-	Type key
+	Type key;
 };
 
 struct b_tree_root {
@@ -33,13 +33,13 @@ b_tree_root* new_b_tree( Type key );
 void destroy_b_tree( b_tree_root *root );
 
 //添加一个节点
-void add_b_tree_node( b_tree_root *root Type key );
+void add_b_tree_node( b_tree_root *root, Type key );
 
 //查找一个节点
-b_tree_node* search_b_tree( b_tree_root *root Type key );
+b_tree_node* search_b_tree( b_tree_root *root, Type key );
 
 //册除一个节点
-void delete_b_tree_node( b_tree_root *root Type key );
+void delete_b_tree_node( b_tree_root *root, Type key );
 
 //前序遍历
 void pre_order_b_tree( b_tree_root *root );
@@ -59,7 +59,7 @@ b_tree_node* new_b_tree_node( Type key )
     {
         memset( nd, 0, sizeof( b_tree_node ) );
     }
-    nd.key = key;
+    nd->key = key;
     return nd;
 }
 //新建树,返回树的节点
@@ -75,7 +75,7 @@ b_tree_root* new_b_tree( Type key )
 	return root;
 }
 //添加一个节点,使用栈来处理
-void add_b_tree_node( b_tree_root *root Type key )
+void add_b_tree_node( b_tree_root *root, Type key )
 {
 	/* 新建一个栈来处理遍历过程 */
 	stack S;
@@ -85,14 +85,14 @@ void add_b_tree_node( b_tree_root *root Type key )
 	while( S->logLength > 0 )
 	{	
 		StackPop( &s, name );
-		if( name.key == key )
+		if( name->key == key )
 		{
-			name.key = key;
+			name->key = key;
 			root->logLength ++;
 			StackDipose( &S );
 			return 1;
 		}
-		else if( name.key < key )
+		else if( name->key < key )
 		{
 			if( name->left != NULL )
 			{
@@ -107,7 +107,7 @@ void add_b_tree_node( b_tree_root *root Type key )
 				return 1; 
 			}
 		}
-		else if( name.key > key )
+		else if( name->key > key )
 		{
 			if ( name->right != NULL )
 			{
@@ -136,7 +136,7 @@ void pre_order_b_tree( b_tree_root *root )
 	while( S->logLength > 0 )
 	{	
 		StackPop( &s, name );
-		printf("%d\n",name.key );
+		printf("%d\n",name->key );
 		if( name->left != NULL )
 		{
 			StackPush( &S, name->left );
@@ -149,7 +149,7 @@ void pre_order_b_tree( b_tree_root *root )
 	StackDipose( &S );			
 }
 //查找一个节点
-b_tree_node* search_b_tree( b_tree_root *root Type key )
+b_tree_node* search_b_tree( b_tree_root *root, Type key )
 {
 	stack S;
 	StackNew( &S, MAX_TREE_NODES, sizeof( b_tree_node ) );
@@ -158,7 +158,7 @@ b_tree_node* search_b_tree( b_tree_root *root Type key )
 	while( S->logLength > 0 )
 	{	
 		StackPop( &s, name );
-		if( name.key == key )
+		if( name->key == key )
 		{
 			return name;
 		}
@@ -188,7 +188,7 @@ void in_order_b_tree( b_tree_root *root )
 			StackPush( &S, name->left );
 		}	
 		StackPop( &s, name );
-		printf("%d\n",name.key );
+		printf("%d\n",name->key );
 		if ( name->right != NULL )
 		{
 			StackPush( &S, name->right );
@@ -214,7 +214,7 @@ void post_order_b_tree( b_tree_root *root )
 			StackPush( &S, name->right );
 		}
 		StackPop( &s, name );
-		printf("%d\n",name.key );
+		printf("%d\n",name->key );
 	}
 	StackDipose( &S );
 }
@@ -258,7 +258,7 @@ void level_order_b_tree( b_tree_root *root ){
 			queue_push( &Q, name->right );
 		}
 		queue_pop( &Q, name );
-		printf("%d\n",name.key );
+		printf("%d\n",name->key );
 	}
 }
 //找二叉树最小节点
@@ -310,7 +310,7 @@ b_tree_node* delete_min_tree_node(b_tree_root *root)
 	return name;
 }
 //册二叉树的节点
-void delete_b_tree_node( b_tree_root *root Type key )
+void delete_b_tree_node( b_tree_root *root, Type key )
 {
 	b_tree_node *node = search_b_tree( root, key );
 

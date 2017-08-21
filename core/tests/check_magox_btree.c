@@ -7,7 +7,7 @@ START_TEST(test_new_b_tree_node)
     b_tree_node *node;
 
     node = new_b_tree_node( 5 );
-    ck_assert_int_eq(node.key, 5);
+    ck_assert_int_eq(node->key, 5);
     free( node );
 }
 END_TEST
