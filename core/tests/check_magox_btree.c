@@ -65,6 +65,24 @@ START_TEST(test_search_b_tree)
 }
 END_TEST
 
+START_TEST(test_delete_b_tree_node)
+{
+
+    b_tree_root *tree;
+    tree = new_b_tree( 5 );
+    add_b_tree_node( tree, 6);
+    add_b_tree_node( tree, 4);
+    delete_b_tree_node( tree, 4 );
+    ck_assert_int_eq(tree->root->key, 5);
+    ck_assert_int_eq(tree->root->right->key,6)
+    delete_b_tree_node( tree, 6 );
+    ck_assert_int_eq(tree->root->key, 5);
+    delete_b_tree_node( tree, 5);
+    destroy_b_tree( tree );
+
+}
+END_TEST
+
 Suite * magox_btree_suite(void)
 {
     Suite *s;
@@ -80,6 +98,7 @@ Suite * magox_btree_suite(void)
     tcase_add_test( tc_core, test_add_b_tree_node );
     tcase_add_test( tc_core, test_destroy_b_tree );
     tcase_add_test( tc_core, test_search_b_tree );
+    tcase_add_test( tc_core, test_delete_b_tree_node );
     suite_add_tcase(s, tc_core);
 
     return s;
