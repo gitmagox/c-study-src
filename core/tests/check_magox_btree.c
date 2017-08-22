@@ -51,6 +51,20 @@ START_TEST(test_add_b_tree_node)
 }
 END_TEST
 
+START_TEST(search_b_tree)
+{
+
+    b_tree_root *tree;
+    tree = new_b_tree( 5 );
+    add_b_tree_node( tree, 6);
+    add_b_tree_node( tree, 4);
+    b_tree_node *search = search_b_tree( tree , 4 )
+    ck_assert_int_eq( search->key, 4 );
+    destroy_b_tree( tree );
+
+}
+END_TEST
+
 Suite * magox_btree_suite(void)
 {
     Suite *s;
