@@ -51,7 +51,7 @@ START_TEST(test_add_b_tree_node)
 }
 END_TEST
 
-START_TEST(search_b_tree)
+START_TEST(test_search_b_tree)
 {
 
     b_tree_root *tree;
@@ -78,6 +78,8 @@ Suite * magox_btree_suite(void)
     tcase_add_test( tc_core, test_new_b_tree_node );
     tcase_add_test( tc_core, test_new_b_tree );
     tcase_add_test( tc_core, test_add_b_tree_node );
+    tcase_add_test( tc_core, test_destroy_b_tree );
+    tcase_add_test( tc_core, test_search_b_tree );
     suite_add_tcase(s, tc_core);
 
     return s;
