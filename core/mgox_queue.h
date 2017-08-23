@@ -28,6 +28,8 @@ void queue_push( queue *Q, void *node);
 void queue_pop( queue *Q, void *node);
 /* destory queue */
 void queue_dispose( queue *Q );
+/* count */
+int queue_count( queue *Q );
 
 
 //私有函数
@@ -96,6 +98,11 @@ void queue_dispose( queue *Q )
 	{
 		free( Q->elems+i );
 	}
+}
+//求当前元素数量
+int queue_count( queue *Q )
+{
+    return Q->logLength;
 }
 
 #endif
