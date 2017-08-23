@@ -60,6 +60,9 @@ b_tree_node* new_b_tree_node( Type key )
 		memset( nd, 0, sizeof( b_tree_node ) );
 	}
 	nd->key = key;
+	nd->parent = NULL;
+    nd->left = NULL;
+    nd->right = NULL;
 	return nd;
 }
 //新建树,返回树的节点
@@ -243,21 +246,21 @@ void destroy_b_tree( b_tree_root *root )
 }
 //层序遍历---广度优先
 void level_order_b_tree( b_tree_root *root ){
-	queue *Q;
-	new_queue( Q, MAX_TREE_NODES, sizeof( b_tree_node ) );
-	queue_push( Q, root->root );
+	queue Q;
+	new_queue( &Q, MAX_TREE_NODES, sizeof( b_tree_node* ) );
+	queue_push( &Q, &(root->root) );
 	b_tree_node *name;
-	while( Q->logLength >0 )
+	while( queue_count( &Q ) >0 )
 	{
 		if( name->left != NULL )
 		{
-			queue_push( Q, name->left );
+			queue_push( &Q, &(name->left) );
 		}	
 		if ( name->right != NULL )
 		{
-			queue_push( Q, name->right );
+			queue_push( &Q, &(name->right) );
 		}
-		queue_pop( Q, name );
+		queue_pop( &Q, &name );
 		printf("%d\n",name->key );
 	}
 }
