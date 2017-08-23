@@ -15,14 +15,14 @@ void StackNew( stack *s, int allocLength , int elemSize )
 {
 	assert( elemSize > 0 );
 	assert( allocLength > 0  );
-	if ( allocLength <= 0 )	
+	if ( allocLength <= 0 )
 	{
-		allocLength = 4;		
+		allocLength = 4;
 	}
 	s->elemSize = elemSize;
 	s->logLength = 0;
 	s->allocLength = allocLength;
-	s->elems = malloc( allocLength*elemSize );
+	s->elems = (char *)malloc( allocLength*elemSize );
 	memset( s->elems, 0, allocLength*elemSize);
 	assert( s->elems != NULL );
 }
@@ -56,5 +56,10 @@ void StackPop( stack *s, void *elemAddr )
 	void *source = (char *)s->elems + ( s->logLength-1 )*s->elemSize;
 	memcpy( elemAddr, source, s->elemSize );
 	s->logLength--;
+}
+
+int StackCount( stack *s )
+{
+    return s->logLength;
 }
 

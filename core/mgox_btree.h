@@ -71,174 +71,174 @@ b_tree_root* new_b_tree( Type key )
 	assert( node != NULL );
 	root->root = node;
 	root->allocLength = MAX_TREE_NODES;
-	root->logLength = 0;
+	root->logLength = 1;
 	return root;
 }
 //添加一个节点,使用栈来处理
 void add_b_tree_node( b_tree_root *root, Type key )
 {
 	/* 新建一个栈来处理遍历过程 */
-	stack *S;
-	StackNew( S, MAX_TREE_NODES, sizeof( b_tree_node ) );
-	StackPush( S, root->root );
-	b_tree_node * name;
-	while( S->logLength > 0 )
-	{	
-		StackPop( S, name );
+	stack S;
+	b_tree_node *name;
+	StackNew( &S, 4, sizeof( b_tree_node* ) );
+	StackPush( &S, &(root->root) );
+	while( StackCount(&S) > 0 )
+	{
+		StackPop( &S, &name );
 		if( name->key == key )
 		{
 			name->key = key;
 			root->logLength ++;
-			StackDipose( S );
+			StackDipose( &S );
 			return 1;
-		}
-		else if( name->key < key )
-		{
-			if( name->left != NULL )
-			{
-				StackPush( S, name->left );
-			}
-			else
-			{
-				b_tree_node *node = new_b_tree_node( key );
-				name->left = node;
-				root->logLength ++;
-				StackDipose( S );
-				return 1; 
-			}
 		}
 		else if( name->key > key )
 		{
-			if ( name->right != NULL )
+			if( name->left != NULL )
 			{
-				StackPush( S, name->right );
+				StackPush( &S, &(name->left) );
 			}
 			else
 			{
 				b_tree_node *node = new_b_tree_node( key );
-				name->right = node;
+				node->parent = name;
+				name->left = node;
 				root->logLength ++;
-				StackDipose( S );
+				StackDipose( &S );
 				return 1;
 			}
 		}
-				
+		else if( name->key < key )
+		{
+			if ( name->right != NULL )
+			{
+				StackPush( &S, &(name->right) );
+			}
+			else
+			{
+				b_tree_node *node = new_b_tree_node( key );
+				node->parent = name;
+				name->right = node;
+				root->logLength ++;
+				StackDipose( &S );
+				return 1;
+			}
+		}
 	}
-
 }
 //前序遍历
 void pre_order_b_tree( b_tree_root *root )
 {
-	stack *S;
-	StackNew( S, MAX_TREE_NODES, sizeof( b_tree_node ) );
-	StackPush( S, root->root );
+	stack S;
+	StackNew( &S, MAX_TREE_NODES, sizeof( b_tree_node* ) );
+	StackPush( &S, &(root->root) );
 	b_tree_node * name;
-	while( S->logLength > 0 )
+	while( StackCount(&S) > 0 )
 	{	
-		StackPop( S, name );
+		StackPop( &S, &name );
 		printf("%d\n",name->key );
 		if( name->left != NULL )
 		{
-			StackPush( S, name->left );
+			StackPush( &S, &(name->left) );
 		}	
 		if ( name->right != NULL )
 		{
-			StackPush( S, name->right );
+			StackPush( &S, &(name->right) );
 		}
 	}
-	StackDipose( S );			
+	StackDipose( &S );
 }
 //查找一个节点
 b_tree_node* search_b_tree( b_tree_root *root, Type key )
 {
-	stack *S;
-	StackNew( S, MAX_TREE_NODES, sizeof( b_tree_node ) );
-	StackPush( S, root->root );
+	stack S;
+	StackNew( &S, MAX_TREE_NODES, sizeof( b_tree_node* ) );
+	StackPush( &S, &(root->root) );
 	b_tree_node * name;
-	while( S->logLength > 0 )
+	while( StackCount(&S) > 0 )
 	{	
-		StackPop( S, name );
+		StackPop( &S, &name );
 		if( name->key == key )
 		{
 			return name;
 		}
 		if( name->left != NULL )
 		{
-			StackPush( S, name->left );
+			StackPush( &S, &(name->left) );
 		}	
 		if ( name->right != NULL )
 		{
-			StackPush( S, name->right );
+			StackPush( &S, &(name->right) );
 		}
 	}
-	StackDipose( S );
+	StackDipose( &S );
 	return 0;	
 }
 //中序遍历
 void in_order_b_tree( b_tree_root *root )
 {
-	stack *S;
-	StackNew( S, MAX_TREE_NODES, sizeof( b_tree_node ) );
-	StackPush( S, root->root );
+	stack S;
+	StackNew( &S, MAX_TREE_NODES, sizeof( b_tree_node* ) );
+	StackPush( &S, &(root->root) );
 	b_tree_node * name;
-	while( S->logLength > 0 )
+	while( StackCount(&S) > 0 )
 	{	
 		if( name->left != NULL )
 		{
-			StackPush( S, name->left );
+			StackPush( &S, &(name->left) );
 		}	
-		StackPop( S, name );
+		StackPop( &S, &name );
 		printf("%d\n",name->key );
 		if ( name->right != NULL )
 		{
-			StackPush( S, name->right );
+			StackPush( &S, &(name->right) );
 		}
 	}
-	StackDipose( S );
+	StackDipose( &S );
 }
 //后序遍历
 void post_order_b_tree( b_tree_root *root )
 {
-	stack *S;
-	StackNew( S, MAX_TREE_NODES, sizeof( b_tree_node ) );
-	StackPush( S, root->root );
+	stack S;
+	StackNew( &S, MAX_TREE_NODES, sizeof( b_tree_node* ) );
+	StackPush( &S, &(root->root) );
 	b_tree_node * name;
-	while( S->logLength > 0 )
+	while( StackCount(&S) > 0 )
 	{	
 		if( name->left != NULL )
 		{
-			StackPush( S, name->left );
+			StackPush( &S, &(name->left) );
 		}	
 		if ( name->right != NULL )
 		{
-			StackPush( S, name->right );
+			StackPush( &S, &(name->right) );
 		}
-		StackPop( S, name );
+		StackPop( &S, &name );
 		printf("%d\n",name->key );
 	}
-	StackDipose( S );
+	StackDipose( &S );
 }
 //销毁一颗树
 void destroy_b_tree( b_tree_root *root )
 {
-	stack *S;
-	StackNew( S, MAX_TREE_NODES, sizeof( b_tree_node ) );
-	StackPush( S, root->root );
+	stack S;
+	StackNew( &S, MAX_TREE_NODES, sizeof( b_tree_node* ) );
+	StackPush( &S, &(root->root) );
 	b_tree_node * name;
-	while( S->logLength > 0 )
+	while( StackCount(&S) > 0 )
 	{	
 		if( name->left != NULL )
 		{
-			StackPush( S, name->left );
+			StackPush( &S, &(name->left) );
 		}	
 		if ( name->right != NULL )
 		{
-			StackPush( S, name->right );
+			StackPush( &S, &(name->right) );
 		}
-		StackPop( S, name );
+		StackPop( &S, &name );
 		free( name );
 	}
-	StackDipose( S );
+	StackDipose( &S );
 	free( root );
 }
 //层序遍历---广度优先

@@ -18,6 +18,7 @@ void StackNew( stack *s, int allocLength , int elemSize  );
 void StackDipose( stack *s );
 void StackPush( stack *s, void *elemAddr );
 void StackPop( stack *s ,void *elemAddr );
+int StackCount( stack *s );
 
 //私有函数
 static void StackGrow( stack *s)
@@ -71,5 +72,10 @@ void StackPop( stack *s, void *elemAddr )
 	void *source = (char *)s->elems + ( s->logLength-1 )*s->elemSize;
 	memcpy( elemAddr, source, s->elemSize );
 	s->logLength--;
+}
+//求当前元素
+int StackCount( stack *s )
+{
+    return s->logLength;
 }
 #endif

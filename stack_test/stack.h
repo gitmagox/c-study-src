@@ -1,8 +1,8 @@
 #ifndef _MAGOX_STACK
-#define _MAGOX_STACK 
+#define _MAGOX_STACK
 typedef struct 
 {
-	void * elems;    //当前栈的指针
+	void* elems;    //当前栈的指针
 	int elemSize;    //元素的长度
 	int logLength;   //记录的个数
 	int allocLength; //允许的长度
@@ -12,5 +12,6 @@ void StackNew( stack *s, int allocLength , int elemSize  );
 void StackDipose( stack *s );
 void StackPush( stack *s, void *elemAddr );
 void StackPop( stack *s ,void *elemAddr );
+int StackCount( stack *s );
 
 #endif
