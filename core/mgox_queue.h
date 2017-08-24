@@ -1,4 +1,10 @@
-/*队列*/
+/*
+ *-----------------------------
+ *    Queue <队列>
+ *    Author: Magox
+ *    Update time : 2017-8-24
+ *----------------------------
+ */
 #ifndef MAGOX_QUEUE_A
 #define MAGOX_QUEUE_A
 #include <stdio.h>

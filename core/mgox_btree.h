@@ -1,4 +1,10 @@
-/* 二叉树 */
+/*
+ *-----------------------------
+ *    btree <二叉树>
+ *    Author: Magox
+ *    Update time : 2017-8-24
+ *----------------------------
+ */
 #ifndef MAGOX_BTREE_A
 #define MAGOX_BTREE_A
 #include <assert.h>

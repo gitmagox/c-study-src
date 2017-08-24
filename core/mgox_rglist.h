@@ -1,4 +1,10 @@
-/*双向环形链表*/
+/*
+ *-----------------------------
+ *    Rglist <双向环形链表>
+ *    Author: Magox
+ *    Update time : 2017-8-24
+ *----------------------------
+ */
 #ifndef MAGOX_RGLIST_A
 #define MAGOX_RGLIST_A
 

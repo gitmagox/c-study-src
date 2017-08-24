@@ -1,5 +1,9 @@
 /*
- *  栈结构	
+ *-----------------------------
+ *    Stack <栈>
+ *    Author: Magox
+ *    Update time : 2017-8-24
+ *----------------------------
  */
 #ifndef MAGOX_STACK_A
 #define MAGOX_STACK_A
@@ -9,10 +13,10 @@
 #include <string.h>
 typedef struct 
 {
-	void * elems;    //当前栈的指针
-	int elemSize;    //元素的长度
-	int logLength;   //记录的个数
-	int allocLength; //允许的长度
+	void * elems;
+	int elemSize;
+	int logLength;
+	int allocLength;
 }stack;
 void StackNew( stack *s, int allocLength , int elemSize  );
 void StackDipose( stack *s );
@@ -51,7 +55,6 @@ void StackDipose( stack *s )
 		free( s->elems+i );
 	}
 }
-
 //push elements
 void StackPush( stack *s, void *elemAddr )
 {
@@ -63,9 +66,7 @@ void StackPush( stack *s, void *elemAddr )
 	memcpy( target, elemAddr, s->elemSize );
 	s->logLength ++;
 }
-
 //pop element
-//*elemAddr:弹出一元素。
 void StackPop( stack *s, void *elemAddr )
 {	
 	assert( s->logLength  > 0 );

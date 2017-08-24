@@ -1,3 +1,11 @@
+/*
+ *-----------------------------
+ *    btree c-check unit test
+ *    Author: Magox
+ *    Update time : 2017-8-24
+ *----------------------------
+ */
+
 #include <stdlib.h>
 #include "check.h"
 #include "../mgox_btree.h"
@@ -156,7 +164,7 @@ Suite * magox_btree_suite(void)
     tcase_add_test( tc_core, test_delete_b_tree_node );
     tcase_add_test( tc_core, test_pre_order_b_tree );
     tcase_add_test( tc_core, test_in_order_b_tree );
-    tcase_add_test( tc_core, test_order_order_b_tree );
+    tcase_add_test( tc_core, test_post_order_b_tree );
     tcase_add_test( tc_core, test_level_order_b_tree );
     suite_add_tcase(s, tc_core);
 
