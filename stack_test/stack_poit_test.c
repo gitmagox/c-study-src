@@ -101,18 +101,70 @@ void add_b_tree_node( b_tree_root *root, Type key )
 				return 1;
 			}
 		}
-
 	}
+}
 
+//后序遍历
+void post_order_b_tree( b_tree_root *root )
+{
+	stack S;
+	StackNew( &S, MAX_TREE_NODES, sizeof( b_tree_node* ) );
+	StackPush( &S, &(root->root) );
+	b_tree_node * name;
+	b_tree_node * namel;
+	name = root->root;
+	while( StackCount(&S) > 0 )
+	{
+		if( name->left != NULL )
+		{
+			StackPush( &S, &(name->left) );
+		}
+        StackPop( &S, &namel );
+        printf("%d\n",namel->key );
+		if ( name->right != NULL )
+		{
+			StackPush( &S, &(name->right) );
+		}
+        name = namel;
+	}
+	StackDipose( &S );
+}
+
+//销毁一颗树
+void destroy_b_tree( b_tree_root *root )
+{
+	stack S;
+	StackNew( &S, MAX_TREE_NODES, sizeof( b_tree_node* ) );
+	StackPush( &S, &(root->root) );
+	b_tree_node * name;
+	name = root->root;
+	while( StackCount(&S) > 0 )
+	{
+	    if( name->left != NULL )
+        {
+            StackPush( &S, &(name->left) );
+        }
+        if( name->right != NULL )
+        {
+            StackPush( &S, &(name->right) );
+        }
+        StackPop( &S, &name );
+        printf("%d\n",name->key);
+        free( name );
+	}
+	StackDipose( &S );
+	free( root );
 }
 
 int main( int argc, char* argv[] )
 {
     b_tree_root *root;
     root = new_b_tree( 5 );
-    printf("%d\n",root->root->key);
-    add_b_tree_node( root, 6 );
+    //printf("%d\n",root->root->key);
+    add_b_tree_node( root, 8 );
     add_b_tree_node( root, 7 );
     add_b_tree_node( root, 4 );
+    post_order_b_tree( root );
+    destroy_b_tree( root );
 	return 0;
 }

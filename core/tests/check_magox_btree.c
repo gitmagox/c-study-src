@@ -15,7 +15,6 @@ END_TEST
 START_TEST(test_new_b_tree)
 {
     b_tree_root *tree;
-
     tree = new_b_tree( 5 );
     ck_assert_int_eq(tree->root->key, 5);
     ck_assert_int_eq(tree->logLength, 1);
@@ -45,7 +44,7 @@ START_TEST(test_add_b_tree_node)
     ck_assert_int_eq(tree->root->right->key, 6);
     add_b_tree_node( tree, 4);
     ck_assert_int_eq(tree->root->left->key, 4);
-    destroy_b_tree( tree );
+    //destroy_b_tree( tree );
 }
 END_TEST
 
@@ -57,7 +56,7 @@ START_TEST(test_search_b_tree)
     add_b_tree_node( tree, 4);
     b_tree_node *search = search_b_tree( tree , 4 );
     ck_assert_int_eq( search->key, 4 );
-    destroy_b_tree( tree );
+    //destroy_b_tree( tree );
 }
 END_TEST
 
@@ -73,7 +72,7 @@ START_TEST(test_delete_b_tree_node)
     delete_b_tree_node( tree, 6 );
     ck_assert_int_eq(tree->root->key, 5);
     delete_b_tree_node( tree, 5);
-    destroy_b_tree( tree );
+   // destroy_b_tree( tree );
 
 }
 END_TEST

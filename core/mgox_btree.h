@@ -136,6 +136,7 @@ void pre_order_b_tree( b_tree_root *root )
 	StackNew( &S, MAX_TREE_NODES, sizeof( b_tree_node* ) );
 	StackPush( &S, &(root->root) );
 	b_tree_node * name;
+	name = root->root;
 	while( StackCount(&S) > 0 )
 	{	
 		StackPop( &S, &name );
@@ -158,6 +159,7 @@ b_tree_node* search_b_tree( b_tree_root *root, Type key )
 	StackNew( &S, MAX_TREE_NODES, sizeof( b_tree_node* ) );
 	StackPush( &S, &(root->root) );
 	b_tree_node * name;
+	name = root->root;
 	while( StackCount(&S) > 0 )
 	{	
 		StackPop( &S, &name );
@@ -184,6 +186,7 @@ void in_order_b_tree( b_tree_root *root )
 	StackNew( &S, MAX_TREE_NODES, sizeof( b_tree_node* ) );
 	StackPush( &S, &(root->root) );
 	b_tree_node * name;
+	name = root->root;
 	while( StackCount(&S) > 0 )
 	{	
 		if( name->left != NULL )
@@ -206,6 +209,7 @@ void post_order_b_tree( b_tree_root *root )
 	StackNew( &S, MAX_TREE_NODES, sizeof( b_tree_node* ) );
 	StackPush( &S, &(root->root) );
 	b_tree_node * name;
+	name = root->root;
 	while( StackCount(&S) > 0 )
 	{	
 		if( name->left != NULL )
@@ -229,16 +233,16 @@ void destroy_b_tree( b_tree_root *root )
 	StackPush( &S, &(root->root) );
 	b_tree_node * name;
 	while( StackCount(&S) > 0 )
-	{	
+	{
+	    StackPop( &S, &name );
 		if( name->left != NULL )
 		{
 			StackPush( &S, &(name->left) );
-		}	
-		if ( name->right != NULL )
+		}
+		if( name->right != NULL )
 		{
 			StackPush( &S, &(name->right) );
 		}
-		StackPop( &S, &name );
 		free( name );
 	}
 	StackDipose( &S );
@@ -250,6 +254,7 @@ void level_order_b_tree( b_tree_root *root ){
 	new_queue( &Q, MAX_TREE_NODES, sizeof( b_tree_node* ) );
 	queue_push( &Q, &(root->root) );
 	b_tree_node *name;
+	name = root->root;
 	while( queue_count( &Q ) >0 )
 	{
 		if( name->left != NULL )
@@ -381,6 +386,5 @@ void delete_b_tree_node( b_tree_root *root, Type key )
 		}
 	}
 }
-
 
 #endif
