@@ -44,7 +44,7 @@ START_TEST(test_add_b_tree_node)
     ck_assert_int_eq(tree->root->right->key, 6);
     add_b_tree_node( tree, 4);
     ck_assert_int_eq(tree->root->left->key, 4);
-    //destroy_b_tree( tree );
+    destroy_b_tree( tree );
 }
 END_TEST
 

@@ -135,12 +135,12 @@ void pre_order_b_tree( b_tree_root *root )
 	stack S;
 	StackNew( &S, MAX_TREE_NODES, sizeof( b_tree_node* ) );
 	StackPush( &S, &(root->root) );
-	b_tree_node * name;
+	b_tree_node * name,now;
 	name = root->root;
 	while( StackCount(&S) > 0 )
 	{	
-		StackPop( &S, &name );
-		printf("%d\n",name->key );
+		StackPop( &S, &now );
+		printf("%d\n",now->key );
 		if( name->left != NULL )
 		{
 			StackPush( &S, &(name->left) );
@@ -149,6 +149,7 @@ void pre_order_b_tree( b_tree_root *root )
 		{
 			StackPush( &S, &(name->right) );
 		}
+		name = now;
 	}
 	StackDipose( &S );
 }
@@ -185,7 +186,7 @@ void in_order_b_tree( b_tree_root *root )
 	stack S;
 	StackNew( &S, MAX_TREE_NODES, sizeof( b_tree_node* ) );
 	StackPush( &S, &(root->root) );
-	b_tree_node * name;
+	b_tree_node * name,now;
 	name = root->root;
 	while( StackCount(&S) > 0 )
 	{	
@@ -193,12 +194,13 @@ void in_order_b_tree( b_tree_root *root )
 		{
 			StackPush( &S, &(name->left) );
 		}	
-		StackPop( &S, &name );
-		printf("%d\n",name->key );
+		StackPop( &S, &now );
+		printf("%d\n",now->key );
 		if ( name->right != NULL )
 		{
 			StackPush( &S, &(name->right) );
 		}
+		name = now;
 	}
 	StackDipose( &S );
 }
@@ -208,7 +210,7 @@ void post_order_b_tree( b_tree_root *root )
 	stack S;
 	StackNew( &S, MAX_TREE_NODES, sizeof( b_tree_node* ) );
 	StackPush( &S, &(root->root) );
-	b_tree_node * name;
+	b_tree_node * name,now;
 	name = root->root;
 	while( StackCount(&S) > 0 )
 	{	
@@ -220,8 +222,9 @@ void post_order_b_tree( b_tree_root *root )
 		{
 			StackPush( &S, &(name->right) );
 		}
-		StackPop( &S, &name );
-		printf("%d\n",name->key );
+		StackPop( &S, &now );
+		printf("%d\n",now->key );
+		name = now;
 	}
 	StackDipose( &S );
 }
@@ -230,11 +233,11 @@ void destroy_b_tree( b_tree_root *root )
 {
 	stack S;
 	StackNew( &S, MAX_TREE_NODES, sizeof( b_tree_node* ) );
-	StackPush( &S, &(root->root) );
 	b_tree_node * name;
+	name = root->root;
+	StackPush( &S, &name );
 	while( StackCount(&S) > 0 )
 	{
-	    StackPop( &S, &name );
 		if( name->left != NULL )
 		{
 			StackPush( &S, &(name->left) );
@@ -243,6 +246,7 @@ void destroy_b_tree( b_tree_root *root )
 		{
 			StackPush( &S, &(name->right) );
 		}
+		StackPop( &S, &name );
 		free( name );
 	}
 	StackDipose( &S );
