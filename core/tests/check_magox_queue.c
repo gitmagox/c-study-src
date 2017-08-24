@@ -10,17 +10,18 @@
 #include "check.h"
 #include "../mgox_queue.h"
 
+typedef int Type;
 //test new queue
 START_TEST(test_new_queue)
 {
     queue Q;
-    tree = new_queue( &Q, 4, sizeof( Type ) );
+    new_queue( &Q, 4, sizeof( Type ) );
 }
 END_TEST
 //test queue_push_pop
 START_TEST(test_queue_push_pop)
 {
-    char elems[5] = {"a","b","c","d","e"};
+    char elems[5] = {'b','a','e','g','o'};
     queue q;
     new_queue( &q, 5, sizeof(char));
     int i;
@@ -29,21 +30,18 @@ START_TEST(test_queue_push_pop)
     	queue_push( &q, (elems+i) );
     }
     char name;
-
     for ( i=0; i<5; i++ )
     {
     	queue_pop( &q, &name );
-    	ck_assert_char_eq( name, *elems[i])
+    	ck_assert_str_eq( name, *(elems+i));
     }
-    return 0;
 }
 END_TEST
 
-END_TEST
 //test queue_dispose
 START_TEST(test_queue_dispose)
 {
-    char elems[5] = {"a","b","c","d","e"};
+    char elems[5] = {'b','a','e','g','o'};
     queue q;
     new_queue( &q, 5, sizeof(char));
     int i;
@@ -58,7 +56,7 @@ END_TEST
 //test queue_count
 START_TEST(test_queue_count)
 {
-    char elems[5] = {"a","b","c","d","e"};
+    char elems[5] = {'b','a','e','g','o'};
     queue q;
     new_queue( &q, 5, sizeof(char));
     int i;
@@ -71,8 +69,8 @@ START_TEST(test_queue_count)
     for ( i=0; i<5; i++ )
     {
         queue_pop( &q, &name );
-        ck_assert_int_eq( queue_count( &q ), (5-i+1) );
-        ck_assert_char_eq( name, *elems[i])
+        ck_assert_int_eq( queue_count( &q ), (5-i-1) );
+        ck_assert_str_eq( name, *(elems+5-i-1));
     }
 }
 END_TEST
