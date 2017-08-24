@@ -9,17 +9,16 @@
 #include <stdlib.h>
 #include "check.h"
 #include "../mgox_btree.h"
-
+//test new node
 START_TEST(test_new_b_tree_node)
 {
     b_tree_node *node;
-
     node = new_b_tree_node( 5 );
     ck_assert_int_eq(node->key, 5);
     free( node );
 }
 END_TEST
-
+//test new tree
 START_TEST(test_new_b_tree)
 {
     b_tree_root *tree;
@@ -31,7 +30,7 @@ START_TEST(test_new_b_tree)
     free( tree );
 }
 END_TEST
-//检测内存是否已经干净
+//test destroy
 START_TEST(test_destroy_b_tree)
 {
     b_tree_root *tree;
@@ -39,10 +38,9 @@ START_TEST(test_destroy_b_tree)
     tree = new_b_tree( 5 );
     ck_assert_int_eq(tree->root->key, 5);
     destroy_b_tree( tree );
-    //ck_assert_mem_eq( tree, new , sizeof( b_tree_root ));
 }
 END_TEST
-
+//test add node
 START_TEST(test_add_b_tree_node)
 {
     b_tree_root *tree;
@@ -59,7 +57,7 @@ START_TEST(test_add_b_tree_node)
     destroy_b_tree( tree );
 }
 END_TEST
-
+//test search
 START_TEST(test_search_b_tree)
 {
     b_tree_root *tree;
@@ -71,7 +69,7 @@ START_TEST(test_search_b_tree)
     destroy_b_tree( tree );
 }
 END_TEST
-
+//test delete node
 START_TEST(test_delete_b_tree_node)
 {
     b_tree_root *tree;
@@ -88,7 +86,7 @@ START_TEST(test_delete_b_tree_node)
 
 }
 END_TEST
-
+//test pre order
 START_TEST(test_pre_order_b_tree)
 {
     b_tree_root *tree;
@@ -130,7 +128,6 @@ START_TEST(test_post_order_b_tree)
     destroy_b_tree( tree );
 }
 END_TEST
-
 //level
 START_TEST(test_level_order_b_tree)
 {
@@ -150,11 +147,8 @@ Suite * magox_btree_suite(void)
 {
     Suite *s;
     TCase *tc_core;
-
     s = suite_create("magox_btree");
-
     tc_core = tcase_create("Core");
-
     //unit test
     tcase_add_test( tc_core, test_new_b_tree_node );
     tcase_add_test( tc_core, test_new_b_tree );
@@ -176,10 +170,8 @@ int main(void)
 	int number_failed;
     Suite *s;
     SRunner *sr;
-
     s = magox_btree_suite();
     sr = srunner_create(s);
-
     srunner_run_all(sr, CK_NORMAL);
     number_failed = srunner_ntests_failed(sr);
     srunner_free(sr);
