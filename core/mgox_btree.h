@@ -135,7 +135,7 @@ void add_b_tree_node( b_tree_root *root, Type key )
 		}
 	}
 }
-//前序遍历
+//前序遍历方法一
 void pre_order_b_tree( b_tree_root *root )
 {
 	stack S;
@@ -147,17 +147,49 @@ void pre_order_b_tree( b_tree_root *root )
 		while( name != NULL )
 		{
 		    printf("%d\n",name->key );
-			StackPush( &S, &(name->left) );
+		    StackPush( &S, &(name) );
 			name = name->left;
+			if( name != NULL )
+			{
+			    StackPush( &S, &(name) );
+			}
+
 		}	
 		if ( StackCount(&S) > 0 )
 		{
 		    StackPop( &S, &name );
-		    if( name->right != NULL )
-		    {
-		        name = name->right;
-		    }
+		    name = name->right;
 		}
+	}
+	StackDipose( &S );
+}
+//前序遍历方法二
+void pre_order_b_tree_a( b_tree_root *root )
+{
+	stack S;
+	StackNew( &S, MAX_TREE_NODES, sizeof( b_tree_node* ) );
+	b_tree_node * name;
+	name = root->root;
+	while( name != NULL )
+	{
+	    printf("%d\n",name->key );
+        StackPush( &S, &(name) );
+        name = name->left;
+	}
+	while( StackCount(&S) > 0 )
+	{
+	    StackPop( &S, &name );
+	    if( name->right != NULL )
+	    {
+	        StackPush( &S, &(name->right) );
+	        name = name->right;
+	        while( name != NULL )
+            {
+                printf("%d\n",name->key );
+                name  = name->left;
+                StackPush( &S, &(name) );
+            }
+	    }
 	}
 	StackDipose( &S );
 }
