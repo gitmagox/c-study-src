@@ -134,22 +134,24 @@ void pre_order_b_tree( b_tree_root *root )
 {
 	stack S;
 	StackNew( &S, MAX_TREE_NODES, sizeof( b_tree_node* ) );
-	StackPush( &S, &(root->root) );
-	b_tree_node * name,now;
+	b_tree_node * name;
 	name = root->root;
-	while( StackCount(&S) > 0 )
-	{	
-		StackPop( &S, &now );
-		printf("%d\n",now->key );
-		if( name->left != NULL )
+	while( StackCount(&S) > 0 || name != NULL )
+	{
+		while( name != NULL )
 		{
+		    printf("%d\n",name->key );
 			StackPush( &S, &(name->left) );
+			name = name->left;
 		}	
-		if ( name->right != NULL )
+		if ( StackCount(&S) > 0 )
 		{
-			StackPush( &S, &(name->right) );
+		    StackPop( &S, &name );
+		    if( name->right != NULL )
+		    {
+		        name = name->right;
+		    }
 		}
-		name = now;
 	}
 	StackDipose( &S );
 }
@@ -186,7 +188,8 @@ void in_order_b_tree( b_tree_root *root )
 	stack S;
 	StackNew( &S, MAX_TREE_NODES, sizeof( b_tree_node* ) );
 	StackPush( &S, &(root->root) );
-	b_tree_node * name,now;
+	b_tree_node * name;
+	b_tree_node * now;
 	name = root->root;
 	while( StackCount(&S) > 0 )
 	{	
@@ -210,7 +213,8 @@ void post_order_b_tree( b_tree_root *root )
 	stack S;
 	StackNew( &S, MAX_TREE_NODES, sizeof( b_tree_node* ) );
 	StackPush( &S, &(root->root) );
-	b_tree_node * name,now;
+	b_tree_node * name;
+	b_tree_node * now;
 	name = root->root;
 	while( StackCount(&S) > 0 )
 	{	
@@ -233,21 +237,21 @@ void destroy_b_tree( b_tree_root *root )
 {
 	stack S;
 	StackNew( &S, MAX_TREE_NODES, sizeof( b_tree_node* ) );
+	StackPush( &S, &(root->root) );
 	b_tree_node * name;
 	name = root->root;
-	StackPush( &S, &name );
 	while( StackCount(&S) > 0 )
 	{
-		if( name->left != NULL )
-		{
-			StackPush( &S, &(name->left) );
-		}
-		if( name->right != NULL )
-		{
-			StackPush( &S, &(name->right) );
-		}
-		StackPop( &S, &name );
-		free( name );
+	    if( name->left != NULL )
+        {
+            StackPush( &S, &(name->left) );
+        }
+        if( name->right != NULL )
+        {
+            StackPush( &S, &(name->right) );
+        }
+        StackPop( &S, &name );
+        free( name );
 	}
 	StackDipose( &S );
 	free( root );
@@ -258,19 +262,19 @@ void level_order_b_tree( b_tree_root *root ){
 	new_queue( &Q, MAX_TREE_NODES, sizeof( b_tree_node* ) );
 	queue_push( &Q, &(root->root) );
 	b_tree_node *name;
-	name = root->root;
 	while( queue_count( &Q ) >0 )
 	{
+	    queue_pop( &Q, &name );
+        printf("%d\n",name->key );
 		if( name->left != NULL )
 		{
 			queue_push( &Q, &(name->left) );
-		}	
-		if ( name->right != NULL )
+		}
+		if (  name->right != NULL )
 		{
 			queue_push( &Q, &(name->right) );
 		}
-		queue_pop( &Q, &name );
-		printf("%d\n",name->key );
+
 	}
 }
 //找二叉树最小节点

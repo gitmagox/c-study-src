@@ -28,8 +28,8 @@ START_TEST(test_destroy_b_tree)
 {
     b_tree_root *tree;
     tree = new_b_tree( 5 );
-    b_tree_root *new = new_b_tree( 5 );
-    memset( tree,'\0',sizeof( b_tree_root ) );
+    tree = new_b_tree( 5 );
+    ck_assert_int_eq(tree->root->key, 5);
     destroy_b_tree( tree );
     //ck_assert_mem_eq( tree, new , sizeof( b_tree_root ));
 }
@@ -40,10 +40,14 @@ START_TEST(test_add_b_tree_node)
     b_tree_root *tree;
     tree = new_b_tree( 5 );
     ck_assert_int_eq(tree->root->key, 5);
-    add_b_tree_node( tree, 6 );
-    ck_assert_int_eq(tree->root->right->key, 6);
+    add_b_tree_node( tree, 8 );
+    ck_assert_int_eq(tree->root->right->key, 8);
+    add_b_tree_node( tree, 7);
+    ck_assert_int_eq(tree->root->right->left->key, 7);
     add_b_tree_node( tree, 4);
     ck_assert_int_eq(tree->root->left->key, 4);
+    add_b_tree_node( tree, 3);
+    ck_assert_int_eq(tree->root->left->left->key, 3);
     destroy_b_tree( tree );
 }
 END_TEST
@@ -56,7 +60,7 @@ START_TEST(test_search_b_tree)
     add_b_tree_node( tree, 4);
     b_tree_node *search = search_b_tree( tree , 4 );
     ck_assert_int_eq( search->key, 4 );
-    //destroy_b_tree( tree );
+    destroy_b_tree( tree );
 }
 END_TEST
 
@@ -72,8 +76,28 @@ START_TEST(test_delete_b_tree_node)
     delete_b_tree_node( tree, 6 );
     ck_assert_int_eq(tree->root->key, 5);
     delete_b_tree_node( tree, 5);
-   // destroy_b_tree( tree );
+    destroy_b_tree( tree );
 
+}
+END_TEST
+
+START_TEST(test_level_order_b_tree)
+{
+    b_tree_root *tree;
+    tree = new_b_tree( 5 );
+    add_b_tree_node( tree, 8);
+    add_b_tree_node( tree, 7);
+    add_b_tree_node( tree, 4);
+    add_b_tree_node( tree, 3);
+    printf( "pre_order_list\n" );
+    pre_order_b_tree( tree );
+//    printf( "in_order_list\n" );
+//    in_order_b_tree( tree );
+//    printf( "post_order_list\n" );
+//    post_order_b_tree( tree );
+//    printf( "level_order_list\n" );
+//    level_order_b_tree( tree );
+    destroy_b_tree( tree );
 }
 END_TEST
 
@@ -93,6 +117,7 @@ Suite * magox_btree_suite(void)
     tcase_add_test( tc_core, test_destroy_b_tree );
     tcase_add_test( tc_core, test_search_b_tree );
     tcase_add_test( tc_core, test_delete_b_tree_node );
+    tcase_add_test( tc_core, test_level_order_b_tree );
     suite_add_tcase(s, tc_core);
 
     return s;
