@@ -81,7 +81,7 @@ START_TEST(test_delete_b_tree_node)
 }
 END_TEST
 
-START_TEST(test_level_order_b_tree)
+START_TEST(test_pre_order_b_tree)
 {
     b_tree_root *tree;
     tree = new_b_tree( 5 );
@@ -91,12 +91,49 @@ START_TEST(test_level_order_b_tree)
     add_b_tree_node( tree, 3);
     printf( "pre_order_list\n" );
     pre_order_b_tree( tree );
-//    printf( "in_order_list\n" );
-//    in_order_b_tree( tree );
-//    printf( "post_order_list\n" );
-//    post_order_b_tree( tree );
-//    printf( "level_order_list\n" );
-//    level_order_b_tree( tree );
+    destroy_b_tree( tree );
+}
+END_TEST
+//in order
+START_TEST(test_in_order_b_tree)
+{
+    b_tree_root *tree;
+    tree = new_b_tree( 5 );
+    add_b_tree_node( tree, 8);
+    add_b_tree_node( tree, 7);
+    add_b_tree_node( tree, 4);
+    add_b_tree_node( tree, 3);
+    printf( "in_order_list\n" );
+    in_order_b_tree( tree );
+    destroy_b_tree( tree );
+}
+END_TEST
+//post order
+START_TEST(test_post_order_b_tree)
+{
+    b_tree_root *tree;
+    tree = new_b_tree( 5 );
+    add_b_tree_node( tree, 8);
+    add_b_tree_node( tree, 7);
+    add_b_tree_node( tree, 4);
+    add_b_tree_node( tree, 3);
+    printf( "post_order_list\n" );
+    post_order_b_tree( tree );
+    destroy_b_tree( tree );
+}
+END_TEST
+
+//level
+START_TEST(test_level_order_b_tree)
+{
+    b_tree_root *tree;
+    tree = new_b_tree( 5 );
+    add_b_tree_node( tree, 8);
+    add_b_tree_node( tree, 7);
+    add_b_tree_node( tree, 4);
+    add_b_tree_node( tree, 3);
+    printf( "level_order_list\n" );
+    level_order_b_tree( tree );
     destroy_b_tree( tree );
 }
 END_TEST
@@ -108,15 +145,18 @@ Suite * magox_btree_suite(void)
 
     s = suite_create("magox_btree");
 
-    /* Core test case */
     tc_core = tcase_create("Core");
 
+    //unit test
     tcase_add_test( tc_core, test_new_b_tree_node );
     tcase_add_test( tc_core, test_new_b_tree );
     tcase_add_test( tc_core, test_add_b_tree_node );
     tcase_add_test( tc_core, test_destroy_b_tree );
     tcase_add_test( tc_core, test_search_b_tree );
     tcase_add_test( tc_core, test_delete_b_tree_node );
+    tcase_add_test( tc_core, test_pre_order_b_tree );
+    tcase_add_test( tc_core, test_in_order_b_tree );
+    tcase_add_test( tc_core, test_order_order_b_tree );
     tcase_add_test( tc_core, test_level_order_b_tree );
     suite_add_tcase(s, tc_core);
 
