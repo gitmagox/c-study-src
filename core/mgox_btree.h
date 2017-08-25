@@ -319,10 +319,17 @@ void level_order_b_tree( b_tree_root *root ){
 b_tree_node* get_min_tree_node(b_tree_root *root)
 {
 	b_tree_node *name;
-	name = root;
+	if( root->root->left )
+	{
+	    name = root->root->left;
+	}
+	else
+	{
+	    name = root->root;
+	}
 	while ( name->left != NULL )
 	{
-		name = name->left;
+        name = name->left;
 	}
 	return name;
 }
@@ -331,10 +338,17 @@ b_tree_node* get_min_tree_node(b_tree_root *root)
 b_tree_node* get_max_tree_node(b_tree_root *root)
 {
 	b_tree_node *name;
-	name = root;
+	if( root->root->right )
+	{
+	    name = root->root->right;
+	}
+	else
+	{
+	    name = root->root;
+	}
 	while ( name->right != NULL )
 	{
-		name = name->right;
+        name = name->right;
 	}
 	return name;
 }
@@ -343,8 +357,8 @@ b_tree_node* get_max_tree_node(b_tree_root *root)
 b_tree_node* delete_max_tree_node(b_tree_root *root)
 {
 	b_tree_node *name;
-	name = root;
-	while ( name->right != NULL )
+	name = root->root->right;
+	while ( name != NULL )
 	{
 		name = name->right;
 	}

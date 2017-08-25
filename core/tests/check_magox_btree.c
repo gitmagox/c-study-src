@@ -158,6 +158,28 @@ START_TEST(test_level_order_b_tree)
 }
 END_TEST
 
+/*    test:
+    b_tree_node* get_min_tree_node(b_tree_root *root)
+    b_tree_node* get_max_tree_node(b_tree_root *root)
+*/
+
+START_TEST(test_get_max_min_tree_node)
+{
+    b_tree_root *tree;
+    b_tree_node *node;
+    tree = new_b_tree( 5 );
+    add_b_tree_node( tree, 8);
+    add_b_tree_node( tree, 7);
+    add_b_tree_node( tree, 4);
+    add_b_tree_node( tree, 3);
+    node = get_min_tree_node( tree );
+    ck_assert_int_eq(node->key, 3);
+    node = get_max_tree_node( tree );
+    ck_assert_int_eq(node->key, 8);
+    destroy_b_tree( tree );
+}
+END_TEST
+
 Suite * magox_btree_suite(void)
 {
     Suite *s;
@@ -175,6 +197,7 @@ Suite * magox_btree_suite(void)
     tcase_add_test( tc_core, test_pre_order_b_tree_a );
     tcase_add_test( tc_core, test_in_order_b_tree );
     tcase_add_test( tc_core, test_post_order_b_tree );
+    tcase_add_test( tc_core, test_get_max_min_tree_node );
    // tcase_add_test( tc_core, test_level_order_b_tree );
     suite_add_tcase(s, tc_core);
 
