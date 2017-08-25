@@ -232,7 +232,7 @@ Suite * magox_btree_suite(void)
 
 int main(void)
 {
-	int number_failed;
+    int number_failed;
     Suite *s;
     SRunner *sr;
     s = magox_btree_suite();
