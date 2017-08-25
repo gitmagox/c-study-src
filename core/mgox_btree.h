@@ -186,8 +186,8 @@ void pre_order_b_tree_a( b_tree_root *root )
 	        while( name != NULL )
             {
                 printf("%d\n",name->key );
-                name  = name->left;
                 StackPush( &S, &(name) );
+                name  = name->left;
             }
 	    }
 	}
@@ -295,7 +295,8 @@ void destroy_b_tree( b_tree_root *root )
 	free( root );
 }
 //层序遍历---广度优先
-void level_order_b_tree( b_tree_root *root ){
+void level_order_b_tree( b_tree_root *root )
+{
 	queue Q;
 	new_queue( &Q, MAX_TREE_NODES, sizeof( b_tree_node* ) );
 	queue_push( &Q, &(root->root) );
@@ -312,7 +313,6 @@ void level_order_b_tree( b_tree_root *root ){
 		{
 			queue_push( &Q, &(name->right) );
 		}
-
 	}
 }
 //找二叉树最小节点
@@ -427,7 +427,6 @@ void delete_b_tree_node( b_tree_root *root, Type key )
 		{
 			node->parent->right = node->right;
 		}
-		
 		node->right = NULL;
 		free( node );
 		root->logLength --;

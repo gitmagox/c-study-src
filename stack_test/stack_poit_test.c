@@ -4,6 +4,7 @@
 #include <assert.h>
 #include <ctype.h>
 #include "stack.h"
+#include "mgox_queue.h"
 
 typedef struct b_tree_node b_tree_node;
 typedef struct b_tree_root b_tree_root;
@@ -156,6 +157,28 @@ void destroy_b_tree( b_tree_root *root )
 	free( root );
 }
 
+//层序遍历---广度优先
+void level_order_b_tree( b_tree_root *root )
+{
+	queue Q;
+	new_queue( &Q, MAX_TREE_NODES, sizeof( b_tree_node* ) );
+	queue_push( &Q, &(root->root) );
+	b_tree_node *name;
+	while( queue_count( &Q ) >0 )
+	{
+	    queue_pop( &Q, &name );
+        printf("%d\n",name->key );
+		if( name->left != NULL )
+		{
+			queue_push( &Q, &(name->left) );
+		}
+		if (  name->right != NULL )
+		{
+			queue_push( &Q, &(name->right) );
+		}
+	}
+}
+
 int main( int argc, char* argv[] )
 {
     b_tree_root *root;
@@ -164,7 +187,9 @@ int main( int argc, char* argv[] )
     add_b_tree_node( root, 8 );
     add_b_tree_node( root, 7 );
     add_b_tree_node( root, 4 );
-    post_order_b_tree( root );
+    add_b_tree_node( root, 3 );
+    level_order_b_tree( root );
+    //post_order_b_tree( root );
     destroy_b_tree( root );
 	return 0;
 }

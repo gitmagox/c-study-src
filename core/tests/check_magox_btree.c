@@ -225,7 +225,7 @@ Suite * magox_btree_suite(void)
     tcase_add_test( tc_core, test_post_order_b_tree );
     tcase_add_test( tc_core, test_get_max_min_tree_node );
     tcase_add_test( tc_core, test_delete_max_min_tree_node );
-   // tcase_add_test( tc_core, test_level_order_b_tree );
+    tcase_add_test( tc_core, test_level_order_b_tree );
     suite_add_tcase(s, tc_core);
     return s;
 }

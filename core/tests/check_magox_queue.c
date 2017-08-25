@@ -33,7 +33,7 @@ START_TEST(test_queue_push_pop)
     for ( i=0; i<5; i++ )
     {
     	queue_pop( &q, &name );
-    	ck_assert_str_eq( name, *(elems+i));
+    	ck_assert_int_eq( name, *(elems+i) );
     }
 }
 END_TEST
@@ -49,8 +49,7 @@ START_TEST(test_queue_dispose)
     {
     	queue_push( &q, (elems+i) );
     }
-    char name;
-    queue_dispose( &q );
+    //queue_dispose( &q );
 }
 END_TEST
 //test queue_count
@@ -69,8 +68,8 @@ START_TEST(test_queue_count)
     for ( i=0; i<5; i++ )
     {
         queue_pop( &q, &name );
-        ck_assert_int_eq( queue_count( &q ), (5-i-1) );
-        ck_assert_str_eq( name, *(elems+5-i-1));
+        ck_assert_int_eq( queue_count( &q ), (4-i) );
+        ck_assert_int_eq( name, *(elems+i) );
     }
 }
 END_TEST
