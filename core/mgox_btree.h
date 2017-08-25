@@ -357,11 +357,19 @@ b_tree_node* get_max_tree_node(b_tree_root *root)
 b_tree_node* delete_max_tree_node(b_tree_root *root)
 {
 	b_tree_node *name;
-	name = root->root->right;
-	while ( name != NULL )
+	if( root->root->right )
 	{
-		name = name->right;
+	    name = root->root->right;
 	}
+	else
+	{
+	    name = root->root;
+	}
+	while ( name->right != NULL )
+	{
+        name = name->right;
+	}
+	printf( "name's parent is %d \n", name->parent->right->key );
 	name->parent->right = NULL;
 	return name;
 }
@@ -369,10 +377,17 @@ b_tree_node* delete_max_tree_node(b_tree_root *root)
 b_tree_node* delete_min_tree_node(b_tree_root *root)
 {
 	b_tree_node *name;
-	name = root;
+	if( root->root->left )
+	{
+	    name = root->root->left;
+	}
+	else
+	{
+	    name = root->root;
+	}
 	while ( name->left != NULL )
 	{
-		name = name->left;
+        name = name->left;
 	}
 	name->parent->left = NULL;
 	return name;

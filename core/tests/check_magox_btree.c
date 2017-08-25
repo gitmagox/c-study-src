@@ -99,7 +99,6 @@ START_TEST(test_pre_order_b_tree)
     destroy_b_tree( tree );
 }
 END_TEST
-
 //test pre order_a
 START_TEST(test_pre_order_b_tree_a)
 {
@@ -180,6 +179,31 @@ START_TEST(test_get_max_min_tree_node)
 }
 END_TEST
 
+/*    test:
+    b_tree_node* delete_min_tree_node(b_tree_root *root)
+    b_tree_node* delete_max_tree_node(b_tree_root *root)
+*/
+
+START_TEST(test_delete_max_min_tree_node)
+{
+    b_tree_root *tree;
+    b_tree_node *node;
+    tree = new_b_tree( 5 );
+    add_b_tree_node( tree, 8);
+    add_b_tree_node( tree, 7);
+    add_b_tree_node( tree, 4);
+    add_b_tree_node( tree, 3);
+    node = delete_min_tree_node( tree );
+    ck_assert_int_eq(node->key, 3);
+    node = delete_max_tree_node( tree );
+    ck_assert_int_eq(node->key, 8);
+    printf( "after test delete max nin node list\n" );
+    pre_order_b_tree( tree );
+    //level_order_b_tree( tree );
+    destroy_b_tree( tree );
+}
+END_TEST
+
 Suite * magox_btree_suite(void)
 {
     Suite *s;
@@ -198,9 +222,9 @@ Suite * magox_btree_suite(void)
     tcase_add_test( tc_core, test_in_order_b_tree );
     tcase_add_test( tc_core, test_post_order_b_tree );
     tcase_add_test( tc_core, test_get_max_min_tree_node );
+    tcase_add_test( tc_core, test_delete_max_min_tree_node );
    // tcase_add_test( tc_core, test_level_order_b_tree );
     suite_add_tcase(s, tc_core);
-
     return s;
 }
 
