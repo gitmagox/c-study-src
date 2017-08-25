@@ -369,8 +369,17 @@ b_tree_node* delete_max_tree_node(b_tree_root *root)
 	{
         name = name->right;
 	}
-	printf( "name's parent is %d \n", name->parent->right->key );
-	name->parent->right = NULL;
+	if( name->left != NULL )
+	{
+	    name->parent->right = name->left;
+
+	}
+	else
+	{
+	    name->parent->right = NULL;
+	}
+    name->left = NULL;
+    name->parent = NULL;
 	return name;
 }
 //册二叉树最小节点返回
@@ -389,7 +398,16 @@ b_tree_node* delete_min_tree_node(b_tree_root *root)
 	{
         name = name->left;
 	}
-	name->parent->left = NULL;
+	if( name->right != NULL )
+	{
+	    name->parent->left = name->right;
+	}
+	else
+	{
+	    name->parent->left = NULL;
+	}
+	name->right = NULL;
+    name->parent = NULL;
 	return name;
 }
 //册二叉树的节点
