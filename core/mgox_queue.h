@@ -82,7 +82,7 @@ void queue_push( queue *Q, void *node )
 	Q->logLength ++;
 	if( Q->logLength == 1 )
 	{
-		Q->tail = Q->head;
+		Q->tail = Q->elems = Q->head;
 	}
 }
 
