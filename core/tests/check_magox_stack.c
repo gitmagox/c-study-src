@@ -36,3 +36,17 @@ START_TEST(test_StackPush_pop)
     }
 }
 END_TEST
+//test StackDipose
+START_TEST(test_StackDipose)
+{
+    char elems[5] = {'b','a','e','g','o'};
+    queue q;
+    StackNew( &q, 5, sizeof(char));
+    int i;
+    for ( i=0; i<5; i++ )
+    {
+    	StackPush( &q, (elems+i) );
+    }
+    StackDipose( &q );
+}
+END_TEST
