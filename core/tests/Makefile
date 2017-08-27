@@ -6,4 +6,4 @@ check_magox_stack:check_magox_stack.c ../mgox_stack.h
 	cc -o check_magox_stack check_magox_stack.c ../mgox_stack.h -lcheck
 .PHONY : clean
 clean:
-	rm check_magox_btree check_magox_queue
+	rm check_magox_btree check_magox_queue check_magox_stack
