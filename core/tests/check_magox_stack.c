@@ -50,3 +50,24 @@ START_TEST(test_StackDipose)
     StackDipose( &q );
 }
 END_TEST
+//test StackCount
+START_TEST(test_StackCount)
+{
+    char elems[5] = {'b','a','e','g','o'};
+    queue s;
+    StackNew( &s, 5, sizeof(char));
+    int i;
+    for ( i=0; i<5; i++ )
+    {
+       StackPush( &q, (elems+i) );
+       ck_assert_int_eq( StackCount( &q ), (i+1) );
+    }
+    char name;
+    for ( i=0; i<5; i++ )
+    {
+        StackPop( &q, &name );
+        ck_assert_int_eq( StackCount( &q ), (4-i) );
+        ck_assert_int_eq( name, *(elems+4-i) );
+    }
+}
+END_TEST
