@@ -71,3 +71,31 @@ START_TEST(test_StackCount)
     }
 }
 END_TEST
+//magox stack suite
+Suite * magox_stack_suite(void)
+{
+    Suite *s;
+    TCase *tc_core;
+    s = suite_create("magox_btree");
+    tc_core = tcase_create("Core");
+    //unit test
+    tcase_add_test( tc_core, test_StackNew );
+    tcase_add_test( tc_core, test_StackPush_pop );
+    tcase_add_test( tc_core, test_StackCount );
+    tcase_add_test( tc_core, test_StackDipose );
+    suite_add_tcase(s, tc_core);
+    return s;
+}
+
+int main(void)
+{
+    int number_failed;
+    Suite *s;
+    SRunner *sr;
+    s = magox_stack_suite();
+    sr = srunner_create(s);
+    srunner_run_all(sr, CK_NORMAL);
+    number_failed = srunner_ntests_failed(sr);
+    srunner_free(sr);
+    return (number_failed == 0) ? EXIT_SUCCESS : EXIT_FAILURE;
+}
