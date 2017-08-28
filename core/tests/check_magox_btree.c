@@ -218,7 +218,7 @@ Suite * magox_btree_suite(void)
     tcase_add_test( tc_core, test_add_b_tree_node );
     tcase_add_test( tc_core, test_destroy_b_tree );
     tcase_add_test( tc_core, test_search_b_tree );
-   // tcase_add_test( tc_core, test_delete_b_tree_node );
+    tcase_add_test( tc_core, test_delete_b_tree_node );
     tcase_add_test( tc_core, test_pre_order_b_tree );
     tcase_add_test( tc_core, test_pre_order_b_tree_a );
     tcase_add_test( tc_core, test_in_order_b_tree );
