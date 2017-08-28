@@ -14,24 +14,24 @@
 START_TEST(test_StackNew)
 {
     stack S;
-    StackNew( &S, 4, sizeof( Type ) );
+    StackNew( &S, 4, sizeof( int ) );
 }
 END_TEST
 //test StackPush_pop
 START_TEST(test_StackPush_pop)
 {
     char elems[5] = {'b','a','e','g','o'};
-    queue q;
-    StackNew( &q, 5, sizeof(char));
+    stack s;
+    StackNew( &s, 5, sizeof(char));
     int i;
     for ( i=0; i<5; i++ )
     {
-    	StackPush( &q, (elems+i) );
+    	StackPush( &s, (elems+i) );
     }
     char name;
     for ( i=0; i<5; i++ )
     {
-    	StackPop( &q, &name );
+    	StackPop( &s, &name );
     	ck_assert_int_eq( name, *(elems+i) );
     }
 }
@@ -40,33 +40,33 @@ END_TEST
 START_TEST(test_StackDipose)
 {
     char elems[5] = {'b','a','e','g','o'};
-    queue q;
-    StackNew( &q, 5, sizeof(char));
+    stack s;
+    StackNew( &s, 5, sizeof(char));
     int i;
     for ( i=0; i<5; i++ )
     {
-    	StackPush( &q, (elems+i) );
+    	StackPush( &s, (elems+i) );
     }
-    StackDipose( &q );
+    StackDipose( &s );
 }
 END_TEST
 //test StackCount
 START_TEST(test_StackCount)
 {
     char elems[5] = {'b','a','e','g','o'};
-    queue s;
+    stack s;
     StackNew( &s, 5, sizeof(char));
     int i;
     for ( i=0; i<5; i++ )
     {
-       StackPush( &q, (elems+i) );
-       ck_assert_int_eq( StackCount( &q ), (i+1) );
+       StackPush( &s, (elems+i) );
+       ck_assert_int_eq( StackCount( &s ), (i+1) );
     }
     char name;
     for ( i=0; i<5; i++ )
     {
-        StackPop( &q, &name );
-        ck_assert_int_eq( StackCount( &q ), (4-i) );
+        StackPop( &s, &name );
+        ck_assert_int_eq( StackCount( &s ), (4-i) );
         ck_assert_int_eq( name, *(elems+4-i) );
     }
 }
