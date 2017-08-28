@@ -353,17 +353,17 @@ b_tree_node* get_max_tree_node(b_tree_root *root)
 	return name;
 }
 
-//册二叉树最大节点
-b_tree_node* delete_max_tree_node(b_tree_root *root)
+//册当前节点下的最大节点并返回
+b_tree_node* delete_max_tree_node( b_tree_node *node )
 {
 	b_tree_node *name;
-	if( root->root->right )
+	if( node->right )
 	{
-	    name = root->root->right;
+	    name = node->right;
 	}
 	else
 	{
-	    name = root->root;
+	    name = node;
 	}
 	while ( name->right != NULL )
 	{
@@ -383,16 +383,16 @@ b_tree_node* delete_max_tree_node(b_tree_root *root)
 	return name;
 }
 //册二叉树最小节点返回
-b_tree_node* delete_min_tree_node(b_tree_root *root)
+b_tree_node* delete_min_tree_node( b_tree_node *node )
 {
 	b_tree_node *name;
-	if( root->root->left )
+	if( node->left )
 	{
-	    name = root->root->left;
+	    name = node->left;
 	}
 	else
 	{
-	    name = root->root;
+	    name = node;
 	}
 	while ( name->left != NULL )
 	{
@@ -414,7 +414,7 @@ b_tree_node* delete_min_tree_node(b_tree_root *root)
 void delete_b_tree_node( b_tree_root *root, Type key )
 {
 	b_tree_node *node = search_b_tree( root, key );
-
+	b_tree_node *temp;
 	assert( node !=NULL );
 
 	if( node->left == NULL && node -> right != NULL )
@@ -422,30 +422,32 @@ void delete_b_tree_node( b_tree_root *root, Type key )
 		if( node->parent->left == node )
 		{
 			node->parent->left = node->right;
+			node->right->parent = node->parent->left;
 		}
 		else 
 		{
 			node->parent->right = node->right;
+			node->right->parent = node->parent->right;
 		}
-		node->right = NULL;
 		free( node );
 		root->logLength --;
 	}
-	if( node->left != NULL && node -> right == NULL )
+	else if( node->left != NULL && node -> right == NULL )
 	{
 		if( node->parent->left == node )
 		{
 			node->parent->left = node->left;
+			node->left->parent = node->parent->left;
 		}
 		else 
 		{
 			node->parent->right = node->left;
+			node->left->parent = node->parent->right;
 		}
-		node->left = NULL;
 		free( node );
 		root->logLength --;
 	}
-	if( node->left == NULL && node -> right == NULL )
+	else if( node->left == NULL && node -> right == NULL )
 	{
 		if( node->parent->left == node )
 		{
@@ -458,21 +460,27 @@ void delete_b_tree_node( b_tree_root *root, Type key )
 		free( node );
 		root->logLength --;
 	}
-	if ( node->left != NULL && node -> right != NULL)
+	else if ( node->left != NULL && node -> right != NULL)
 	{
 		if( node->parent->left == node )
 		{
-			b_tree_node *new = delete_max_tree_node( node->right );
+			b_tree_node *new = delete_min_tree_node( node->right );
+			new->parent = node->parent;
 			new->left = node ->left;
+			node->left->parent = new;
 			new->right = node->right;
+			node->right->parent = new;
 			free( node );
 			root->logLength --;
 		}
 		else 
 		{
 			b_tree_node *new = delete_max_tree_node( node->right );
+			new->parent = node->parent;
 			new->left = node->left;
+			node->left->parent = new;
 			new->right = node->right;
+			node->right->parent = new;
 			free( node );
 			root->logLength --;
 		}

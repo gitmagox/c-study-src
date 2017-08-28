@@ -3,9 +3,7 @@
 #include <string.h>
 #include <assert.h>
 #include <ctype.h>
-#include "stack.h"
-#include "mgox_queue.h"
-#include "mgox_btree.h"
+#include "../core/mgox_btree.h"
 
 
 int main( int argc, char* argv[] )
@@ -15,12 +13,16 @@ int main( int argc, char* argv[] )
     //printf("%d\n",root->root->key);
     add_b_tree_node( root, 8 );
     add_b_tree_node( root, 7 );
+    add_b_tree_node( root, 9 );
     add_b_tree_node( root, 4 );
     add_b_tree_node( root, 3 );
     level_order_b_tree( root );
-    printf( "delete node\n" );
-    delete_b_tree_node( root, 3 );
+    printf( "delete node 8\n" );
+    delete_b_tree_node( root, 8 );
     level_order_b_tree( root );
+//    printf( "delete node 3\n" );
+//    delete_b_tree_node( root, 7 );
+//    level_order_b_tree( root );
     //post_order_b_tree( root );
     destroy_b_tree( root );
 	return 0;
