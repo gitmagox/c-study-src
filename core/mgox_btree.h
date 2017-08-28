@@ -378,21 +378,32 @@ b_tree_node* delete_max_tree_node( b_tree_node *node )
 	{
 	    name->parent->right = NULL;
 	}
-    name->left = NULL;
-    name->parent = NULL;
-	return name;
-}
-//册二叉树最小节点返回
-b_tree_node* delete_min_tree_node( b_tree_node *node )
-{
-	b_tree_node *name;
-	if( node->left )
+	if( name == node )
 	{
-	    name = node->left;
+	    return name
+	}
+	else if( name->parent->right = name )
+	{
+	    name->parent->right = NULL;
 	}
 	else
 	{
-	    name = node;
+	    name->parent->left = NULL;
+	}
+
+	return name;
+}
+//册二叉树最小节点返回
+b_tree_node* delete_min_tree_node( b_tree_node *nd )
+{
+	b_tree_node *name;
+	if( nd->left )
+	{
+	    name = nd->left;
+	}
+	else
+	{
+	    name = nd;
 	}
 	while ( name->left != NULL )
 	{
@@ -406,8 +417,19 @@ b_tree_node* delete_min_tree_node( b_tree_node *node )
 	{
 	    name->parent->left = NULL;
 	}
-	name->right = NULL;
-    name->parent = NULL;
+	if( name == node )
+    	{
+    	    return name
+    	}
+    	else if( name->parent->right = name )
+    	{
+    	    name->parent->right = NULL;
+    	}
+    	else
+    	{
+    	    name->parent->left = NULL;
+    	}
+    name->parent->left = NULL;
 	return name;
 }
 //册二叉树的节点
@@ -464,7 +486,8 @@ void delete_b_tree_node( b_tree_root *root, Type key )
 	{
 		if( node->parent->left == node )
 		{
-			b_tree_node *new = delete_min_tree_node( node->right );
+			b_tree_node *new = delete_min_tree_node( node->left );
+			printf("this is %d \n", new->key);
 			new->parent = node->parent;
 			new->left = node ->left;
 			node->left->parent = new;
@@ -475,14 +498,19 @@ void delete_b_tree_node( b_tree_root *root, Type key )
 		}
 		else 
 		{
-			b_tree_node *new = delete_max_tree_node( node->right );
+			b_tree_node *new = delete_min_tree_node( node->right );
+			printf("this is %d \n", new->key);
 			new->parent = node->parent;
 			new->left = node->left;
 			node->left->parent = new;
-			new->right = node->right;
-			node->right->parent = new;
-			free( node );
-			root->logLength --;
+//			if( node->right->key != new->key )
+//			{
+//			    new->right = node->right;
+//                node->right->parent = new;
+//			}
+
+//			free( node );
+//			root->logLength --;
 		}
 	}
 }
