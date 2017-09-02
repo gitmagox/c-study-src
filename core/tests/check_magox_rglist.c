@@ -29,7 +29,20 @@ START_TEST(test_c_list_init)
     ck_assert_int_eq(list->head->next, list->tail);
     ck_assert_int_eq(sizeof(list->tail->data), sizeof(int));
     ck_assert_int_eq(list->tail->pre, llist->head);
-    free( node );
+}
+END_TEST
+
+//test list free
+START_TEST(test_c_list_free)
+{
+    cList *list;
+    list = c_list_init( int );
+    ck_assert_int_eq(list->size, 0);
+    ck_assert_int_eq(sizeof(list->head->data), sizeof(int));
+    ck_assert_int_eq(list->head->next, list->tail);
+    ck_assert_int_eq(sizeof(list->tail->data), sizeof(int));
+    ck_assert_int_eq(list->tail->pre, list->head);
+    c_list_free( list );
 }
 END_TEST
 
@@ -42,6 +55,7 @@ Suite * magox_btree_suite(void)
     //unit test
     tcase_add_test( tc_core, test_c_list_node_create );
     tcase_add_test( tc_core, test_c_list_init );
+    tcase_add_test( tc_core, test_c_list_free );
  
     suite_add_tcase(s, tc_core);
     return s;
