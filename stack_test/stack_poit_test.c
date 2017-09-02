@@ -18,7 +18,7 @@ int main( int argc, char* argv[] )
     add_b_tree_node( root, 3 );
     level_order_b_tree( root );
     printf( "delete node 8\n" );
-    delete_b_tree_node( root, 8 );
+    delete_b_tree_node( root, 7 );
     level_order_b_tree( root );
 //    printf( "delete node 3\n" );
 //    delete_b_tree_node( root, 7 );

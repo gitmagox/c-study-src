@@ -354,89 +354,87 @@ b_tree_node* get_max_tree_node(b_tree_root *root)
 }
 
 //册当前节点下的最大节点并返回
-b_tree_node* delete_max_tree_node( b_tree_node *node )
+b_tree_node* delete_max_tree_node( b_tree_node *nd )
 {
 	b_tree_node *name;
-	if( node->right )
-	{
-	    name = node->right;
-	}
-	else
-	{
-	    name = node;
-	}
+	b_tree_node *new;
+    name = nd;
 	while ( name->right != NULL )
 	{
-        name = name->right;
+	    name = name->right;
 	}
-	if( name->left != NULL )
+	if( name == nd )
 	{
-	    name->parent->right = name->left;
-
+	    if( name->parent->right == name )
+	    {
+            new = new_b_tree_node( nd->key );
+	        name->parent->right = NULL;
+	    }
+	    else
+	    {
+	        new = new_b_tree_node( nd->key );
+            name->parent->left = NULL;
+	    }
 	}
 	else
 	{
-	    name->parent->right = NULL;
+	    if( name->left != NULL )
+        {
+            new = new_b_tree_node( name->key );
+            name->parent->right = name->right;
+        }
+        else
+        {
+            new = new_b_tree_node( name->key );
+            name->parent->right = NULL;
+        }
 	}
-	if( name == node )
-	{
-	    return name
-	}
-	else if( name->parent->right = name )
-	{
-	    name->parent->right = NULL;
-	}
-	else
-	{
-	    name->parent->left = NULL;
-	}
-
-	return name;
+	return new;
 }
 //册二叉树最小节点返回
 b_tree_node* delete_min_tree_node( b_tree_node *nd )
 {
 	b_tree_node *name;
-	if( nd->left )
-	{
-	    name = nd->left;
-	}
-	else
-	{
-	    name = nd;
-	}
+	b_tree_node *new;
+    name = nd;
 	while ( name->left != NULL )
 	{
-        name = name->left;
+	    name = name->left;
 	}
-	if( name->right != NULL )
+	if( name == nd )
 	{
-	    name->parent->left = name->right;
+	    if( name->parent->right == name )
+	    {
+            new = new_b_tree_node( nd->key );
+	        name->parent->right = NULL;
+	    }
+	    else
+	    {
+	        new = new_b_tree_node( nd->key );
+            name->parent->left = NULL;
+	    }
 	}
 	else
 	{
-	    name->parent->left = NULL;
+	    if( name->right != NULL )
+        {
+            new = new_b_tree_node( name->key );
+            name->parent->left = name->right;
+        }
+        else
+        {
+            new = new_b_tree_node( name->key );
+            name->parent->left = NULL;
+        }
 	}
-	if( name == node )
-    	{
-    	    return name
-    	}
-    	else if( name->parent->right = name )
-    	{
-    	    name->parent->right = NULL;
-    	}
-    	else
-    	{
-    	    name->parent->left = NULL;
-    	}
-    name->parent->left = NULL;
-	return name;
+	return new;
 }
 //册二叉树的节点
 void delete_b_tree_node( b_tree_root *root, Type key )
 {
 	b_tree_node *node = search_b_tree( root, key );
 	b_tree_node *temp;
+	b_tree_node *new;
 	assert( node !=NULL );
 
 	if( node->left == NULL && node -> right != NULL )
@@ -486,32 +484,19 @@ void delete_b_tree_node( b_tree_root *root, Type key )
 	{
 		if( node->parent->left == node )
 		{
-			b_tree_node *new = delete_min_tree_node( node->left );
-			printf("this is %d \n", new->key);
-			new->parent = node->parent;
-			new->left = node ->left;
-			node->left->parent = new;
-			new->right = node->right;
-			node->right->parent = new;
-			free( node );
-			root->logLength --;
+			new = delete_min_tree_node( node->left );
+			node->parent->left = new;
 		}
 		else 
 		{
-			b_tree_node *new = delete_min_tree_node( node->right );
-			printf("this is %d \n", new->key);
-			new->parent = node->parent;
-			new->left = node->left;
-			node->left->parent = new;
-//			if( node->right->key != new->key )
-//			{
-//			    new->right = node->right;
-//                node->right->parent = new;
-//			}
-
-//			free( node );
-//			root->logLength --;
+			new = delete_min_tree_node( node->right );
+			node->parent->right = new;
 		}
+		new->parent = node->parent;
+        new->left = node->left;
+        node->left->parent = new;
+        free( node );
+        root->logLength --;
 	}
 }
 
