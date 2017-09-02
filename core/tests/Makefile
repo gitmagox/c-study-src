@@ -1,10 +1,12 @@
-all: check_magox_btree check_magox_queue check_magox_stack
+all: check_magox_btree check_magox_queue check_magox_stack check_magox_rglist.c
 check_magox_btree:check_magox_btree.c ../mgox_queue.h ../mgox_stack.h ../mgox_btree.h
 	cc -g -o check_magox_btree check_magox_btree.c ../mgox_queue.h ../mgox_stack.h ../mgox_btree.h -lcheck
 check_magox_queue:check_magox_queue.c ../mgox_queue.h
 	cc -o check_magox_queue check_magox_queue.c ../mgox_queue.h -lcheck
 check_magox_stack:check_magox_stack.c ../mgox_stack.h
 	cc -o check_magox_stack check_magox_stack.c ../mgox_stack.h -lcheck
+check_magox_rglist:check_magox_rglist.c ../mgox_rglist.h
+	cc -o check_magox_rglist check_magox_rglist.c ../mgox_rglist.h -lcheck
 .PHONY : clean
 clean:
 	rm check_magox_btree check_magox_queue check_magox_stack
