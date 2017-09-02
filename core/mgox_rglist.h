@@ -96,7 +96,6 @@ cList * c_list_init( int size )
 
     cListNode *head = c_list_node_create( size ),
                 *tail = c_list_node_create( size );
-    int i = 0;
 
     assert( list != NULL );
     assert( head != NULL );
