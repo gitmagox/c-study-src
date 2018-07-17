@@ -171,9 +171,9 @@ START_TEST(test_get_max_min_tree_node)
     add_b_tree_node( tree, 7);
     add_b_tree_node( tree, 4);
     add_b_tree_node( tree, 3);
-    node = get_min_tree_node( tree->root );
+    node = get_min_tree_node( tree);
     ck_assert_int_eq(node->key, 3);
-    node = get_max_tree_node( tree->root );
+    node = get_max_tree_node( tree );
     ck_assert_int_eq(node->key, 8);
     printf( "after test get max nin node list\n" );
     pre_order_b_tree( tree );

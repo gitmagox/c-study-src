@@ -39,7 +39,7 @@ b_tree_root* new_b_tree( Type key );
 void destroy_b_tree( b_tree_root *root );
 
 //添加一个节点
-void add_b_tree_node( b_tree_root *root, Type key );
+int add_b_tree_node( b_tree_root *root, Type key );
 
 //查找一个节点
 b_tree_node* search_b_tree( b_tree_root *root, Type key );
@@ -55,6 +55,10 @@ void in_order_b_tree( b_tree_root *root );
 void post_order_b_tree( b_tree_root *root );
 //层序遍历
 void level_order_b_tree( b_tree_root *root );
+
+b_tree_node* get_min_tree_node(b_tree_root *root);
+
+b_tree_node* get_max_tree_node(b_tree_root *root);
 
 //函数实现
 b_tree_node* new_b_tree_node( Type key )
@@ -84,7 +88,7 @@ b_tree_root* new_b_tree( Type key )
 	return root;
 }
 //添加一个节点,使用栈来处理
-void add_b_tree_node( b_tree_root *root, Type key )
+int add_b_tree_node( b_tree_root *root, Type key )
 {
 	/* 新建一个栈来处理遍历过程 */
 	stack S;
