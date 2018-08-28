@@ -16,6 +16,7 @@
 #include <stdbool.h>
 
 static const int BUFFER_SIZE = 1024;
+
 //默认链接对象
 typedef struct client_data
 {
@@ -27,6 +28,7 @@ typedef struct client_data
 	int m_epollfd;
 	void (*init)(struct client_data * client_data,int epollfd,int sockfd,struct sockaddr_in *client_addr);//初始化
 	void (*process)(struct client_data * client_data);//逻辑处理
+
 } client_data;
 
 //初始化
@@ -131,12 +133,12 @@ int main( int argc, char * argv[] )
 
 	assert(ret !=-1);
 
-	processpool* my_processpool;
-	mgx_process_create( my_processpool, listenfd, 4);
+	struct processpool *my_processpool;
+	my_processpool = mgx_process_create(listenfd, 4);
 
-	assert(my_processpool >0);
+	// assert(my_processpool >0);
 
-	my_processpool->run(my_processpool);
+	run(my_processpool);
 
 	mgx_process_delete(my_processpool);
 	close(listenfd);

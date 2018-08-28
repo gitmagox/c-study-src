@@ -39,8 +39,6 @@ static int sig_pipefd[2];
 // 	void (*process)(client_data * client_data),//逻辑处理
 // } client_data;
 
-
-
 //进程结构体
 typedef struct mgx_process
 {
@@ -62,13 +60,11 @@ typedef struct processpool
 	int m_listenfd;
 	//通过这个标误来确定进程是否停止运行
 	_Bool m_stop;
-	//进程池运行
-	void (* run)(struct processpool * mgx_processpool );
 	
 } processpool;
 
 //声明创建
-void mgx_process_create( processpool* mgx_processpool, int listendfd, int process_number);
+processpool* mgx_process_create( int listendfd, int process_number);
 
 void mgx_process_delete(processpool * mgx_processpool );
 static int setnonblocking( int fd )
@@ -116,17 +112,16 @@ void addsig( int sig, void(*handler)(int) ,_Bool restart)
 }
 
 //统一事件源
-static void setup_sig_pipe(processpool * mgx_processpool)
+static void setup_sig_pipe(processpool ** mgx_processpool)
 {	
-	mgx_processpool->m_epollfd = epoll_create( 5 );
-	assert( mgx_processpool->m_epollfd != -1 );
+	(*mgx_processpool)->m_epollfd = epoll_create( 5 );
+	assert( (*mgx_processpool)->m_epollfd != -1 );
 
 	int ret = socketpair( PF_UNIX, SOCK_STREAM, 0, sig_pipefd );
 	assert( ret != -1 );
 
 	setnonblocking( sig_pipefd[1] );
-	addfd( mgx_processpool->m_epollfd, sig_pipefd[0] );
-
+	addfd( (*mgx_processpool)->m_epollfd, sig_pipefd[0] );
 	addsig( SIGCHLD, sig_handler, true );
 	addsig( SIGTERM, sig_handler, true);
 	addsig( SIGINT, sig_handler, true);
@@ -135,7 +130,7 @@ static void setup_sig_pipe(processpool * mgx_processpool)
 }
 
 //进程池运行
-static void run(processpool * mgx_processpool)
+void run(processpool *mgx_processpool)
 {
 	if( mgx_processpool->m_idx != -1 )
 	{
@@ -153,7 +148,7 @@ void mgx_process_delete(processpool * mgx_processpool ){
 }
 
 //子进程
-void run_child(processpool * mgx_processpool,_client_data_type *users)
+void run_child(processpool *mgx_processpool)
 {
 	setup_sig_pipe(mgx_processpool);
 	//父进程的通信管道
@@ -163,6 +158,7 @@ void run_child(processpool * mgx_processpool,_client_data_type *users)
 
 	struct epoll_event events[MAX_EVENT_NUMBER];
 
+    struct _client_data_type *users=0;
 	//分配内存
 	users = (_client_data_type *)malloc(USER_PER_PROCESS*sizeof(_client_data_type));
 	for (int j = 0; j < USER_PER_PROCESS; ++j)
@@ -264,7 +260,7 @@ void run_child(processpool * mgx_processpool,_client_data_type *users)
 }
 
 //父进程
-void run_parent(processpool * mgx_processpool)
+void run_parent(processpool  *mgx_processpool)
 {
 	setup_sig_pipe(mgx_processpool);
 
@@ -301,7 +297,7 @@ void run_parent(processpool * mgx_processpool)
 					i = (i+1)%mgx_processpool->m_process_number;
 				}while( i != sub_process_counter );
 
-				if( mgx_processpool->m_sub_process[i].m_pid != -1 )
+				if( mgx_processpool->m_sub_process[i].m_pid == -1 )
 				{
 					mgx_processpool->m_stop = true;
 					break;
@@ -379,10 +375,10 @@ void run_parent(processpool * mgx_processpool)
 }
 
 //创建进程池
-void mgx_process_create( processpool* mgx_processpool, int listendfd, int process_number)
+processpool* mgx_process_create( int listendfd, int process_number)
 {
-
-	mgx_processpool = (processpool *)malloc(sizeof(processpool));
+	struct processpool * mgx_processpool;
+	mgx_processpool = (processpool *)malloc( sizeof(processpool));
 	mgx_processpool->m_listenfd = listendfd;
 	mgx_processpool->m_process_number = process_number;
 	mgx_processpool->m_idx = -1;
@@ -399,9 +395,9 @@ void mgx_process_create( processpool* mgx_processpool, int listendfd, int proces
 		assert( ret == 0 );
 
 		mgx_processpool->m_sub_process[i].m_pid = fork();
-		assert( mgx_processpool->m_sub_process[i].m_pid>=0 );
+		assert(mgx_processpool->m_sub_process[i].m_pid>=0 );
 
-		if(mgx_processpool-> m_sub_process[i].m_pid > 0 )
+		if( mgx_processpool-> m_sub_process[i].m_pid > 0 )
 		{
 			close( mgx_processpool->m_sub_process[i].m_pipefd[i] );
 			continue;
@@ -413,8 +409,8 @@ void mgx_process_create( processpool* mgx_processpool, int listendfd, int proces
 			break;
 		}
 	}
-	//注册运行方法
-	mgx_processpool->run = run;
+
+	return mgx_processpool;
 
 }
 
