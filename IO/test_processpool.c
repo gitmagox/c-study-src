@@ -134,13 +134,13 @@ int main( int argc, char * argv[] )
 	assert(ret !=-1);
 
 	struct processpool *my_processpool;
+
 	my_processpool = mgx_process_create(listenfd, 4);
 
-	// assert(my_processpool >0);
-
-	run(my_processpool);
+	mgx_process_run(my_processpool);
 
 	mgx_process_delete(my_processpool);
+	
 	close(listenfd);
 
 	return 0;

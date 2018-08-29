@@ -54,7 +54,7 @@ typedef struct processpool
 	int m_process_number;
 	//子进程的序号,m_idx=-1的时候为主进程
 	int m_idx;
-	//每一个进程都有一个内核进件表
+	//每一个进程都有一个内核事件表
 	int m_epollfd;
 	//监听socket
 	int m_listenfd;
@@ -67,6 +67,7 @@ typedef struct processpool
 processpool* mgx_process_create( int listendfd, int process_number);
 
 void mgx_process_delete(processpool * mgx_processpool );
+
 static int setnonblocking( int fd )
 {
 	int old_option = fcntl( fd, F_GETFL );
@@ -112,16 +113,16 @@ void addsig( int sig, void(*handler)(int) ,_Bool restart)
 }
 
 //统一事件源
-static void setup_sig_pipe(processpool ** mgx_processpool)
+static void setup_sig_pipe(processpool * mgx_processpool)
 {	
-	(*mgx_processpool)->m_epollfd = epoll_create( 5 );
-	assert( (*mgx_processpool)->m_epollfd != -1 );
+	mgx_processpool->m_epollfd = epoll_create( 5 );
+	assert( mgx_processpool->m_epollfd != -1 );
 
 	int ret = socketpair( PF_UNIX, SOCK_STREAM, 0, sig_pipefd );
 	assert( ret != -1 );
 
 	setnonblocking( sig_pipefd[1] );
-	addfd( (*mgx_processpool)->m_epollfd, sig_pipefd[0] );
+	addfd( mgx_processpool->m_epollfd, sig_pipefd[0] );
 	addsig( SIGCHLD, sig_handler, true );
 	addsig( SIGTERM, sig_handler, true);
 	addsig( SIGINT, sig_handler, true);
@@ -130,7 +131,7 @@ static void setup_sig_pipe(processpool ** mgx_processpool)
 }
 
 //进程池运行
-void run(processpool *mgx_processpool)
+void mgx_process_run(processpool *mgx_processpool)
 {
 	if( mgx_processpool->m_idx != -1 )
 	{
@@ -150,7 +151,7 @@ void mgx_process_delete(processpool * mgx_processpool ){
 //子进程
 void run_child(processpool *mgx_processpool)
 {
-	setup_sig_pipe(mgx_processpool);
+	setup_sig_pipe(&mgx_processpool);
 	//父进程的通信管道
 	int pipefd = mgx_processpool->m_sub_process[mgx_processpool->m_idx].m_pipefd[1];
 
@@ -262,7 +263,7 @@ void run_child(processpool *mgx_processpool)
 //父进程
 void run_parent(processpool  *mgx_processpool)
 {
-	setup_sig_pipe(mgx_processpool);
+	setup_sig_pipe(&mgx_processpool);
 
 	addfd( mgx_processpool->m_epollfd,mgx_processpool->m_listenfd );
 
@@ -275,7 +276,9 @@ void run_parent(processpool  *mgx_processpool)
 
 	while( ! mgx_processpool->m_stop )
 	{
+
 		number = epoll_wait( mgx_processpool->m_epollfd, events, MAX_EVENT_NUMBER, -1 );
+
 		if( (number<0) && (errno!=EINTR) )
 		{
 			printf("epoll failure\n");
@@ -397,7 +400,7 @@ processpool* mgx_process_create( int listendfd, int process_number)
 		mgx_processpool->m_sub_process[i].m_pid = fork();
 		assert(mgx_processpool->m_sub_process[i].m_pid>=0 );
 
-		if( mgx_processpool-> m_sub_process[i].m_pid > 0 )
+		if( mgx_processpool->m_sub_process[i].m_pid > 0 )
 		{
 			close( mgx_processpool->m_sub_process[i].m_pipefd[i] );
 			continue;
