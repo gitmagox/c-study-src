@@ -1,0 +1,3 @@
+/data/c-study-src/processpool/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/data/c-study-src/processpool/cmake-build-debug/CMakeFiles/edit_cache.dir
+/data/c-study-src/processpool/cmake-build-debug/CMakeFiles/processpool.dir
