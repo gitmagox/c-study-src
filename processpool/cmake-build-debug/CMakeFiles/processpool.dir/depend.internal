@@ -5,3 +5,6 @@ CMakeFiles/processpool.dir/main.c.o
  /data/c-study-src/processpool/main.c
  /data/c-study-src/processpool/map.h
  /data/c-study-src/processpool/select_event.h
+CMakeFiles/processpool.dir/map.c.o
+ /data/c-study-src/processpool/map.c
+ /data/c-study-src/processpool/map.h

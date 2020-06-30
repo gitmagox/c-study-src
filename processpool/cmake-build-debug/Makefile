@@ -150,6 +150,33 @@ main.c.s:
 	$(MAKE) -f CMakeFiles/processpool.dir/build.make CMakeFiles/processpool.dir/main.c.s
 .PHONY : main.c.s
 
+map.o: map.c.o
+
+.PHONY : map.o
+
+# target to build an object file
+map.c.o:
+	$(MAKE) -f CMakeFiles/processpool.dir/build.make CMakeFiles/processpool.dir/map.c.o
+.PHONY : map.c.o
+
+map.i: map.c.i
+
+.PHONY : map.i
+
+# target to preprocess a source file
+map.c.i:
+	$(MAKE) -f CMakeFiles/processpool.dir/build.make CMakeFiles/processpool.dir/map.c.i
+.PHONY : map.c.i
+
+map.s: map.c.s
+
+.PHONY : map.s
+
+# target to generate assembly for a file
+map.c.s:
+	$(MAKE) -f CMakeFiles/processpool.dir/build.make CMakeFiles/processpool.dir/map.c.s
+.PHONY : map.c.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -162,6 +189,9 @@ help:
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
+	@echo "... map.o"
+	@echo "... map.i"
+	@echo "... map.s"
 .PHONY : help
 
 

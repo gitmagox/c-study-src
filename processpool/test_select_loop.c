@@ -35,7 +35,6 @@ void on_connection(int fd, void * args){
 
 void on_message(int fd,void * args){
     char buf[ BUFFER_SIZE ];
-    /* 这些代码不会被重复触发，所以我们的读取数据，以确保把socket 读缓存中的所有数据读出 */
     printf("event trigger once \n");
     while( 1 )
     {
@@ -47,8 +46,6 @@ void on_message(int fd,void * args){
             int ret = recv( fd, buf, BUFFER_SIZE-1, 0 );
             if( ret < 0 )
             {
-                /* 对于非阻塞IO， 下面的条件成立表示数据已经全部读取完毕。此后
-                epoll 就能再次触发 sockfd 上的EPOOLIN事件，以驱动下一次读操作 */
                 if( ( errno == EAGAIN ) || ( errno == EWOULDBLOCK ) )
                 {
                     printf("read later\n");

@@ -1,5 +1,6 @@
 file(REMOVE_RECURSE
   "CMakeFiles/processpool.dir/main.c.o"
+  "CMakeFiles/processpool.dir/map.c.o"
   "processpool"
   "processpool.pdb"
 )

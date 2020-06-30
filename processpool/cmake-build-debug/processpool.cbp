@@ -81,6 +81,9 @@
 		<Unit filename="/data/c-study-src/processpool/main.c">
 			<Option target="processpool"/>
 		</Unit>
+		<Unit filename="/data/c-study-src/processpool/map.c">
+			<Option target="processpool"/>
+		</Unit>
 		<Unit filename="/data/c-study-src/processpool/map.h">
 			<Option target="processpool"/>
 		</Unit>

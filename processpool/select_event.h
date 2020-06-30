@@ -28,7 +28,7 @@ typedef struct  {
     int flag;
     void * args;
     struct epoll_event *event;
-    void (*handle)(int fd,void * args)
+    void (*handle)(int fd,void * args);
 } event_item;
 
 typedef struct {
@@ -45,13 +45,16 @@ static int setnonblocking( int fd )
     return old_option;
 }
 
-void create_select_event(select_event * e){
+select_event * create_select_event(){
+    select_event *e;
+    memset(e,"\0",sizeof(select_event ));
     e->epoll_fd = epoll_create( 5 );
     assert( e->epoll_fd != -1 );
     map_init(e->events);
+    return e;
 }
 
-static event_item * new_event_item(select_event * e,int fd,int flag,void * args,void(*handler)(void ) ){
+static event_item * new_event_item(select_event * e,int fd,int flag,void * args,void(*handler)(int fd,void * args) ){
     event_item * eventItem;
     struct epoll_event event;
     event.data.fd = fd;
@@ -81,7 +84,7 @@ static char * get_key(int fd,int flag){
     return key;
 }
 
-void select_event_add(select_event * e,int fd,int flag,void(*handler)(void ),void *args){
+void select_event_add(select_event * e,int fd,int flag,void(*handler)(int fd,void * args),void *args){
     event_item * eventItem = new_event_item(e,fd,flag,args,handler);
     char * key = get_key(fd,flag);
     map_set(e->events,key,eventItem);
