@@ -89,7 +89,8 @@ int main( int argc, char* argv[] )
     assert( ret != -1 );
     ret =  listen( listenfd, 5 );
     assert( ret != -1 );
-    selectEvent = create_select_event();
+    map_event_item_t * events;
+    selectEvent = create_select_event(events);
     select_event_add(selectEvent,listenfd,EPOLLIN,on_connection,NULL);
     select_loop(selectEvent);
 }

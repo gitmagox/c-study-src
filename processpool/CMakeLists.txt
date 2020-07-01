@@ -3,4 +3,4 @@ project(processpool C)
 
 set(CMAKE_C_STANDARD 99)
 
-add_executable(processpool main.c select_event.h map.h map.c)
+add_executable(processpool main.c select_event.h map.c map.h)

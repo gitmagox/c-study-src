@@ -23,17 +23,21 @@
 #include <stdbool.h>
 #include "map.h"
 
+
+
 typedef struct  {
     int fd;
     int flag;
     void * args;
     struct epoll_event *event;
-    void (*handle)(int fd,void * args);
+    void (*handle)(int,void*);
 } event_item;
+
+typedef map_t(event_item * ) map_event_item_t;
 
 typedef struct {
     int epoll_fd;
-    map_void_t * events;
+    map_event_item_t * events;
 } select_event;
 
 
@@ -45,17 +49,23 @@ static int setnonblocking( int fd )
     return old_option;
 }
 
-select_event * create_select_event(){
+select_event * create_select_event(map_event_item_t * events){
     select_event *e;
-    memset(e,"\0",sizeof(select_event ));
+    e = (select_event *)malloc( sizeof(select_event));
+    events = (map_event_item_t *)malloc( sizeof(map_event_item_t));
+    memset(e,0,sizeof(select_event ));
+    memset(events,0,sizeof(map_event_item_t ));
     e->epoll_fd = epoll_create( 5 );
     assert( e->epoll_fd != -1 );
-    map_init(e->events);
+    map_init(events);
+    e->events = events;
     return e;
 }
 
 static event_item * new_event_item(select_event * e,int fd,int flag,void * args,void(*handler)(int fd,void * args) ){
     event_item * eventItem;
+    eventItem = (event_item *)malloc( sizeof(event_item));
+    memset(eventItem,0,sizeof(event_item ));
     struct epoll_event event;
     event.data.fd = fd;
     event.events = flag;
@@ -78,14 +88,14 @@ static char * get_key(int fd,int flag){
     char * key;
     char fda[11],flaga[11];
     char *c = "k";
-    sprintf(fda, " %d" , fd);
-    sprintf(flaga, " %d" , flag);
+    sprintf(fda, "%d" , fd);
+    sprintf(flaga, "%d" , flag);
     key = add_string(fda,add_string(c,flaga));
     return key;
 }
 
 void select_event_add(select_event * e,int fd,int flag,void(*handler)(int fd,void * args),void *args){
-    event_item * eventItem = new_event_item(e,fd,flag,args,handler);
+    event_item *eventItem = new_event_item(e,fd,flag,args,handler);
     char * key = get_key(fd,flag);
     map_set(e->events,key,eventItem);
 }
@@ -95,7 +105,6 @@ void select_event_del(select_event * e,int fd,int flag){
     event_item * eventItem = map_get(e->events,key);
     if(eventItem != NULL){
         epoll_ctl( e->epoll_fd, EPOLL_CTL_DEL, eventItem->fd, 0 );
-        close( fd );
         map_remove(e->events,key);
     }
 }
