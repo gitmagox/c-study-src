@@ -64,14 +64,15 @@ select_event * create_select_event(map_event_item_t * events){
 
 static event_item * new_event_item(select_event * e,int fd,int flag,void * args,void(*handler)(int fd,void * args) ){
     event_item * eventItem;
+    struct epoll_event event;
     eventItem = (event_item *)malloc( sizeof(event_item));
     memset(eventItem,0,sizeof(event_item ));
-    struct epoll_event event;
     event.data.fd = fd;
     event.events = flag;
     epoll_ctl( e->epoll_fd, EPOLL_CTL_ADD, fd, &event );
     setnonblocking( fd );
     eventItem->event = &event;
+    eventItem->fd = fd;
     eventItem->flag = flag;
     eventItem->args = args;
     eventItem->handle = handler;
@@ -95,9 +96,11 @@ static char * get_key(int fd,int flag){
 }
 
 void select_event_add(select_event * e,int fd,int flag,void(*handler)(int fd,void * args),void *args){
-    event_item *eventItem = new_event_item(e,fd,flag,args,handler);
+    event_item *eventItem;
+    eventItem = new_event_item(e,fd,flag,args,handler);
     char * key = get_key(fd,flag);
     map_set(e->events,key,eventItem);
+    return;
 }
 
 void select_event_del(select_event * e,int fd,int flag){
@@ -113,6 +116,7 @@ void select_loop(select_event * e){
     struct epoll_event events[10000];
     while (1){
         int number  = epoll_wait( e->epoll_fd, events, 10000, -1 );
+
         if( ( number <0 ) && ( errno !=EINTR ) )
         {
             printf("epoll failure\n");
@@ -123,10 +127,10 @@ void select_loop(select_event * e){
             int fd = events[i].data.fd;
             int flag = events[i].events;
             char * key = get_key(fd,flag);
-            event_item * eventItem = map_get(e->events,key);
-            if( (eventItem!=NULL) && ( eventItem->event->events & flag ))
+            event_item ** eventItem = map_get(e->events,key);
+            if( (eventItem!=NULL) && ( (*eventItem)->flag & flag ))
             {
-                eventItem->handle(fd,eventItem->args);
+                (*eventItem)->handle(fd,(*eventItem)->args);
                 select_event_del(e,fd,flag);
             }
         }

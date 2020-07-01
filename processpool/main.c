@@ -66,7 +66,7 @@ void on_connection(int fd, void * args){
     int connfd = accept( fd, ( struct sockaddr* )&client_address,
                          &client_addrlength );
     char * connection = "new";
-    select_event_add( selectEvent,connfd,EPOLLIN | EPOLLET,&on_message,connection);
+    select_event_add(selectEvent,connfd,EPOLLIN,on_message,NULL);
 }
 
 int main( int argc, char* argv[] )
