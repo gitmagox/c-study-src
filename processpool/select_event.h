@@ -116,7 +116,6 @@ void select_loop(select_event * e){
     struct epoll_event events[10000];
     while (1){
         int number  = epoll_wait( e->epoll_fd, events, 10000, -1 );
-
         if( ( number <0 ) && ( errno !=EINTR ) )
         {
             printf("epoll failure\n");
@@ -131,7 +130,7 @@ void select_loop(select_event * e){
             if( (eventItem!=NULL) && ( (*eventItem)->flag & flag ))
             {
                 (*eventItem)->handle(fd,(*eventItem)->args);
-                select_event_del(e,fd,flag);
+//                select_event_del(e,fd,flag);
             }
         }
     }

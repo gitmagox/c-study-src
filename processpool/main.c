@@ -15,7 +15,7 @@
 #include "select_event.h"
 
 #define MAX_EVENT_NUMBER 1024
-#define BUFFER_SIZE 10
+#define BUFFER_SIZE 60000
 typedef struct epoll_event epoll_event;
 
 
@@ -30,6 +30,7 @@ void on_message(int fd,void * args){
     {
         memset( buf, '\0', BUFFER_SIZE );
         int ret = recv( fd, buf, BUFFER_SIZE-1, 0 );
+        send(fd,&buf,BUFFER_SIZE-1,0);
         if( ret < 0 )
         {
             memset( buf, '\0', BUFFER_SIZE );
