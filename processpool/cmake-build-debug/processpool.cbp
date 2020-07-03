@@ -90,6 +90,12 @@
 		<Unit filename="/data/c-study-src/processpool/select_event.h">
 			<Option target="processpool"/>
 		</Unit>
+		<Unit filename="/data/c-study-src/processpool/test_this.h">
+			<Option target="processpool"/>
+		</Unit>
+		<Unit filename="/data/c-study-src/processpool/timer.h">
+			<Option target="processpool"/>
+		</Unit>
 		<Unit filename="/data/c-study-src/processpool/timer_wheel.h">
 			<Option target="processpool"/>
 		</Unit>

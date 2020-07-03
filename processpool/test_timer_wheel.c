@@ -37,10 +37,8 @@ print_elapsed_time(void){
         if (clock_gettime(CLOCK_MONOTONIC, &start) == -1)
             handle_error("clock_gettime");
     }
-
     if (clock_gettime(CLOCK_MONOTONIC, &curr) == -1)
         handle_error("clock_gettime");
-
     secs = curr.tv_sec - start.tv_sec;
     nsecs = curr.tv_nsec - start.tv_nsec;
     if (nsecs < 0) {

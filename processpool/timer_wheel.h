@@ -6,6 +6,7 @@
 #define PROCESSPOOL_TIMER_WHEEL_H
 #include <string.h>
 #include <stdlib.h>
+
 typedef struct  timer_item timer_item ;
 struct timer_item  {
     int fd;
@@ -82,7 +83,7 @@ timer_item * wheel_timer_add( timer_wheel * timerWheel,int timeout,int fd,void(*
     return timerItem;
 }
 
-void wheel_del_timer(timer_wheel * timerWheel,timer_item * timerItem){
+void wheel_timer_del(timer_wheel * timerWheel,timer_item * timerItem){
     int ts = timerItem->time_slot;
     if(timerItem==timerWheel->slots[ts]){
         timerWheel->slots[ts] = timerWheel->slots[ts]->next;
