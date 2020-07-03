@@ -90,6 +90,9 @@
 		<Unit filename="/data/c-study-src/processpool/select_event.h">
 			<Option target="processpool"/>
 		</Unit>
+		<Unit filename="/data/c-study-src/processpool/timer_wheel.h">
+			<Option target="processpool"/>
+		</Unit>
 		<Unit filename="/data/c-study-src/processpool/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
 		</Unit>
