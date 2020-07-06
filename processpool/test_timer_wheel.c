@@ -37,8 +37,10 @@ print_elapsed_time(void){
         if (clock_gettime(CLOCK_MONOTONIC, &start) == -1)
             handle_error("clock_gettime");
     }
+
     if (clock_gettime(CLOCK_MONOTONIC, &curr) == -1)
         handle_error("clock_gettime");
+
     secs = curr.tv_sec - start.tv_sec;
     nsecs = curr.tv_nsec - start.tv_nsec;
     if (nsecs < 0) {
@@ -47,6 +49,7 @@ print_elapsed_time(void){
     }
     printf("%d.%03d: ", secs, (nsecs + 500000) / 1000000);
 }
+
 
 
 void timer_call_handle(int fd,void * args){
@@ -73,23 +76,26 @@ int main( int argc, char* argv[] )
     map_event_item_t * events;
     selectEvent = create_select_event(events);
     timer_wheel * timerWheel = create_timer_wheel (1,10);
+    TimerInterface * thiz_timer = get_thiz_by_timer_wheel(timerWheel);
     for(int i=0; i<3;i++){
-        wheel_timer_add( timerWheel,i*10,i,timer_call_handle,NULL);
+        thiz_timer->add(thiz_timer,i*10,i,timer_call_handle,NULL);
     }
+
     struct itimerspec new_value;
     struct timespec now;
     uint64_t exp;
     ssize_t s;
-    ret = clock_gettime(CLOCK_REALTIME, &now);
+    ret = clock_gettime(CLOCK_REALTIME, &now);//获取时钟时间
     assert(ret != -1);
-    new_value.it_value.tv_sec = 3;
+    new_value.it_value.tv_sec = 3; //第一次到期的时间
     new_value.it_value.tv_nsec = now.tv_nsec;
-    new_value.it_interval.tv_sec = 0;
-    new_value.it_interval.tv_nsec = 1000000;
-    int timefd = timerfd_create(CLOCK_REALTIME, 0);
+    new_value.it_interval.tv_sec = 1;      //之后每次到期的时间间隔
+    new_value.it_interval.tv_nsec = 0;
+    int timefd = timerfd_create(CLOCK_REALTIME, 0); // 构建了一个定时器
     assert(timefd != -1);
-    ret = timerfd_settime(timefd, 0, &new_value, NULL);
+    ret = timerfd_settime(timefd, 0, &new_value, NULL);//启动定时器
     assert(ret != -1);
+
     select_event_add(selectEvent,timefd,EPOLLIN,timer_tick,timerWheel);
     select_loop(selectEvent);
 }
