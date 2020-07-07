@@ -3,4 +3,4 @@ project(processpool C)
 
 set(CMAKE_C_STANDARD 99)
 
-add_executable(processpool main.c select_event.h map.c map.h timer_wheel.h timer.h)
+add_executable(processpool main.c select_event.h map.c map.h timer_wheel.h timer.h tcp_connection.h hash_map.h magox.h protocol.h http.h)

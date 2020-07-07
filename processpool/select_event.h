@@ -21,8 +21,7 @@
 #include <sys/wait.h>
 #include <sys/stat.h>
 #include <stdbool.h>
-#include "map.h"
-
+#include "hash_map.h"
 
 
 typedef struct  {
@@ -33,7 +32,7 @@ typedef struct  {
     void (*handle)(int,void*);
 } event_item;
 
-typedef map_t(event_item * ) map_event_item_t;
+typedef hash_map_t(event_item * ) map_event_item_t;
 
 typedef struct {
     int epoll_fd;
@@ -57,7 +56,7 @@ select_event * create_select_event(map_event_item_t * events){
     memset(events,0,sizeof(map_event_item_t ));
     e->epoll_fd = epoll_create( 5 );
     assert( e->epoll_fd != -1 );
-    map_init(events);
+    hash_map_init(events);
     e->events = events;
     return e;
 }
@@ -79,36 +78,21 @@ static event_item * new_event_item(select_event * e,int fd,int flag,void * args,
     return eventItem;
 }
 
-static char * add_string(char *a,char *b){
-    char *name = (char *) malloc(strlen(a) + strlen(b));
-    sprintf(name, "%s%s", a, b);
-    return name;
-}
-
-static char * get_key(int fd,int flag){
-    char * key;
-    char fda[11],flaga[11];
-    char *c = "k";
-    sprintf(fda, "%d" , fd);
-    sprintf(flaga, "%d" , flag);
-    key = add_string(fda,add_string(c,flaga));
-    return key;
-}
 
 void select_event_add(select_event * e,int fd,int flag,void(*handler)(int fd,void * args),void *args){
     event_item *eventItem;
     eventItem = new_event_item(e,fd,flag,args,handler);
-    char * key = get_key(fd,flag);
-    map_set(e->events,key,eventItem);
+    char * key = hash_map_get_key(int,2,fd,flag);
+    hash_map_set(e->events,key,eventItem);
     return;
 }
 
 void select_event_del(select_event * e,int fd,int flag){
-    char * key = get_key(fd,flag);
+    char * key = hash_map_get_key(int,2,fd,flag);
     event_item * eventItem = map_get(e->events,key);
     if(eventItem != NULL){
         epoll_ctl( e->epoll_fd, EPOLL_CTL_DEL, eventItem->fd, 0 );
-        map_remove(e->events,key);
+        hash_map_remove(e->events,key);
     }
 }
 
@@ -125,8 +109,8 @@ void select_loop(select_event * e){
         {
             int fd = events[i].data.fd;
             int flag = events[i].events;
-            char * key = get_key(fd,flag);
-            event_item ** eventItem = map_get(e->events,key);
+            char * key = hash_map_get_key(int,2,fd,flag);
+            event_item ** eventItem = hash_map_get(e->events,key);
             if( (eventItem!=NULL) && ( (*eventItem)->flag & flag ))
             {
                 (*eventItem)->handle(fd,(*eventItem)->args);

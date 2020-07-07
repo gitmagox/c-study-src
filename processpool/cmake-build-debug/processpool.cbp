@@ -78,6 +78,15 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="/data/c-study-src/processpool/hash_map.h">
+			<Option target="processpool"/>
+		</Unit>
+		<Unit filename="/data/c-study-src/processpool/http.h">
+			<Option target="processpool"/>
+		</Unit>
+		<Unit filename="/data/c-study-src/processpool/magox.h">
+			<Option target="processpool"/>
+		</Unit>
 		<Unit filename="/data/c-study-src/processpool/main.c">
 			<Option target="processpool"/>
 		</Unit>
@@ -87,7 +96,13 @@
 		<Unit filename="/data/c-study-src/processpool/map.h">
 			<Option target="processpool"/>
 		</Unit>
+		<Unit filename="/data/c-study-src/processpool/protocol.h">
+			<Option target="processpool"/>
+		</Unit>
 		<Unit filename="/data/c-study-src/processpool/select_event.h">
+			<Option target="processpool"/>
+		</Unit>
+		<Unit filename="/data/c-study-src/processpool/tcp_connection.h">
 			<Option target="processpool"/>
 		</Unit>
 		<Unit filename="/data/c-study-src/processpool/timer.h">

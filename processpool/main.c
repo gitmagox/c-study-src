@@ -140,6 +140,7 @@ int main( int argc, char* argv[] )
     for(int i=0; i<3;i++){
         thiz_timer->add(thiz_timer,i*10,i,timer_call_handle,NULL);
     }
+    wheel_start(timerWheel);
 
     struct itimerspec new_value;
     struct timespec now;
@@ -157,5 +158,6 @@ int main( int argc, char* argv[] )
     assert(ret != -1);
 
     select_event_add(selectEvent,timefd,EPOLLIN,timer_tick,timerWheel);
+
     select_loop(selectEvent);
 }

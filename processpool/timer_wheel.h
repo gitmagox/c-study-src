@@ -10,9 +10,19 @@
 #include <stdio.h>
 #include "timer.h"
 
+
+#define free_wheel(T)  \
+    for(int i=0;i<WHEEL_SLOTS_NUM;i++){\
+        if(timerWheel->slots[i]!=NULL){\
+            free(timerWheel);\
+            timerWheel->slots[i]=NULL;\
+        }\
+    }\
+    free(T)\
+
 enum
 {
-    WHEEL_STATUS_SETTING,
+    WHEEL_STATUS_SETTING=0,
     WHEEL_STATUS_RUNNING,
     WHEEL_STATUS_STOP,
     WHEEL_STATUS_DESTRORING
@@ -40,6 +50,7 @@ typedef struct  {
     int si;
     int status;
     int cur_slot;
+    int counts;
 } timer_wheel;
 
 static _Bool is_null_timer(timer_item * timerItem){
@@ -71,6 +82,9 @@ static  timer_item * new_timer_item( timer_wheel *timerWheel,int ts,int fd,int r
 }
 
 static inline int wheel_timer_add( timer_wheel * timerWheel,int timeout,int fd,void(*handler)(int, void* ),void * args){
+    if(timerWheel->status==WHEEL_STATUS_DESTRORING){
+        return RET_FAIL;
+    }
     if(timeout <0){
         return NULL;
     }
@@ -83,6 +97,7 @@ static inline int wheel_timer_add( timer_wheel * timerWheel,int timeout,int fd,v
     int rotation = ticks/(timerWheel->n);
     int ts = (timerWheel->cur_slot +(ticks % timerWheel->n)) % timerWheel->n;
     timer_item * timerItem =new_timer_item(timerWheel,ts,fd,rotation,handler,args) ;
+    timerWheel->counts++;
     return RET_OK;
 }
 
@@ -102,15 +117,16 @@ static inline int wheel_timer_del(timer_wheel * timerWheel,timer_item * timerIte
         }
         free(timerItem);
     }
+    timerWheel->counts--;
     return RET_OK;
 }
 
 void wheel_start(timer_wheel * timerWheel){
-    timerWheel->status==WHEEL_STATUS_RUNNING;
+    timerWheel->status=WHEEL_STATUS_RUNNING;
 }
 
 void wheel_stop(timer_wheel * timerWheel){
-    timerWheel->status==WHEEL_STATUS_STOP;
+    timerWheel->status=WHEEL_STATUS_STOP;
 }
 
 void wheel_tick(timer_wheel * timerWheel){
@@ -140,11 +156,18 @@ void wheel_tick(timer_wheel * timerWheel){
             }
         }
     }
+
+    if(timerWheel->status==WHEEL_STATUS_DESTRORING && timerWheel->counts==0){
+        free_wheel(timerWheel);
+    }
     timerWheel->cur_slot = ++timerWheel->cur_slot % timerWheel->n;
 }
 
 static inline int wheel_destory(timer_wheel * timerWheel){
-
+    timerWheel->status=WHEEL_STATUS_DESTRORING;
+    if(timerWheel->counts==0){
+        free_wheel(timerWheel);
+    }
 }
 
 
@@ -175,9 +198,10 @@ timer_wheel * create_timer_wheel (int si,int n){
     timerWheel->n = n;
     timerWheel->si = si;
     timerWheel->cur_slot = 0;
+    timerWheel->counts = 0;
     timerWheel->timerInterface.add = _timer_wheel_add;
     timerWheel->timerInterface.del = _timer_wheel_del;
-    timerWheel->status==WHEEL_STATUS_SETTING;
+    timerWheel->status=WHEEL_STATUS_SETTING;
     return timerWheel;
 }
 
