@@ -8,7 +8,8 @@
 #include <stdlib.h>
 #include <stddef.h>
 #include <stdio.h>
-#include "timer.h"
+#include <stdbool.h>
+#include "Interface/timer.h"
 
 
 #define free_wheel(T)  \
@@ -53,13 +54,26 @@ typedef struct  {
     int counts;
 } timer_wheel;
 
+static _Bool is_null_timer(timer_item * timerItem);
+static  timer_item * new_timer_item( timer_wheel *timerWheel,int ts,int fd,int rotation,void(*handler)(int,void *),void * args);
+static inline int wheel_timer_add( timer_wheel * timerWheel,int timeout,int fd,void(*handler)(int, void* ),void * args);
+static inline int wheel_timer_del(timer_wheel * timerWheel,timer_item * timerItem);
+void wheel_start(timer_wheel * timerWheel);
+void wheel_stop(timer_wheel * timerWheel);
+void wheel_tick(timer_wheel * timerWheel);
+static inline int wheel_destory(timer_wheel * timerWheel);
+static inline timer_wheel * _get_thiz(TimerInterface *thiz);
+static inline int _timer_wheel_add(TimerInterface *thiz,int timeout,int fd,void(*handler)(int, void* ),void * args);
+static inline int _timer_wheel_del(TimerInterface *thiz,void *timer);
+static inline timer_wheel * create_timer_wheel (int si,int n);
+static inline TimerInterface * get_thiz_by_timer_wheel(timer_wheel* timerWheel);
+
 static _Bool is_null_timer(timer_item * timerItem){
     if(timerItem==NULL){
         return true;
     }
     return false;
 }
-
 
 static  timer_item * new_timer_item( timer_wheel *timerWheel,int ts,int fd,int rotation,void(*handler)(int,void *),void * args){
     timer_item * timerItem;
@@ -171,24 +185,19 @@ static inline int wheel_destory(timer_wheel * timerWheel){
 }
 
 
-static inline timer_wheel * _get_thiz(TimerInterface *thiz){
-    timer_wheel * timerWheel = (timer_wheel *)((char *) thiz + offsetof( timer_wheel, timerInterface  ));
-    return timerWheel;
-}
-
 static inline int _timer_wheel_add(TimerInterface *thiz,int timeout,int fd,void(*handler)(int, void* ),void * args)
 {
-    timer_wheel * timerWheel = _get_thiz(thiz);
+    timer_wheel * timerWheel = get_thiz_parent(timer_wheel,timerInterface,thiz);
     return wheel_timer_add( timerWheel,timeout,fd,handler,args);
 }
 
 static inline int _timer_wheel_del(TimerInterface *thiz,void *timer)
 {
-    timer_wheel * timerWheel = _get_thiz(thiz);
+    timer_wheel * timerWheel = get_thiz_parent(timer_wheel,timerInterface,thiz);
     return wheel_timer_del(timerWheel,(timer_item *)timer);
 }
 
-timer_wheel * create_timer_wheel (int si,int n){
+static inline timer_wheel * create_timer_wheel (int si,int n){
     timer_wheel * timerWheel;
     timerWheel = (timer_wheel *)malloc( sizeof( timer_wheel));
     memset(timerWheel,"\0",sizeof(timer_wheel));
@@ -208,5 +217,4 @@ timer_wheel * create_timer_wheel (int si,int n){
 static inline TimerInterface * get_thiz_by_timer_wheel(timer_wheel* timerWheel){
     return &timerWheel->timerInterface;
 }
-
 #endif //PROCESSPOOL_TIMER_WHEEL_H

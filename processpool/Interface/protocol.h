@@ -5,14 +5,7 @@
 #ifndef PROCESSPOOL_PROTOCOL_H
 #define PROCESSPOOL_PROTOCOL_H
 
-#include <string.h>
-#include <stdlib.h>
-
-enum
-{
-    RET_OK,
-    RET_FAIL
-};
+#include "base.h"
 
 struct ProtocolInterface;
 typedef struct ProtocolInterface ProtocolInterface;
@@ -20,7 +13,7 @@ typedef struct ProtocolInterface ProtocolInterface;
 
 struct ProtocolInterface
 {
-    int (*input)(ProtocolInterface *thiz, char* buffer,void * connection);
+    int (*input)(ProtocolInterface  *thiz,char* buffer,void *connection);
     int (*encode)(ProtocolInterface *thiz,char* buffer,void *connection);
     int (*decode)(ProtocolInterface *thiz,char* buffer,void *connection);
 };

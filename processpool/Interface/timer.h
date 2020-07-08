@@ -4,14 +4,7 @@
 
 #ifndef PROCESSPOOL_TIMER_H
 #define PROCESSPOOL_TIMER_H
-#include <string.h>
-#include <stdlib.h>
-
-enum
-{
-    RET_OK,
-    RET_FAIL
-};
+#include "base.h"
 
 struct TimerInterface;
 typedef struct TimerInterface TimerInterface;

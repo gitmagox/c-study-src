@@ -78,10 +78,25 @@
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/data/c-study-src/processpool/hash_map.h">
+		<Unit filename="/data/c-study-src/processpool/Interface/base.h">
 			<Option target="processpool"/>
 		</Unit>
-		<Unit filename="/data/c-study-src/processpool/http.h">
+		<Unit filename="/data/c-study-src/processpool/Interface/connection.h">
+			<Option target="processpool"/>
+		</Unit>
+		<Unit filename="/data/c-study-src/processpool/Interface/protocol.h">
+			<Option target="processpool"/>
+		</Unit>
+		<Unit filename="/data/c-study-src/processpool/Interface/timer.h">
+			<Option target="processpool"/>
+		</Unit>
+		<Unit filename="/data/c-study-src/processpool/Protocol/http.h">
+			<Option target="processpool"/>
+		</Unit>
+		<Unit filename="/data/c-study-src/processpool/Protocol/protocol_factory.h">
+			<Option target="processpool"/>
+		</Unit>
+		<Unit filename="/data/c-study-src/processpool/hash_map.h">
 			<Option target="processpool"/>
 		</Unit>
 		<Unit filename="/data/c-study-src/processpool/magox.h">
@@ -96,16 +111,10 @@
 		<Unit filename="/data/c-study-src/processpool/map.h">
 			<Option target="processpool"/>
 		</Unit>
-		<Unit filename="/data/c-study-src/processpool/protocol.h">
-			<Option target="processpool"/>
-		</Unit>
 		<Unit filename="/data/c-study-src/processpool/select_event.h">
 			<Option target="processpool"/>
 		</Unit>
 		<Unit filename="/data/c-study-src/processpool/tcp_connection.h">
-			<Option target="processpool"/>
-		</Unit>
-		<Unit filename="/data/c-study-src/processpool/timer.h">
 			<Option target="processpool"/>
 		</Unit>
 		<Unit filename="/data/c-study-src/processpool/timer_wheel.h">

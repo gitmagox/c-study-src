@@ -7,6 +7,8 @@
 #include "magox.h"
 #include "hash_map.h"
 #include "select_event.h"
+#include "Interface/connection.h"
+#include "Protocol/protocol_factory.h"
 
 const READ_BUFFER_SIZE = 65535;
 
@@ -18,11 +20,10 @@ enum {
     TCP_STATUS_CLOSED=8,
 };
 
-enum {
-    http_protocol = 1
-};
+
 
 typedef struct tcp_connection{
+    struct ConnectionInterface ConnectionInterface;
     int id;
     int sorket;
     int status:TCP_STATUS_ESTABLISHED;
@@ -62,15 +63,16 @@ static inline void baseRead(int fd,tcp_connection *tcpConnection){
             }
         }else{
             //protocol_input
+            ProtocolInterface * protocol = build_protocol(tcpConnection->protocol);
 
 
+            tcpConnection->_currentPackageLength = protocol->input(protocol,tcpConnection->recv_buffer,tcpConnection);
 
 
             //callback onMessage;
             tcpConnection->onMessage(fd,tcpConnection);
         }
     }
-
 }
 
 static inline void recv_buffer_read(int fd, void* tcp_connection){
@@ -96,6 +98,17 @@ static inline int connection_mannage_add(connection_mannege * connectionMannege,
     return RET_OK;
 }
 
+
+static inline tcp_connection_send(ConnectionInterface *thiz, char* buffer){
+
+}
+
+
+static inline tcp_connection_close(ConnectionInterface *thiz){
+
+}
+
+
 static inline tcp_connection * new_tcp_connection(connection_mannege * connectionMannege,int fd,int protocol,void(*onMessage)(int fd,void * args),select_event * selectEvent){
     tcp_connection * tcpConnection;
     tcpConnection = (tcp_connection *)malloc( sizeof(tcp_connection));
@@ -108,6 +121,8 @@ static inline tcp_connection * new_tcp_connection(connection_mannege * connectio
     tcpConnection->sendBufferSize = 1048576;
     tcpConnection->bytesRead=0;
     tcpConnection->onMessage = onMessage;
+    tcpConnection->ConnectionInterface.send = tcp_connection_send;
+    tcpConnection->ConnectionInterface.close = tcp_connection_close;
     connection_mannage_add(connectionMannege,tcpConnection);
     select_event_add(selectEvent,fd,EPOLLIN,recv_buffer_read,tcpConnection);
     return tcpConnection;
