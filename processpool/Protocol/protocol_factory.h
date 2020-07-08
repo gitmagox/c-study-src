@@ -16,7 +16,7 @@ static inline ProtocolInterface * build_protocol(int type){
     ProtocolInterface * protocol;
     if(type==HTTP_PROTOCOL){
         http_protocol * httpProtocol = http_protocol_create();
-        protocol = get_thiz(http_protocol,ProtocolInterface,httpProtocol);
+        protocol = get_thiz(http_protocol,ProtocolInterface,protocolInterface,httpProtocol);
     }
     return protocol;
 }
