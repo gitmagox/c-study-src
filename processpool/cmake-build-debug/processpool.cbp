@@ -99,6 +99,12 @@
 		<Unit filename="/data/c-study-src/processpool/Protocol/protocol_factory.h">
 			<Option target="processpool"/>
 		</Unit>
+		<Unit filename="/data/c-study-src/processpool/Timer/timer_factory.h">
+			<Option target="processpool"/>
+		</Unit>
+		<Unit filename="/data/c-study-src/processpool/Timer/timer_wheel.h">
+			<Option target="processpool"/>
+		</Unit>
 		<Unit filename="/data/c-study-src/processpool/hash_map.h">
 			<Option target="processpool"/>
 		</Unit>
@@ -115,9 +121,6 @@
 			<Option target="processpool"/>
 		</Unit>
 		<Unit filename="/data/c-study-src/processpool/select_event.h">
-			<Option target="processpool"/>
-		</Unit>
-		<Unit filename="/data/c-study-src/processpool/timer_wheel.h">
 			<Option target="processpool"/>
 		</Unit>
 		<Unit filename="/data/c-study-src/processpool/CMakeLists.txt">

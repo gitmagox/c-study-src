@@ -1,7 +1,7 @@
 #include "magox.h"
 #include "select_event.h"
 #include <sys/timerfd.h>
-#include "timer_wheel.h"
+#include "Timer/timer_factory.h"
 
 #define MAX_EVENT_NUMBER 1024
 #define BUFFER_SIZE 60000
@@ -62,11 +62,11 @@ int main( int argc, char* argv[] )
     int ret = 0;
     map_event_item_t * events;
     selectEvent = create_select_event(events);
-    timer_wheel * timerWheel = create_timer_wheel (1,10);
-    TimerInterface * thiz_timer = get_thiz_by_timer_wheel(timerWheel);
+    TimerInterface * mytimer = build_timer(TIMER_WHEEL);
     for(int i=0; i<3;i++){
-        thiz_timer->add(thiz_timer,i*10,i,timer_call_handle,NULL);
+        mytimer->add(mytimer,i*10,i,timer_call_handle,NULL);
     }
+    mytimer->start(mytimer);
 
     struct itimerspec new_value;
     struct timespec now;
@@ -83,6 +83,8 @@ int main( int argc, char* argv[] )
     ret = timerfd_settime(timefd, 0, &new_value, NULL);//启动定时器
     assert(ret != -1);
 
-    select_event_add(selectEvent,timefd,EPOLLIN,timer_tick,timerWheel);
+    timer_wheel * timerWheel;
+    timerWheel = get_thiz_parent(timer_wheel,timerInterface,mytimer);
+    select_event_add(selectEvent,timefd,EPOLLIN,timer_tick,  timerWheel);
     select_loop(selectEvent);
 }

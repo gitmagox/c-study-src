@@ -14,6 +14,7 @@ struct TimerInterface
 {
     int (*add)(TimerInterface *thiz,int timeout,int fd,void(*handler)(int, void* ),void * args);
     int (*del)(TimerInterface *thiz,void *timer);
+    int (*start)(TimerInterface *thiz);
 };
 
 static inline int add(TimerInterface *thiz, int timeout,int fd,void(*handler)(int, void* ),void * args)
@@ -30,6 +31,15 @@ static inline int del (TimerInterface *thiz, void *timer)
     if(thiz->del != NULL)
     {
         return thiz->del(thiz,timer);
+    }
+    return RET_OK;
+}
+
+static inline int start (TimerInterface *thiz)
+{
+    if(thiz->start != NULL)
+    {
+        return thiz->start(thiz);
     }
     return RET_OK;
 }

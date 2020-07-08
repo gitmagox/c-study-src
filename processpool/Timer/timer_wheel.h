@@ -9,7 +9,7 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <stdbool.h>
-#include "Interface/timer.h"
+#include "../Interface/timer.h"
 
 
 #define free_wheel(T)  \
@@ -197,6 +197,13 @@ static inline int _timer_wheel_del(TimerInterface *thiz,void *timer)
     return wheel_timer_del(timerWheel,(timer_item *)timer);
 }
 
+static inline int _timer_wheel_start(TimerInterface *thiz)
+{
+    timer_wheel * timerWheel = get_thiz_parent(timer_wheel,timerInterface,thiz);
+    wheel_start(timerWheel);
+    return RET_OK;
+}
+
 static inline timer_wheel * create_timer_wheel (int si,int n){
     timer_wheel * timerWheel;
     timerWheel = (timer_wheel *)malloc( sizeof( timer_wheel));
@@ -210,6 +217,7 @@ static inline timer_wheel * create_timer_wheel (int si,int n){
     timerWheel->counts = 0;
     timerWheel->timerInterface.add = _timer_wheel_add;
     timerWheel->timerInterface.del = _timer_wheel_del;
+    timerWheel->timerInterface.start = _timer_wheel_start;
     timerWheel->status=WHEEL_STATUS_SETTING;
     return timerWheel;
 }

@@ -3,11 +3,12 @@
 
 CMakeFiles/processpool.dir/main.c.o: ../Interface/base.h
 CMakeFiles/processpool.dir/main.c.o: ../Interface/timer.h
+CMakeFiles/processpool.dir/main.c.o: ../Timer/timer_factory.h
+CMakeFiles/processpool.dir/main.c.o: ../Timer/timer_wheel.h
 CMakeFiles/processpool.dir/main.c.o: ../hash_map.h
 CMakeFiles/processpool.dir/main.c.o: ../main.c
 CMakeFiles/processpool.dir/main.c.o: ../map.h
 CMakeFiles/processpool.dir/main.c.o: ../select_event.h
-CMakeFiles/processpool.dir/main.c.o: ../timer_wheel.h
 
 CMakeFiles/processpool.dir/map.c.o: ../map.c
 CMakeFiles/processpool.dir/map.c.o: ../map.h
