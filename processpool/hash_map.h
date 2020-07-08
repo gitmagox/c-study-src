@@ -26,7 +26,7 @@
 #include "map.h"
 
 
-static inline char* string_join(char *s1, char *s2)
+static inline char* string_join(char *s1, const char *s2)
 {
     char *result = malloc(strlen(s1)+strlen(s2)+1);
     if (result == NULL) exit (1);

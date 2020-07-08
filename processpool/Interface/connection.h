@@ -14,6 +14,7 @@ struct ConnectionInterface
 {
     int (*send)(ConnectionInterface  *thiz,char* buffer);
     int (*close)(ConnectionInterface *thiz);
+    int (*destroy)(ConnectionInterface *thiz);
 };
 
 static inline int send(ConnectionInterface *thiz, char* buffer)
@@ -30,6 +31,15 @@ static inline int close(ConnectionInterface *thiz)
     if(thiz->close != NULL)
     {
         return thiz->close(thiz);
+    }
+    return RET_OK;
+}
+
+static inline int destroy(ConnectionInterface *thiz)
+{
+    if(thiz->destroy != NULL)
+    {
+        return thiz->destroy(thiz);
     }
     return RET_OK;
 }
