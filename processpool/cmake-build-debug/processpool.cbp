@@ -78,6 +78,9 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="/data/c-study-src/processpool/Connection/tcp_connection.h">
+			<Option target="processpool"/>
+		</Unit>
 		<Unit filename="/data/c-study-src/processpool/Interface/base.h">
 			<Option target="processpool"/>
 		</Unit>
@@ -112,9 +115,6 @@
 			<Option target="processpool"/>
 		</Unit>
 		<Unit filename="/data/c-study-src/processpool/select_event.h">
-			<Option target="processpool"/>
-		</Unit>
-		<Unit filename="/data/c-study-src/processpool/tcp_connection.h">
 			<Option target="processpool"/>
 		</Unit>
 		<Unit filename="/data/c-study-src/processpool/timer_wheel.h">

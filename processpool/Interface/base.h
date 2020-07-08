@@ -19,6 +19,6 @@ enum
 
 #define get_thiz_parent(P,T,Z) (P *)((char *) Z + offsetof( P, T ))
 
-#define get_thiz(P,T,B) (T *)((char *) B - offsetof( P, T ))
+#define get_thiz(P,T,t,B) (T *)((char *) B - offsetof( P, t ))
 
 #endif //PROCESSPOOL_BASE_H

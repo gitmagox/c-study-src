@@ -8,7 +8,7 @@
 #include "../Interface/protocol.h"
 
 typedef struct http_protocol {
-    struct ProtocolInterface ProtocolInterface;
+    struct ProtocolInterface protocolInterface;
 } http_protocol;
 
 static inline http_protocol *http_protocol_create(){

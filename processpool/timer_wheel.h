@@ -214,7 +214,4 @@ static inline timer_wheel * create_timer_wheel (int si,int n){
     return timerWheel;
 }
 
-static inline TimerInterface * get_thiz_by_timer_wheel(timer_wheel* timerWheel){
-    return &timerWheel->timerInterface;
-}
 #endif //PROCESSPOOL_TIMER_WHEEL_H

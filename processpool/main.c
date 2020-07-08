@@ -136,7 +136,7 @@ int main( int argc, char* argv[] )
     selectEvent = create_select_event(events);
     select_event_add(selectEvent,listenfd,EPOLLIN,on_connection,NULL);
     timer_wheel * timerWheel = create_timer_wheel (1,10);
-    TimerInterface * thiz_timer = get_thiz_by_timer_wheel(timerWheel);
+    TimerInterface * thiz_timer = get_thiz(timer_wheel,TimerInterface ,timerInterface,timerWheel);
     for(int i=0; i<3;i++){
         thiz_timer->add(thiz_timer,i*10,i,timer_call_handle,NULL);
     }

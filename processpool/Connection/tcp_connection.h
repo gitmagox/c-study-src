@@ -24,7 +24,7 @@ typedef struct connection_mannege connection_mannege;
 
 
 typedef struct tcp_connection{
-    struct ConnectionInterface ConnectionInterface;
+    struct ConnectionInterface connectionInterface;
     connection_mannege * connectionMannege;
     int id;
     int sorket;
@@ -121,7 +121,7 @@ static inline int connection_mannage_add(connection_mannege * connectionMannege,
 }
 
 static inline int tcp_connection_destroy(ConnectionInterface *thiz){
-    tcp_connection * tcpConnection = get_thiz(tcp_connection,ConnectionInterface,thiz);
+    tcp_connection * tcpConnection = get_thiz(tcp_connection,ConnectionInterface,connectionInterface,thiz);
     char * key = hash_map_get_key(int,1,tcpConnection->id);
     hash_map_remove(tcpConnection->connectionMannege->connections,key);
     free(tcpConnection);
@@ -152,9 +152,9 @@ static inline tcp_connection * new_tcp_connection(connection_mannege * connectio
     tcpConnection->sendBufferSize = 1048576;
     tcpConnection->bytesRead=0;
     tcpConnection->onMessage = onMessage;
-    tcpConnection->ConnectionInterface.send = tcp_connection_send;
-    tcpConnection->ConnectionInterface.close = tcp_connection_close;
-    tcpConnection->ConnectionInterface.destroy = tcp_connection_destroy;
+    tcpConnection->connectionInterface.send = tcp_connection_send;
+    tcpConnection->connectionInterface.close = tcp_connection_close;
+    tcpConnection->connectionInterface.destroy = tcp_connection_destroy;
     connection_mannage_add(connectionMannege,tcpConnection);
     select_event_add(selectEvent,fd,EPOLLIN,recv_buffer_read,tcpConnection);
     tcpConnection->connectionMannege = connectionMannege;
