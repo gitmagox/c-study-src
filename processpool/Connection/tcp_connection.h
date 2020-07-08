@@ -130,12 +130,12 @@ static inline int tcp_connection_destroy(ConnectionInterface *thiz){
 
 
 
-static inline tcp_connection_send(ConnectionInterface *thiz, char* buffer){
+static inline int tcp_connection_send(ConnectionInterface *thiz, char* buffer){
 
 }
 
 
-static inline tcp_connection_close(ConnectionInterface *thiz){
+static inline int tcp_connection_close(ConnectionInterface *thiz){
 
 }
 

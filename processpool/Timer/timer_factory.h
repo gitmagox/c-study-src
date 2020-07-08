@@ -6,7 +6,6 @@
 #define PROCESSPOOL_TIMER_FACTORY_H
 #include "timer_wheel.h"
 
-
 enum {
     TIMER_WHEEL = 1
 };
