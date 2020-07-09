@@ -12,7 +12,7 @@ typedef struct ConnectionInterface ConnectionInterface;
 
 struct ConnectionInterface
 {
-    int (*send)(ConnectionInterface  *thiz,char* buffer);
+    int (*send)(ConnectionInterface *thiz, char* buffer);
     int (*close)(ConnectionInterface *thiz);
     int (*destroy)(ConnectionInterface *thiz);
 };

@@ -22,12 +22,12 @@ enum {
 
 typedef struct connection_mannege connection_mannege;
 
-
 typedef struct tcp_connection{
     struct ConnectionInterface connectionInterface;
     connection_mannege * connectionMannege;
+    ProtocolMessage * request_data;
     int id;
-    int sorket;
+    int fd;
     int status:TCP_STATUS_ESTABLISHED;
     char * recv_buffer;
     uint32_t _currentPackageLength;
@@ -48,54 +48,36 @@ typedef struct connection_mannege{
 } connection_mannege;
 
 static inline void baseRead(int fd,tcp_connection *tcpConnection){
-    char * buf;
-    int ret;
-    ret  = recv(fd,buf,READ_BUFFER_SIZE,0);
-    if(ret<0){
-        return;
+    char buffer[tcpConnection->maxPackageSize];
+    memset( buffer, '\0', tcpConnection->maxPackageSize );
+    if(tcpConnection->request_data==NULL){
+        tcpConnection->request_data = build_message(HTTP_PROTOCOL,fd,&tcpConnection->connectionInterface, buffer);
     }
-    if(ret==0){
-        tcpConnection->bytesRead = strlen(buf);
-        tcpConnection->recv_buffer = string_join(tcpConnection->recv_buffer,buf);
-    }
-    while (tcpConnection->recv_buffer!=NULL){
-        if(tcpConnection->_currentPackageLength>0){
-            if(tcpConnection->_currentPackageLength>strlen(tcpConnection->recv_buffer)){
-                break;
-            }
-        }else{
-            //protocol_input
-            ProtocolInterface * protocol = build_protocol(tcpConnection->protocol);
-            tcpConnection->_currentPackageLength = protocol->input(protocol,tcpConnection->recv_buffer,tcpConnection);
-            if(tcpConnection->_currentPackageLength==0){
-                break;
-            }else if(tcpConnection->_currentPackageLength>0 &&tcpConnection->_currentPackageLength<tcpConnection->maxPackageSize)
-            {
-                if(tcpConnection->_currentPackageLength>strlen(tcpConnection->recv_buffer)){
-                    break;
-                }
-            }else{
-                tcpConnection->ConnectionInterface.destroy(&tcpConnection->ConnectionInterface);
-                return;
-            }
-            char * oneRequestBuffer;
-            if(tcpConnection->_currentPackageLength==strlen(tcpConnection->recv_buffer)){
-                oneRequestBuffer=tcpConnection->recv_buffer;
-                tcpConnection->recv_buffer="";
-            }else{
-                memmove(oneRequestBuffer,tcpConnection->recv_buffer,tcpConnection->_currentPackageLength);
-                tcpConnection->recv_buffer="";
-            }
-            tcpConnection->_currentPackageLength=0;
+    while (1){
+        //protocol_input
+        ProtocolInterface * protocol = build_protocol(tcpConnection->protocol);
+        MESSAGE_STATUS_CODE result = protocol->input(protocol,tcpConnection->recv_buffer,tcpConnection);
+        if ( result == MESSAGE_NO_REQUEST ){
+            continue;
+        } else if (result==MESSAGE_READ_NOTHING){
+            break;
+        }
+        else if (result == MESSAGE_GET_REQUEST){//得到一个完整的请求
             if(tcpConnection->onMessage=NULL){
                 continue;
             }
             //callback onMessage;
-            tcpConnection->onMessage(tcpConnection,protocol->decode(protocol,tcpConnection->recv_buffer,tcpConnection));
+            tcpConnection->onMessage(tcpConnection,protocol->decode(protocol,buffer,tcpConnection));
+            break;
+        }
+        else
+        {
+            break;
         }
     }
-
 }
+
+
 
 static inline void recv_buffer_read(int fd, void* tcp_connection){
     baseRead(fd,tcp_connection);
@@ -131,12 +113,12 @@ static inline int tcp_connection_destroy(ConnectionInterface *thiz){
 
 
 static inline int tcp_connection_send(ConnectionInterface *thiz, char* buffer){
-
+    return RET_OK;
 }
 
 
 static inline int tcp_connection_close(ConnectionInterface *thiz){
-
+    return RET_OK;
 }
 
 
@@ -145,7 +127,8 @@ static inline tcp_connection * new_tcp_connection(connection_mannege * connectio
     tcpConnection = (tcp_connection *)malloc( sizeof(tcp_connection));
     memset(tcpConnection,"\0",sizeof(tcp_connection ));
     tcpConnection->id = connectionMannege->counts+1;
-    tcpConnection->sorket = fd;
+    tcpConnection->fd = fd;
+    tcpConnection->request_data = NULL;
     tcpConnection->protocol = protocol;
     tcpConnection->currentPackageLength = 0;
     tcpConnection->maxPackageSize =1048576;

@@ -5,10 +5,6 @@
 #ifndef PROCESSPOOL_MAGOX_H
 #define PROCESSPOOL_MAGOX_H
 
-enum
-{
-    RET_OK,
-    RET_FAIL
-};
+
 
 #endif //PROCESSPOOL_MAGOX_H

@@ -93,7 +93,13 @@
 		<Unit filename="/data/c-study-src/processpool/Interface/timer.h">
 			<Option target="processpool"/>
 		</Unit>
+		<Unit filename="/data/c-study-src/processpool/Protocol/Http/request.h">
+			<Option target="processpool"/>
+		</Unit>
 		<Unit filename="/data/c-study-src/processpool/Protocol/http.h">
+			<Option target="processpool"/>
+		</Unit>
+		<Unit filename="/data/c-study-src/processpool/Protocol/http_paser.h">
 			<Option target="processpool"/>
 		</Unit>
 		<Unit filename="/data/c-study-src/processpool/Protocol/protocol_factory.h">
