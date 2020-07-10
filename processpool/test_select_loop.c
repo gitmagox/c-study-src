@@ -1,4 +1,4 @@
-#include "magox.h"
+
 #include "select_event.h"
 
 #define MAX_EVENT_NUMBER 1024

@@ -1,6 +1,9 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/processpool.dir/Timer/timer_factory.c.o"
+  "CMakeFiles/processpool.dir/Timer/timer_wheel.c.o"
   "CMakeFiles/processpool.dir/main.c.o"
   "CMakeFiles/processpool.dir/map.c.o"
+  "CMakeFiles/processpool.dir/select_event.c.o"
   "processpool"
   "processpool.pdb"
 )

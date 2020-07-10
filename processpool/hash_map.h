@@ -26,13 +26,10 @@
 #include "map.h"
 
 
-static inline char* string_join(char *s1, const char *s2)
+static inline char* string_join(char *s1, char *s2)
 {
-    char *result = malloc(strlen(s1)+strlen(s2)+1);
-    if (result == NULL) exit (1);
-    strcpy(result, s1);
-    strcat(result, s2);
-    return result;
+    strcat(s1, s2);
+    return s1;
 }
 
 static inline char* int2string(int i){
@@ -50,40 +47,56 @@ static inline char* int2string(int i){
     return type;
 }
 
-static inline char * hash_map_create_string(int * count,...){
-    char * key;
-    char * tmp;
+static inline char * hash_map_create_string(int  count,...){
     va_list str;
     va_start(str, count);
+    char *strCount[count];
+    int size=0;
     for(int i = 0; i < count; i++)
     {
-        tmp = va_arg(str, char *);
-        key = string_join(key,tmp);
+        strCount[i] = va_arg(str, char *);
+        size += strlen(strCount[i]);
     }
     va_end(str);
+    char *key = malloc(size+1);
+    for(int i = 0; i < count; i++)
+    {
+        key = string_join(key,strCount[i]);
+    }
     return key;
 }
 
-static inline char * hash_map_create_int(int * count,...){
-    char *type="";
-    char * key="";
+static inline char * hash_map_create_int(int  count,...){
     char * join = "k";
     int j;
     va_list str;
     va_start(str, count);
+    char *strCount[count];
+    int size=0;
     for(int i = 0; i < count; i++)
     {
         j = va_arg(str, int);
-        type = int2string(j);
-        key = string_join(key,join);
-        key = string_join(key,type);
+        strCount[i] = int2string(j);
+        size += strlen(strCount[i])+1;
     }
     va_end(str);
+    char *key = malloc(size+count);
+    for(int i = 0; i < count; i++)
+    {
+        key = string_join(key,join);
+        key = string_join(key,strCount[i]);
+    }
     return key;
 }
 
+static inline void _hash_map_free_key(char * key){
+    free(key);
+    key=NULL;
+}
 
 #define hash_map_get_key(T,count, ...) hash_map_create_##T( count,__VA_ARGS__)
+
+#define hash_map_free_key(K) _hash_map_free_key(K)
 
 #define hash_map_t(T) map_t(T)
 

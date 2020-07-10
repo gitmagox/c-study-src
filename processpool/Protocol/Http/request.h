@@ -5,9 +5,11 @@
 #ifndef PROCESSPOOL_REQUEST_H
 #define PROCESSPOOL_REQUEST_H
 
-#include "../../hash_map.h"
-#include "../../Interface/protocol.h"
-#include "../../Interface/connection.h"
+#include "hash_map.h"
+
+/**
+ * http
+ */
 
 typedef struct request_mannege request_mannege;
 
@@ -21,12 +23,15 @@ typedef struct http_request{
     uint32_t start_line;
 } http_request;
 
+
 typedef map_t(http_request * ) map_http_request_t;
 
 typedef struct request_mannege{
     map_http_request_t * requests;
     int counts;
 } request_mannege;
+
+
 
 static inline request_mannege * create_request_mannege();
 static inline int request_mannage_add(request_mannege * connectionMannege,http_request * httpRequest);
@@ -52,6 +57,7 @@ static inline request_mannege * create_request_mannege(){
 static inline int request_mannage_add(request_mannege * connectionMannege,http_request * httpRequest){
     char * key = hash_map_get_key(int,1,httpRequest->id);
     hash_map_set(connectionMannege->requests,key,httpRequest);
+    hash_map_free_key(key);
     httpRequest->requestMannege= connectionMannege;
     connectionMannege->counts ++;
     return RET_OK;
@@ -60,6 +66,7 @@ static inline int request_mannage_add(request_mannege * connectionMannege,http_r
 static inline int request_mannage_remove(request_mannege * connectionMannege,http_request * httpRequest){
     char * key = hash_map_get_key(int,1,httpRequest->id);
     hash_map_remove(connectionMannege->requests,key);
+    hash_map_free_key(key);
     destroy_http_request(httpRequest);
     connectionMannege->counts --;
     return RET_OK;

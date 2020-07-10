@@ -3,6 +3,7 @@
 #include <sys/timerfd.h>
 #include "Timer/timer_factory.h"
 
+
 #define MAX_EVENT_NUMBER 1024
 #define BUFFER_SIZE 60000
 typedef struct epoll_event epoll_event;
@@ -63,7 +64,7 @@ int main( int argc, char* argv[] )
     map_event_item_t * events;
     selectEvent = create_select_event(events);
     TimerInterface * mytimer = build_timer(TIMER_WHEEL);
-    for(int i=0; i<3;i++){
+    for(int i=0; i<10000;i++){
         mytimer->add(mytimer,i*10,i,timer_call_handle,NULL);
     }
     mytimer->start(mytimer);
@@ -76,8 +77,8 @@ int main( int argc, char* argv[] )
     assert(ret != -1);
     new_value.it_value.tv_sec = 3; //第一次到期的时间
     new_value.it_value.tv_nsec = now.tv_nsec;
-    new_value.it_interval.tv_sec = 1;      //之后每次到期的时间间隔
-    new_value.it_interval.tv_nsec = 0;
+    new_value.it_interval.tv_sec = 0;      //之后每次到期的时间间隔
+    new_value.it_interval.tv_nsec = 1000;
     int timefd = timerfd_create(CLOCK_REALTIME, 0); // 构建了一个定时器
     assert(timefd != -1);
     ret = timerfd_settime(timefd, 0, &new_value, NULL);//启动定时器

@@ -34,6 +34,12 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
+					<Add directory="/data/c-study-src/processpool/."/>
+					<Add directory="/data/c-study-src/processpool/Connection"/>
+					<Add directory="/data/c-study-src/processpool/Interface"/>
+					<Add directory="/data/c-study-src/processpool/Protocol"/>
+					<Add directory="/data/c-study-src/processpool/Protocol/Http"/>
+					<Add directory="/data/c-study-src/processpool/Timer"/>
 					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
 					<Add directory="/usr/local/include"/>
 					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
@@ -54,6 +60,12 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
+					<Add directory="/data/c-study-src/processpool/."/>
+					<Add directory="/data/c-study-src/processpool/Connection"/>
+					<Add directory="/data/c-study-src/processpool/Interface"/>
+					<Add directory="/data/c-study-src/processpool/Protocol"/>
+					<Add directory="/data/c-study-src/processpool/Protocol/Http"/>
+					<Add directory="/data/c-study-src/processpool/Timer"/>
 					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
 					<Add directory="/usr/local/include"/>
 					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
@@ -90,6 +102,9 @@
 		<Unit filename="/data/c-study-src/processpool/Interface/protocol.h">
 			<Option target="processpool"/>
 		</Unit>
+		<Unit filename="/data/c-study-src/processpool/Interface/protocol_message.h">
+			<Option target="processpool"/>
+		</Unit>
 		<Unit filename="/data/c-study-src/processpool/Interface/timer.h">
 			<Option target="processpool"/>
 		</Unit>
@@ -105,16 +120,19 @@
 		<Unit filename="/data/c-study-src/processpool/Protocol/protocol_factory.h">
 			<Option target="processpool"/>
 		</Unit>
+		<Unit filename="/data/c-study-src/processpool/Timer/timer_factory.c">
+			<Option target="processpool"/>
+		</Unit>
 		<Unit filename="/data/c-study-src/processpool/Timer/timer_factory.h">
+			<Option target="processpool"/>
+		</Unit>
+		<Unit filename="/data/c-study-src/processpool/Timer/timer_wheel.c">
 			<Option target="processpool"/>
 		</Unit>
 		<Unit filename="/data/c-study-src/processpool/Timer/timer_wheel.h">
 			<Option target="processpool"/>
 		</Unit>
 		<Unit filename="/data/c-study-src/processpool/hash_map.h">
-			<Option target="processpool"/>
-		</Unit>
-		<Unit filename="/data/c-study-src/processpool/magox.h">
 			<Option target="processpool"/>
 		</Unit>
 		<Unit filename="/data/c-study-src/processpool/main.c">
@@ -124,6 +142,9 @@
 			<Option target="processpool"/>
 		</Unit>
 		<Unit filename="/data/c-study-src/processpool/map.h">
+			<Option target="processpool"/>
+		</Unit>
+		<Unit filename="/data/c-study-src/processpool/select_event.c">
 			<Option target="processpool"/>
 		</Unit>
 		<Unit filename="/data/c-study-src/processpool/select_event.h">

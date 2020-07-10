@@ -5,7 +5,8 @@
 #ifndef PROCESSPOOL_HTTP_PASER_H
 #define PROCESSPOOL_HTTP_PASER_H
 
-#include "http.h"
+#include "protocol.h";
+#include "request.h";
 
 /* 定义主状态机 的两种状态 分别表示:当前正在分析的请求行，当前正在分析头部字段*/
 typedef enum {

@@ -123,6 +123,60 @@ processpool/fast:
 	$(MAKE) -f CMakeFiles/processpool.dir/build.make CMakeFiles/processpool.dir/build
 .PHONY : processpool/fast
 
+Timer/timer_factory.o: Timer/timer_factory.c.o
+
+.PHONY : Timer/timer_factory.o
+
+# target to build an object file
+Timer/timer_factory.c.o:
+	$(MAKE) -f CMakeFiles/processpool.dir/build.make CMakeFiles/processpool.dir/Timer/timer_factory.c.o
+.PHONY : Timer/timer_factory.c.o
+
+Timer/timer_factory.i: Timer/timer_factory.c.i
+
+.PHONY : Timer/timer_factory.i
+
+# target to preprocess a source file
+Timer/timer_factory.c.i:
+	$(MAKE) -f CMakeFiles/processpool.dir/build.make CMakeFiles/processpool.dir/Timer/timer_factory.c.i
+.PHONY : Timer/timer_factory.c.i
+
+Timer/timer_factory.s: Timer/timer_factory.c.s
+
+.PHONY : Timer/timer_factory.s
+
+# target to generate assembly for a file
+Timer/timer_factory.c.s:
+	$(MAKE) -f CMakeFiles/processpool.dir/build.make CMakeFiles/processpool.dir/Timer/timer_factory.c.s
+.PHONY : Timer/timer_factory.c.s
+
+Timer/timer_wheel.o: Timer/timer_wheel.c.o
+
+.PHONY : Timer/timer_wheel.o
+
+# target to build an object file
+Timer/timer_wheel.c.o:
+	$(MAKE) -f CMakeFiles/processpool.dir/build.make CMakeFiles/processpool.dir/Timer/timer_wheel.c.o
+.PHONY : Timer/timer_wheel.c.o
+
+Timer/timer_wheel.i: Timer/timer_wheel.c.i
+
+.PHONY : Timer/timer_wheel.i
+
+# target to preprocess a source file
+Timer/timer_wheel.c.i:
+	$(MAKE) -f CMakeFiles/processpool.dir/build.make CMakeFiles/processpool.dir/Timer/timer_wheel.c.i
+.PHONY : Timer/timer_wheel.c.i
+
+Timer/timer_wheel.s: Timer/timer_wheel.c.s
+
+.PHONY : Timer/timer_wheel.s
+
+# target to generate assembly for a file
+Timer/timer_wheel.c.s:
+	$(MAKE) -f CMakeFiles/processpool.dir/build.make CMakeFiles/processpool.dir/Timer/timer_wheel.c.s
+.PHONY : Timer/timer_wheel.c.s
+
 main.o: main.c.o
 
 .PHONY : main.o
@@ -177,6 +231,33 @@ map.c.s:
 	$(MAKE) -f CMakeFiles/processpool.dir/build.make CMakeFiles/processpool.dir/map.c.s
 .PHONY : map.c.s
 
+select_event.o: select_event.c.o
+
+.PHONY : select_event.o
+
+# target to build an object file
+select_event.c.o:
+	$(MAKE) -f CMakeFiles/processpool.dir/build.make CMakeFiles/processpool.dir/select_event.c.o
+.PHONY : select_event.c.o
+
+select_event.i: select_event.c.i
+
+.PHONY : select_event.i
+
+# target to preprocess a source file
+select_event.c.i:
+	$(MAKE) -f CMakeFiles/processpool.dir/build.make CMakeFiles/processpool.dir/select_event.c.i
+.PHONY : select_event.c.i
+
+select_event.s: select_event.c.s
+
+.PHONY : select_event.s
+
+# target to generate assembly for a file
+select_event.c.s:
+	$(MAKE) -f CMakeFiles/processpool.dir/build.make CMakeFiles/processpool.dir/select_event.c.s
+.PHONY : select_event.c.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -186,12 +267,21 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... processpool"
 	@echo "... edit_cache"
+	@echo "... Timer/timer_factory.o"
+	@echo "... Timer/timer_factory.i"
+	@echo "... Timer/timer_factory.s"
+	@echo "... Timer/timer_wheel.o"
+	@echo "... Timer/timer_wheel.i"
+	@echo "... Timer/timer_wheel.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
 	@echo "... map.o"
 	@echo "... map.i"
 	@echo "... map.s"
+	@echo "... select_event.o"
+	@echo "... select_event.i"
+	@echo "... select_event.s"
 .PHONY : help
 
 

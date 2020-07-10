@@ -6,17 +6,6 @@
 #define PROCESSPOOL_TIMER_H
 #include "base.h"
 
-struct TimerInterface;
-typedef struct TimerInterface TimerInterface;
-
-
-struct TimerInterface
-{
-    int (*add)(TimerInterface *thiz,int timeout,int fd,void(*handler)(int, void* ),void * args);
-    int (*del)(TimerInterface *thiz,void *timer);
-    int (*start)(TimerInterface *thiz);
-};
-
 static inline int add(TimerInterface *thiz, int timeout,int fd,void(*handler)(int, void* ),void * args)
 {
     if(thiz->add != NULL)

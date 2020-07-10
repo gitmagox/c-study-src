@@ -1,27 +1,22 @@
 //
 // Created by magox on 7/8/20.
 //
-
+//
 #ifndef PROCESSPOOL_PROTOCOL_FACTORY_H
 #define PROCESSPOOL_PROTOCOL_FACTORY_H
 
-#include "http_paser.h"
+#include "http.h"
 
-
-enum {
-    HTTP_PROTOCOL = 1
-};
-
-static inline ProtocolInterface * build_protocol(int type){
+static inline ProtocolInterface * build_protocol_parser(int type){
     ProtocolInterface * protocol;
     if(type==HTTP_PROTOCOL){
         http_protocol * httpProtocol = http_protocol_create();
         protocol = get_thiz(http_protocol,ProtocolInterface,protocolInterface,httpProtocol);
     }
     return protocol;
-}
+};
 
-static inline ProtocolMessage * build_message(int type,int fd,ConnectionInterface *conn,char * buffer){
+static inline ProtocolMessage * build_protocol_message(int type,int fd,ConnectionInterface *conn,char * buffer){
     ProtocolMessage * protocolMessage;
     if(type==HTTP_PROTOCOL){
         http_request * httpProtocol = new_http_request(fd,conn,buffer);
@@ -29,4 +24,6 @@ static inline ProtocolMessage * build_message(int type,int fd,ConnectionInterfac
     }
     return protocolMessage;
 }
+
+
 #endif //PROCESSPOOL_PROTOCOL_FACTORY_H
