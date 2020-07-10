@@ -33,6 +33,4 @@ static inline int start (TimerInterface *thiz)
     return RET_OK;
 }
 
-
-
 #endif //PROCESSPOOL_TIMER_H

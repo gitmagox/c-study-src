@@ -26,8 +26,8 @@ enum
     RET_OK,
     RET_FAIL
 };
-#define get_thiz_parent(P,T,Z) (P *)((char *) Z + offsetof( P, T ))
 
+#define get_thiz_parent(P,T,Z) (P *)((char *) Z + offsetof( P, T ))
 #define get_thiz(P,T,t,B) (T *)((char *) B - offsetof( P, t ))
 
 
@@ -43,7 +43,6 @@ struct TimerInterface
     int (*del)(TimerInterface *thiz,void *timer);
     int (*start)(TimerInterface *thiz);
 };
-
 
 /**
  * ProtocolMessage
