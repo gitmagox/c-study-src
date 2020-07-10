@@ -72,6 +72,11 @@ static inline int request_mannage_remove(request_mannege * connectionMannege,htt
     return RET_OK;
 }
 
+static inline http_request * request_mannage_get(request_mannege * connectionMannege,ProtocolMessage * message) {
+    http_request *httpRequest = get_thiz_parent(http_request, protocolMessage, message);
+    return httpRequest;
+}
+
 static inline http_request * new_http_request(int fd,ConnectionInterface *conn, char *buffer){
     http_request * httpRequest;
     httpRequest = (http_request *)malloc( sizeof(http_request));

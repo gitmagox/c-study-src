@@ -28,8 +28,8 @@ typedef struct http_protocol {
 
 
 static inline int http_input(ProtocolInterface *thiz, char* buffer,ConnectionInterface * conn);
-static inline int http_encode(ProtocolInterface *thiz, char* buffer,void * conn);
-static inline void * http_decode(ProtocolInterface *thiz, char* buffer,void * conn);
+static inline int http_encode(ProtocolInterface *thiz, char* buffer,ConnectionInterface * conn);
+static inline void * http_decode(ProtocolInterface *thiz, char* buffer,ConnectionInterface * conn);
 
 static inline int http_input(ProtocolInterface *thiz, char* buffer,ConnectionInterface * conn)
 {
@@ -41,8 +41,7 @@ static inline int http_input(ProtocolInterface *thiz, char* buffer,ConnectionInt
     /* 设置主状态机的初始状态 */
     CHECK_STATE checkstate = CHECK_STATE_REQUESTLINE;
     data_read = recv( conn->fd, buffer + *read_index, 65535 - *read_index, 0 );
-    if ( data_read == 0 )
-    {
+    if ( data_read == 0 ){
         printf( "reading failed\n" );
         return MESSAGE_READ_NOTHING;
     }
@@ -52,12 +51,14 @@ static inline int http_input(ProtocolInterface *thiz, char* buffer,ConnectionInt
     return result;
 }
 
-static inline int http_encode(ProtocolInterface *thiz, char* buffer,void * conn){
+static inline int http_encode(ProtocolInterface *thiz, char* buffer,ConnectionInterface * conn){
 
 }
 
-static inline void *  http_decode(ProtocolInterface *thiz, char* buffer,void * conn){
-
+static inline void * http_decode(ProtocolInterface *thiz, char* buffer,ConnectionInterface * conn){
+    ProtocolMessage *message = conn->get_protocol_message(conn);
+    http_request *httpRequest = get_thiz_parent(http_request, protocolMessage, message);
+    return httpRequest;
 }
 
 //get Singleton

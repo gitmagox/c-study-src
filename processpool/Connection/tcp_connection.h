@@ -54,22 +54,22 @@ static inline void baseRead(int fd,tcp_connection *tcpConnection){
     char buffer[tcpConnection->maxPackageSize];
     memset( buffer, '\0', tcpConnection->maxPackageSize );
     if(tcpConnection->request_data==NULL){
-        tcpConnection->request_data = build_protocol_message(1,fd,&tcpConnection->connectionInterface, buffer);
+        tcpConnection->request_data = build_message(1,fd,&tcpConnection->connectionInterface, buffer);
     }
     while (1){
         //protocol_input
-        ProtocolInterface * protocol = build_protocol_parser(tcpConnection->protocol);
+        ProtocolInterface * protocol = build_protocol(tcpConnection->protocol);
         MESSAGE_STATUS_CODE result = protocol->input(protocol,tcpConnection->recv_buffer,tcpConnection);
-        if ( result == MESSAGE_NO_REQUEST ){
+        if ( result == MESSAGE_NO_REQUEST ){//数据包不是完整的继续分析
             continue;
-        } else if (result==MESSAGE_READ_NOTHING){
+        } else if (result==MESSAGE_READ_NOTHING){//没有读到数据
             break;
         }else if (result == MESSAGE_GET_REQUEST){//得到一个完整的请求
             if(tcpConnection->onMessage=NULL){
                 continue;
             }
             //callback onMessage;
-            tcpConnection->onMessage(tcpConnection,protocol->decode(protocol,buffer,tcpConnection));
+            tcpConnection->onMessage(tcpConnection,protocol->decode(protocol,buffer,&tcpConnection->connectionInterface));
             break;
         }else{
             break;
