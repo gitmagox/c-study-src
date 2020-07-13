@@ -4,7 +4,6 @@
 #include "Timer/timer_factory.h"
 #include "tcp_connection.h"
 
-
 #define MAX_EVENT_NUMBER 1024
 #define BUFFER_SIZE 60000
 typedef struct epoll_event epoll_event;
@@ -12,32 +11,8 @@ typedef struct epoll_event epoll_event;
 #define handle_error(msg) \
        do { perror(msg); exit(EXIT_FAILURE); } while (0)
 
-
 select_event * selectEvent;
 
-static void
-print_elapsed_time(void){
-    static struct timespec start;
-    struct timespec curr;
-    static int first_call = 1;
-    int secs, nsecs;
-    if (first_call) {
-        first_call = 0;
-        if (clock_gettime(CLOCK_MONOTONIC, &start) == -1)
-            handle_error("clock_gettime");
-    }
-
-    if (clock_gettime(CLOCK_MONOTONIC, &curr) == -1)
-        handle_error("clock_gettime");
-
-    secs = curr.tv_sec - start.tv_sec;
-    nsecs = curr.tv_nsec - start.tv_nsec;
-    if (nsecs < 0) {
-        secs--;
-        nsecs += 1000000000;
-    }
-    printf("%d.%03d: ", secs, (nsecs + 500000) / 1000000);
-}
 
 void on_message(ConnectionInterface * conn,void * request){
     char *buffer;
