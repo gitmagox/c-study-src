@@ -62,13 +62,13 @@ static inline int http_input(ProtocolInterface *thiz, char* buffer,ConnectionInt
         }
         if( data_read <0){
             char *sendbuffer;
-            sendbuffer="HTTP/1.1 200 OK\r\n"
-                       "Server: swoole-http-server\r\n"
-                       "Connection: keep-alive\r\n"
-                       "Content-Type: text/html\r\n"
-                       "Date: Thu, 18 Jun 2020 06:16:24 GMT\r\n"
-                       "Content-Length: 0\r\n"
-                       "Set-Cookie: PHPSESSID=kpdq480qjchb6gunnjsgd3lnnl; path=/\r\n\r\n";
+            sendbuffer="HTTP/1.1 200 OK\r\n"\
+                       "Server: swoole-http-server\r\n"\
+                       "Connection: keep-alive\r\n"\
+                       "Content-Type: text/html\r\n"\
+                       "Date: Thu, 18 Jun 2020 06:16:24 GMT\r\n"\
+                       "Content-Length: 0\r\n"\
+                       "Set-Cookie: PHPSESSID=kpdq480qjchb6gunnjsgd3lnnl; path=/\r\n";
             conn->close(conn,sendbuffer);
             break;
         }
@@ -79,12 +79,11 @@ static inline int http_input(ProtocolInterface *thiz, char* buffer,ConnectionInt
             continue;
         }else if(result == BAD_REQUEST){//失败的请求,//关闭链接
             char *sendbuffer;
-            sendbuffer="HTTP/1.1 200 OK\r\n"
-                       "Server: swoole-http-server\r\n"
-                       "Connection: keep-alive\r\n"
-                       "Content-Type: text/html\r\n"
-                       "Date: Thu, 18 Jun 2020 06:16:24 GMT\r\n"
-                       "Content-Length: 0\r\n\r\n"
+            sendbuffer="HTTP/1.1 200 OK\r\n"  \
+                       "Server: swoole-http-server\r\n"\
+                       "Connection: keep-alive\r\nContent-Type: text/html\r\n"\
+                       "Date: Thu, 18 Jun 2020 06:16:24 GMT\r\n"\
+                       "Content-Length: 0\r\n"\
                        "Set-Cookie: PHPSESSID=kpdq480qjchb6gunnjsgd3lnnl; path=/\r\n\r\n";
             conn->close(conn,sendbuffer);
         }
