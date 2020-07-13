@@ -33,22 +33,65 @@ static inline void * http_decode(ProtocolInterface *thiz, char* buffer,Connectio
 
 static inline int http_input(ProtocolInterface *thiz, char* buffer,ConnectionInterface * conn)
 {
+    http_request *httpRequest;
     ProtocolMessage *request_message = conn->get_protocol_message(conn);
+    if(request_message==NULL){
+        request_mannege * requestMannege =  create_request_mannege();
+        httpRequest = new_http_request(conn->fd,conn, buffer);
+        int ret = request_mannage_add(requestMannege,httpRequest);
+        if(ret!=RET_OK){
+            return MESSAGE_BAD_REQUEST;
+        }
+        request_message = &httpRequest->protocolMessage;
+        conn->set_protocol_message(conn,request_message);
+    }else{
+        httpRequest = request_mannage_get(request_message);
+    }
+
+
     int data_read = 0;
-    int * read_index = &(request_message->read_index); //当前已经读取了多少字节的客户数据
-    int * checked_index = &(request_message->checked_index); //当前已经分析完了多少字节的客户数据
     int * start_line = &(request_message->start_line); //行在buffer中的地始位置
     /* 设置主状态机的初始状态 */
     CHECK_STATE checkstate = CHECK_STATE_REQUESTLINE;
-    data_read = recv( conn->fd, buffer + *read_index, 65535 - *read_index, 0 );
-    if ( data_read == 0 ){
-        printf( "reading failed\n" );
-        return MESSAGE_READ_NOTHING;
+    HTTP_CODE result;
+    while(1){
+        data_read = recv( conn->fd, buffer + request_message->read_index, 65535 - request_message->read_index, 0 );
+        if ( data_read == 0 ){
+            printf( "reading failed\n" );
+            return MESSAGE_READ_NOTHING;
+        }
+        if( data_read <0){
+            char *sendbuffer;
+            sendbuffer="HTTP/1.1 200 OK\r\n"
+                       "Server: swoole-http-server\r\n"
+                       "Connection: keep-alive\r\n"
+                       "Content-Type: text/html\r\n"
+                       "Date: Thu, 18 Jun 2020 06:16:24 GMT\r\n"
+                       "Content-Length: 0\r\n"
+                       "Set-Cookie: PHPSESSID=kpdq480qjchb6gunnjsgd3lnnl; path=/\r\n\r\n";
+            conn->close(conn,sendbuffer);
+            break;
+        }
+        request_message->read_index += data_read;
+        /* 分析目前已经取得的所有客户数据 */
+        result = http_parse_content( buffer,&(request_message->checked_index), &checkstate, &(request_message->read_index), &(request_message->start_line) ,httpRequest);
+        if ( result == NO_REQUEST ){//数据包不是完整的继续分析
+            continue;
+        }else if(result == BAD_REQUEST){//失败的请求,//关闭链接
+            char *sendbuffer;
+            sendbuffer="HTTP/1.1 200 OK\r\n"
+                       "Server: swoole-http-server\r\n"
+                       "Connection: keep-alive\r\n"
+                       "Content-Type: text/html\r\n"
+                       "Date: Thu, 18 Jun 2020 06:16:24 GMT\r\n"
+                       "Content-Length: 0\r\n\r\n"
+                       "Set-Cookie: PHPSESSID=kpdq480qjchb6gunnjsgd3lnnl; path=/\r\n\r\n";
+            conn->close(conn,sendbuffer);
+        }
+        break;
     }
-    read_index += data_read;
-    /* 分析目前已经取得的所有客户数据 */
-    HTTP_CODE result = http_parse_content( buffer,checked_index, &checkstate, read_index, start_line );
     return result;
+
 }
 
 static inline int http_encode(ProtocolInterface *thiz, char* buffer,ConnectionInterface * conn){

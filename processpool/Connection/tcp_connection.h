@@ -31,6 +31,7 @@ typedef struct tcp_connection{
     ProtocolMessage * request_data;
     int id;
     int fd;
+    select_event * selectEvent;
     int status:TCP_STATUS_ESTABLISHED;
     char * recv_buffer;
     uint32_t _currentPackageLength;
@@ -40,7 +41,7 @@ typedef struct tcp_connection{
     uint32_t currentPackageLength;
     char * send_buffer;
     uint32_t sendBufferSize;
-    void (*onMessage)(int,void*);
+    void (*onMessage)(void *,void*);
 } tcp_connection;
 
 typedef map_t(tcp_connection * ) map_tcp_connection_t;
@@ -56,20 +57,20 @@ static inline void baseRead(int fd,tcp_connection *tcpConnection){
     if(tcpConnection->request_data==NULL){
         tcpConnection->request_data = build_message(1,fd,&tcpConnection->connectionInterface, buffer);
     }
+    //protocol_input
+    ProtocolInterface * protocol = build_protocol(tcpConnection->protocol);
     while (1){
-        //protocol_input
-        ProtocolInterface * protocol = build_protocol(tcpConnection->protocol);
         MESSAGE_STATUS_CODE result = protocol->input(protocol,tcpConnection->recv_buffer,tcpConnection);
         if ( result == MESSAGE_NO_REQUEST ){//数据包不是完整的继续分析
             continue;
         } else if (result==MESSAGE_READ_NOTHING){//没有读到数据
             break;
         }else if (result == MESSAGE_GET_REQUEST){//得到一个完整的请求
-            if(tcpConnection->onMessage=NULL){
+            if(tcpConnection->onMessage==NULL){
                 continue;
             }
             //callback onMessage;
-            tcpConnection->onMessage(tcpConnection,protocol->decode(protocol,buffer,&tcpConnection->connectionInterface));
+            tcpConnection->onMessage(&tcpConnection->connectionInterface,protocol->decode(protocol,buffer,&tcpConnection->connectionInterface));
             break;
         }else{
             break;
@@ -111,29 +112,48 @@ static inline tcp_connection * connection_mannage_get(connection_mannege * conne
     return (*pTcpConnection);
 }
 
-static inline int tcp_connection_destroy(ConnectionInterface *thiz){
-    tcp_connection * tcpConnection = get_thiz(tcp_connection,ConnectionInterface,connectionInterface,thiz);
-    char * key = hash_map_get_key(int,1,tcpConnection->fd);
-    hash_map_remove(tcpConnection->connectionMannege->connections,key);
-    hash_map_free_key(key);
-    free(tcpConnection);
-    return RET_OK;
-}
-
-static inline int tcp_connection_send(ConnectionInterface *thiz, char* buffer){
-    return RET_OK;
-}
-
-static inline int tcp_connection_close(ConnectionInterface *thiz){
-    return RET_OK;
-}
-
 ProtocolMessage * tcp_connection_get_protocol_message(ConnectionInterface *thiz){
     tcp_connection* tcpConnection = get_thiz_parent(tcp_connection,connectionInterface,thiz);
     ProtocolMessage * protocolMessage = tcpConnection->request_data;
     return protocolMessage;
 }
 
+static inline int tcp_connection_set_protocol_message(ConnectionInterface *thiz,ProtocolMessage * protocolMessage){
+    tcp_connection* tcpConnection = get_thiz_parent(tcp_connection,connectionInterface,thiz);
+    tcpConnection->request_data = protocolMessage;
+    return RET_OK;
+}
+
+static inline int tcp_connection_destroy(ConnectionInterface *thiz){
+    tcp_connection * tcpConnection = get_thiz(tcp_connection,ConnectionInterface,connectionInterface,thiz);
+    char * key = hash_map_get_key(int,1,tcpConnection->fd);
+    hash_map_remove(tcpConnection->connectionMannege->connections,key);
+    hash_map_free_key(key);
+    select_event_del(tcpConnection->selectEvent ,tcpConnection->fd,EPOLLIN);
+    ProtocolMessage * protocolMessage = tcp_connection_get_protocol_message(thiz);
+    protocolMessage->destroy(protocolMessage);
+    free(tcpConnection->recv_buffer);
+    close(tcpConnection->fd);
+    free(tcpConnection);
+    return RET_OK;
+}
+
+static inline int tcp_connection_send(ConnectionInterface *thiz, char* buffer){
+    send(thiz->fd,buffer, strlen(buffer),0);
+    return RET_OK;
+}
+
+static inline int tcp_connection_close(ConnectionInterface *thiz,char* message){
+    int ret = tcp_connection_send(thiz,message);
+    if(ret != RET_OK){
+        return ret;
+    }
+    ret = tcp_connection_destroy(thiz);
+    if(ret != RET_OK){
+        return ret;
+    }
+    return RET_OK;
+}
 
 static inline tcp_connection * new_tcp_connection(connection_mannege * connectionMannege,int fd,int protocol,void(*onMessage)(void * connection,void * request),select_event * selectEvent){
     tcp_connection * tcpConnection;
@@ -141,6 +161,7 @@ static inline tcp_connection * new_tcp_connection(connection_mannege * connectio
     memset(tcpConnection,"\0",sizeof(tcp_connection ));
     tcpConnection->id = connectionMannege->counts+1;
     tcpConnection->fd = fd;
+    tcpConnection->recv_buffer = (char *)malloc(1048576);
     tcpConnection->request_data = NULL;
     tcpConnection->protocol = protocol;
     tcpConnection->currentPackageLength = 0;
@@ -152,8 +173,10 @@ static inline tcp_connection * new_tcp_connection(connection_mannege * connectio
     tcpConnection->connectionInterface.close = tcp_connection_close;
     tcpConnection->connectionInterface.destroy = tcp_connection_destroy;
     tcpConnection->connectionInterface.get_protocol_message = tcp_connection_get_protocol_message;
+    tcpConnection->connectionInterface.set_protocol_message = tcp_connection_set_protocol_message;
     tcpConnection->connectionInterface.fd = fd;
     connection_mannage_add(connectionMannege,tcpConnection);
+    tcpConnection->selectEvent = selectEvent;
     select_event_add(selectEvent,fd,EPOLLIN,recv_buffer_read,tcpConnection);
     tcpConnection->connectionMannege = connectionMannege;
     return tcpConnection;

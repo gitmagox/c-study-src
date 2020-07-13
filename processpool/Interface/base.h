@@ -56,6 +56,7 @@ struct ProtocolMessage
     uint32_t read_index;
     uint32_t checked_index;
     uint32_t start_line;
+    int (*destroy)(ProtocolMessage *thiz);
 };
 
 enum {
@@ -91,7 +92,8 @@ struct ConnectionInterface
     int fd;
     int (*send)(ConnectionInterface *thiz, char* buffer);
     ProtocolMessage * (*get_protocol_message)(ConnectionInterface *thiz);
-    int (*close)(ConnectionInterface *thiz);
+    int  (*set_protocol_message)(ConnectionInterface *thiz,ProtocolMessage * protocolMessage);
+    int (*close)(ConnectionInterface *thiz,char* message);
     int (*destroy)(ConnectionInterface *thiz);
 };
 

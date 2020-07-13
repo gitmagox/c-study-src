@@ -15,12 +15,11 @@ typedef struct request_mannege request_mannege;
 
 typedef struct http_request{
     struct ProtocolMessage protocolMessage;
+    request_mannege * requestMannege;
     uint32_t id;
     int fd;
     ConnectionInterface * conn;
     char * buffer;
-    request_mannege * requestMannege;
-    uint32_t start_line;
 } http_request;
 
 
@@ -63,6 +62,12 @@ static inline int request_mannage_add(request_mannege * connectionMannege,http_r
     return RET_OK;
 }
 
+static inline int destroy_http_request(http_request * httpRequest){
+    free(httpRequest);
+    httpRequest = NULL;
+    return RET_OK;
+}
+
 static inline int request_mannage_remove(request_mannege * connectionMannege,http_request * httpRequest){
     char * key = hash_map_get_key(int,1,httpRequest->id);
     hash_map_remove(connectionMannege->requests,key);
@@ -72,10 +77,19 @@ static inline int request_mannage_remove(request_mannege * connectionMannege,htt
     return RET_OK;
 }
 
-static inline http_request * request_mannage_get(request_mannege * connectionMannege,ProtocolMessage * message) {
+static inline http_request * request_mannage_get(ProtocolMessage * message) {
     http_request *httpRequest = get_thiz_parent(http_request, protocolMessage, message);
     return httpRequest;
 }
+
+static inline int http_request_destroy(ProtocolMessage *thiz){
+    request_mannege *requestMannege = create_request_mannege();
+    http_request *httpRequest = request_mannage_get(thiz);
+    int ret = request_mannage_remove(requestMannege,httpRequest);
+    return ret;
+}
+
+
 
 static inline http_request * new_http_request(int fd,ConnectionInterface *conn, char *buffer){
     http_request * httpRequest;
@@ -88,19 +102,14 @@ static inline http_request * new_http_request(int fd,ConnectionInterface *conn, 
     httpRequest->protocolMessage.buffer = buffer;
     httpRequest->protocolMessage.checked_index=0;
     httpRequest->protocolMessage.read_index=0;
-    httpRequest->start_line=0;
+    httpRequest->protocolMessage.start_line=0;
+    httpRequest->protocolMessage.destroy=http_request_destroy;
     request_mannege * requestMannege = create_request_mannege();
     request_mannage_add(requestMannege,httpRequest);
     httpRequest->id = requestMannege->counts;
     return httpRequest;
 }
 
-static inline int destroy_http_request(http_request * httpRequest){
-    request_mannege * requestMannege = create_request_mannege();
-    request_mannage_remove(requestMannege,httpRequest);
-    free(httpRequest);
-    httpRequest = NULL;
-    return RET_OK;
-}
+
 
 #endif //PROCESSPOOL_REQUEST_H

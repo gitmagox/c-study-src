@@ -17,11 +17,11 @@ static inline int ssend(ConnectionInterface *thiz, char* buffer)
     return RET_OK;
 }
 
-static inline int cclose(ConnectionInterface *thiz)
+static inline int cclose(ConnectionInterface *thiz,char* message)
 {
     if(thiz->close != NULL)
     {
-        return thiz->close(thiz);
+        return thiz->close(thiz,message);
     }
     return RET_OK;
 }

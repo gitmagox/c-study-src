@@ -12,8 +12,15 @@ CMakeFiles/processpool.dir/Timer/timer_wheel.c.o: ../Interface/timer.h
 CMakeFiles/processpool.dir/Timer/timer_wheel.c.o: ../Timer/timer_wheel.h
 CMakeFiles/processpool.dir/Timer/timer_wheel.c.o: ../Timer/timer_wheel.c
 
+CMakeFiles/processpool.dir/main.c.o: ../Connection/tcp_connection.h
 CMakeFiles/processpool.dir/main.c.o: ../Interface/base.h
+CMakeFiles/processpool.dir/main.c.o: ../Interface/connection.h
+CMakeFiles/processpool.dir/main.c.o: ../Interface/protocol.h
 CMakeFiles/processpool.dir/main.c.o: ../Interface/timer.h
+CMakeFiles/processpool.dir/main.c.o: ../Protocol/Http/request.h
+CMakeFiles/processpool.dir/main.c.o: ../Protocol/http.h
+CMakeFiles/processpool.dir/main.c.o: ../Protocol/http_paser.h
+CMakeFiles/processpool.dir/main.c.o: ../Protocol/protocol_factory.h
 CMakeFiles/processpool.dir/main.c.o: ../Timer/timer_wheel.h
 CMakeFiles/processpool.dir/main.c.o: ../Timer/timer_factory.h
 CMakeFiles/processpool.dir/main.c.o: ../hash_map.h

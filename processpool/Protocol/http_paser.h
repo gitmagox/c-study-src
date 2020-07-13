@@ -37,7 +37,7 @@ typedef enum {
 static const char* szret[] = { "I get a correct request\n", "something wrong\n"  };
 
 /* 从状态机 */
-LINE_STATUS http_parse_line( char* buffer, int* checked_index, int* read_index ){
+LINE_STATUS http_parse_line( char* buffer, int* checked_index, int* read_index,http_request* httpRequest ){
 
     char temp;
     for( ;*checked_index < *read_index; ++*checked_index )
@@ -52,8 +52,8 @@ LINE_STATUS http_parse_line( char* buffer, int* checked_index, int* read_index )
             }
             else if ( buffer[ *checked_index +1 ] == '\n' )
             {
-                buffer[ *checked_index++ ] = '\0';
-                buffer[ *checked_index++ ] = '\0';
+                buffer[ (*checked_index)++ ] = '\0';
+                buffer[ (*checked_index)++ ] = '\0';
                 return LINE_OK;
             }
         }
@@ -61,8 +61,8 @@ LINE_STATUS http_parse_line( char* buffer, int* checked_index, int* read_index )
         {
             if( buffer[ *checked_index-1 ] == '\r' && *checked_index > 1  )
             {
-                buffer[ *checked_index-- ] = '\0';
-                buffer[ *checked_index++ ] = '\0';
+                buffer[ (*checked_index)-- ] = '\0';
+                buffer[ (*checked_index)++ ] = '\0';
                 return LINE_OK;
             }
         }
@@ -71,7 +71,7 @@ LINE_STATUS http_parse_line( char* buffer, int* checked_index, int* read_index )
 }
 
 /* 分析请求行 */
-HTTP_CODE http_parse_requestline( char* temp, CHECK_STATE* checkstate )
+HTTP_CODE http_parse_requestline( char* temp, CHECK_STATE* checkstate,http_request* httpRequest )
 {
     char* url = strpbrk( temp, " \t" );
     /* 如果请求行中没有空白字符或"\t"字符,则http请求必有问题 */
@@ -121,7 +121,7 @@ HTTP_CODE http_parse_requestline( char* temp, CHECK_STATE* checkstate )
 }
 
 /* 分析头部字段 */
-HTTP_CODE http_parse_headers( char* temp )
+HTTP_CODE http_parse_headers( char* temp,http_request* httpRequest)
 {
     /* 遇到一个空行,说明我们得到了一个正确的请求 */
     if( temp[ 0 ] == '\0' )
@@ -143,12 +143,12 @@ HTTP_CODE http_parse_headers( char* temp )
 
 /* 分析http请求 的入口函数 */
 HTTP_CODE http_parse_content( char* buffer, int* checked_index, CHECK_STATE*
-checkstate, int* read_index, int* start_line )
+checkstate, int* read_index, int* start_line,http_request* httpRequest)
 {
     LINE_STATUS linestatus = LINE_OK; //记录当前行的读取状态
     HTTP_CODE retcode = NO_REQUEST; //记录http请求的处理结果
     /* 主状态机 用于从buffer中取出所有完整的行 */
-    while( ( linestatus = http_parse_line( buffer, checked_index, read_index ) ) == LINE_OK )
+    while( ( linestatus = http_parse_line( buffer, checked_index, read_index,httpRequest ) ) == LINE_OK )
     {
         char* temp = buffer + *start_line; //start_line是行在buffer中的起始位置
         *start_line = *checked_index;     //记录下一行的起始位置
@@ -157,7 +157,7 @@ checkstate, int* read_index, int* start_line )
         {
             case CHECK_STATE_REQUESTLINE: //第一个状态,分析请求行
             {
-                retcode = http_parse_requestline( temp, checkstate );
+                retcode = http_parse_requestline( temp, checkstate ,httpRequest);
                 if( retcode == BAD_REQUEST )
                 {
                     return BAD_REQUEST;
@@ -166,7 +166,7 @@ checkstate, int* read_index, int* start_line )
             }
             case CHECK_STATE_HEADER:      //第二个状态，分析头部字段
             {
-                retcode = http_parse_headers( temp );
+                retcode = http_parse_headers( temp,httpRequest);
                 if( retcode == BAD_REQUEST )
                 {
                     return BAD_REQUEST;
