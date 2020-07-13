@@ -30,8 +30,6 @@ typedef struct request_mannege{
     int counts;
 } request_mannege;
 
-
-
 static inline request_mannege * create_request_mannege();
 static inline int request_mannage_add(request_mannege * connectionMannege,http_request * httpRequest);
 static inline int request_mannage_remove(request_mannege * connectionMannege,http_request * httpRequest);
@@ -88,8 +86,6 @@ static inline int http_request_destroy(ProtocolMessage *thiz){
     int ret = request_mannage_remove(requestMannege,httpRequest);
     return ret;
 }
-
-
 
 static inline http_request * new_http_request(int fd,ConnectionInterface *conn, char *buffer){
     http_request * httpRequest;

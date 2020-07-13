@@ -41,13 +41,7 @@ print_elapsed_time(void){
 
 void on_message(ConnectionInterface * conn,void * request){
     char *buffer;
-    buffer="HTTP/1.1 200 OK\r\n"
-               "Server: swoole-http-server\r\n"
-               "Connection: keep-alive\r\n"
-               "Content-Type: text/html\r\n"
-               "Date: Thu, 18 Jun 2020 06:16:24 GMT\r\n"
-               "Content-Length: 37\r\n\r\n"
-               "<html><body>hello world</body></html>\r\n\r\n";;
+    buffer="HTTP/1.1 200 OK\r\nServer: swoole-http-server\r\nConnection: keep-alive\r\nContent-Type: text/html\r\nContent-Length: 37\r\n\r\n<html><body>hello world</body></html>\r\n\r\n";;
     conn->send(conn ,buffer);
 }
 
