@@ -18,6 +18,7 @@ typedef struct http_request{
     request_mannege * requestMannege;
     uint32_t id;
     int fd;
+    int method:1;
     ConnectionInterface * conn;
     char * buffer;
 } http_request;

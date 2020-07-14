@@ -8,6 +8,48 @@
 #include "protocol.h";
 #include "request.h";
 
+
+enum HTTP_METHOD {OPTIONS,GET,HEAD,POST,PUT,DELETE,TRACE,CONNECT};
+
+static const char *http_method_strings[] ={
+        "OPTIONS","GET", "HEAD" , "POST", "PUT" , "DELETE" , "TRACE", "CONNECT"
+};
+
+enum HTTP_STATUS_CODE {
+    HTTP_CODE_100,HTTP_CODE_101,
+    HTTP_CODE_200,HTTP_CODE_201,HTTP_CODE_202,HTTP_CODE_204,HTTP_CODE_206,
+    HTTP_CODE_300,HTTP_CODE_301,HTTP_CODE_302,HTTP_CODE_303,HTTP_CODE_304,
+    HTTP_CODE_305,HTTP_CODE_307,HTTP_CODE_308,
+    HTTP_CODE_400,HTTP_CODE_401,HTTP_CODE_402,HTTP_CODE_403,HTTP_CODE_404,HTTP_CODE_405,
+    HTTP_CODE_406,HTTP_CODE_407,HTTP_CODE_408,HTTP_CODE_409,HTTP_CODE_410,HTTP_CODE_411,
+    HTTP_CODE_412,HTTP_CODE_413,HTTP_CODE_414,HTTP_CODE_415,HTTP_CODE_416,HTTP_CODE_417,
+    HTTP_CODE_500,HTTP_CODE_501,HTTP_CODE_502,HTTP_CODE_503,HTTP_CODE_504,HTTP_CODE_505
+};
+
+static const char *http_code_status_string[]={
+        "100 Section Continue",
+        "101 Switching Protocols",
+        "200 OK","201 Created","202 Accepted","203 Non-Authoritative Information",
+        "204 No Content","205 Reset Content","206 Partial Content",
+        "300 Multiple Choices","301 Moved Permanently","302 Found","303 See Other",
+        "304 Not Modified","305 Use Proxy","307 Temporary Redirect","308 Temporary Redirect",
+        "400 Bad Request","401 Unauthorized","402 1Payment Required","403 Forbidden","404 Not Found",
+        "405 Method Not Allowed","406 Not Acceptable","407 Proxy Authentication Required","408 Request Time-out",
+        "409 Conflict","410 Gone","411 Length Required","412 Precondition Failed","413 Request Entity Too Large",
+        "414 Request-URI Too Large","415 Unsupported Media Type","416 1Requested range not satisfiable",
+        "417 Expectation Failed",
+        "500 Internal Server Error","501 Not Implemented","502 Bad Gateway",
+        "503 ervice Unavailable","504 Gateway Time-out","505 HTTP Version not supported"};
+
+enum STRTOK {CR,LF,SP,CRLF};
+static const char *strtok_string[] ={"\r","\n", " " , "\r\n"};
+
+#define http_strtok(T) strtok_string[T]
+#define http_method_string(T) http_method_strings[T]
+#define http_code_string(T) http_code_status_string[T]
+
+#define  isHeaderKey(T)  strncasecmp( temp, T, sizeof(T)-1 )  == 0
+
 /* 定义主状态机 的两种状态 分别表示:当前正在分析的请求行，当前正在分析头部字段*/
 typedef enum {
     CHECK_STATE_REQUESTLINE = 0,
@@ -128,9 +170,9 @@ HTTP_CODE http_parse_headers( char* temp,http_request* httpRequest)
     {
         return GET_REQUEST;
     }
-    else if( strncasecmp( temp, "Host:", 5 )  == 0 ) /* 处理"host"头部字段 */
+    else if( isHeaderKey("Host:")) /* 处理"host"头部字段 */
     {
-        temp += 5;
+        temp += sizeof("Host:")-1;
         temp += strspn( temp, " \t" );
         printf( "the request host is: %s\n", temp );
     }

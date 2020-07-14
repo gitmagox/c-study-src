@@ -83,6 +83,16 @@ static inline void recv_buffer_read(int fd, void* tcp_connection){
     baseRead(fd,tcp_connection);
 }
 
+static inline void baseWrite(int fd,tcp_connection* tcpConnection){
+    send(fd,tcpConnection->send_buffer, strlen(tcpConnection->send_buffer),0);
+    tcpConnection->send_buffer=NULL;
+    select_event_del(tcpConnection->selectEvent ,tcpConnection->fd,EPOLLOUT);
+}
+
+static inline void send_buffer_write(int fd, void* tcp_connection){
+    baseWrite(fd,tcp_connection);
+}
+
 static inline connection_mannege * create_connection_mannege(){
     static connection_mannege *connectionMannege=NULL;
     if(connectionMannege==NULL){
@@ -126,6 +136,9 @@ static inline int tcp_connection_set_protocol_message(ConnectionInterface *thiz,
 
 static inline int tcp_connection_destroy(ConnectionInterface *thiz){
     tcp_connection * tcpConnection = get_thiz(tcp_connection,ConnectionInterface,connectionInterface,thiz);
+    if(tcpConnection->status==TCP_STATUS_CLOSED){
+        return RET_FAIL;
+    }
     char * key = hash_map_get_key(int,1,tcpConnection->fd);
     hash_map_remove(tcpConnection->connectionMannege->connections,key);
     hash_map_free_key(key);
@@ -135,22 +148,48 @@ static inline int tcp_connection_destroy(ConnectionInterface *thiz){
     free(tcpConnection->recv_buffer);
     close(tcpConnection->fd);
     free(tcpConnection);
+    tcpConnection->status=TCP_STATUS_CLOSED;
     return RET_OK;
 }
 
 static inline int tcp_connection_send(ConnectionInterface *thiz, char* buffer){
-    send(thiz->fd,buffer, strlen(buffer),0);
+    tcp_connection* tcpConnection = get_thiz_parent(tcp_connection,connectionInterface,thiz);
+    if(tcpConnection->status==TCP_STATUS_CLOSED || tcpConnection->status==TCP_STATUS_CLOSING){
+        return RET_FAIL;
+    }
+    if(tcpConnection->send_buffer==NULL){
+        tcpConnection->send_buffer = buffer;
+    }
+    select_event_add(tcpConnection->selectEvent,thiz->fd,EPOLLOUT,send_buffer_write,tcpConnection);
     return RET_OK;
 }
 
 static inline int tcp_connection_close(ConnectionInterface *thiz,char* message){
-    int ret = tcp_connection_send(thiz,message);
-    if(ret != RET_OK){
-        return ret;
+    tcp_connection* tcpConnection = get_thiz_parent(tcp_connection,connectionInterface,thiz);
+    if(tcpConnection->status==TCP_STATUS_CLOSED || tcpConnection->status==TCP_STATUS_CLOSING){
+        return RET_FAIL;
     }
-    ret = tcp_connection_destroy(thiz);
-    if(ret != RET_OK){
-        return ret;
+    int ret;
+    if(tcpConnection->status==TCP_STATUS_CONNECTING){
+        ret = tcp_connection_destroy(thiz);
+        if(ret != RET_OK){
+            return ret;
+        }
+    }
+    if(tcpConnection->send_buffer!=NULL){
+        ret = tcp_connection_send(thiz,message);
+
+        if(ret != RET_OK){
+            return ret;
+        }
+    }
+    if(tcpConnection->send_buffer==NULL){
+        ret = tcp_connection_destroy(thiz);
+        if(ret != RET_OK){
+            return ret;
+        }
+    }else{
+        select_event_del(tcpConnection->selectEvent ,tcpConnection->fd,EPOLLIN);
     }
     return RET_OK;
 }
@@ -163,12 +202,14 @@ static inline tcp_connection * new_tcp_connection(connection_mannege * connectio
     tcpConnection->fd = fd;
     tcpConnection->recv_buffer = (char *)malloc(1048576);
     tcpConnection->request_data = NULL;
+    tcpConnection->send_buffer=NULL;
     tcpConnection->protocol = protocol;
     tcpConnection->currentPackageLength = 0;
     tcpConnection->maxPackageSize =1048576;
     tcpConnection->sendBufferSize = 1048576;
     tcpConnection->bytesRead=0;
     tcpConnection->onMessage = onMessage;
+    tcpConnection->status = TCP_STATUS_CONNECTING;
     tcpConnection->connectionInterface.send = tcp_connection_send;
     tcpConnection->connectionInterface.close = tcp_connection_close;
     tcpConnection->connectionInterface.destroy = tcp_connection_destroy;

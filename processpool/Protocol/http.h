@@ -9,17 +9,7 @@
 #include <Interface/protocol.h>
 #include <Protocol/http_paser.h>
 
-enum HTTP_METHOD {OPTIONS,GET,HEAD,POST,PUT,DELETE,TRACE,CONNECT};
 
-static const char *http_method_strings[] ={
-                "OPTIONS","GET", "HEAD" , "POST", "PUT" , "DELETE" , "TRACE", "CONNECT"
-};
-
-enum STRTOK {CR,LF,SP,CRLF};
-static const char *strtok_string[] ={"\r","\n", " " , "\r\n"};
-
-#define http_strtok(T) &strtok_string[T]
-#define http_method_string(T) &http_method_strings[T]
 
 typedef struct http_protocol {
     struct ProtocolInterface protocolInterface;
@@ -47,10 +37,7 @@ static inline int http_input(ProtocolInterface *thiz, char* buffer,ConnectionInt
     }else{
         httpRequest = request_mannage_get(request_message);
     }
-
-
     int data_read = 0;
-    int * start_line = &(request_message->start_line); //行在buffer中的地始位置
     /* 设置主状态机的初始状态 */
     CHECK_STATE checkstate = CHECK_STATE_REQUESTLINE;
     HTTP_CODE result;
