@@ -178,7 +178,6 @@ static inline int tcp_connection_close(ConnectionInterface *thiz,char* message){
     }
     if(tcpConnection->send_buffer!=NULL){
         ret = tcp_connection_send(thiz,message);
-
         if(ret != RET_OK){
             return ret;
         }
