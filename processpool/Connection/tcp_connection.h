@@ -54,9 +54,6 @@ typedef struct connection_mannege{
 static inline void baseRead(int fd,tcp_connection *tcpConnection){
     char buffer[tcpConnection->maxPackageSize];
     memset( buffer, '\0', tcpConnection->maxPackageSize );
-    if(tcpConnection->request_data==NULL){
-        tcpConnection->request_data = build_message(1,fd,&tcpConnection->connectionInterface, buffer);
-    }
     //protocol_input
     ProtocolInterface * protocol = build_protocol(tcpConnection->protocol);
     while (1){
@@ -71,6 +68,7 @@ static inline void baseRead(int fd,tcp_connection *tcpConnection){
             }
             //callback onMessage;
             tcpConnection->onMessage(&tcpConnection->connectionInterface,protocol->decode(protocol,buffer,&tcpConnection->connectionInterface));
+            tcpConnection->request_data==NULL;
             break;
         }else{
             break;
@@ -136,60 +134,39 @@ static inline int tcp_connection_set_protocol_message(ConnectionInterface *thiz,
 
 static inline int tcp_connection_destroy(ConnectionInterface *thiz){
     tcp_connection * tcpConnection = get_thiz(tcp_connection,ConnectionInterface,connectionInterface,thiz);
-    if(tcpConnection->status==TCP_STATUS_CLOSED){
-        return RET_FAIL;
-    }
     char * key = hash_map_get_key(int,1,tcpConnection->fd);
     hash_map_remove(tcpConnection->connectionMannege->connections,key);
     hash_map_free_key(key);
-    select_event_del(tcpConnection->selectEvent ,tcpConnection->fd,EPOLLIN);
     ProtocolMessage * protocolMessage = tcp_connection_get_protocol_message(thiz);
     protocolMessage->destroy(protocolMessage);
     free(tcpConnection->recv_buffer);
-    close(tcpConnection->fd);
     free(tcpConnection);
-    tcpConnection->status=TCP_STATUS_CLOSED;
     return RET_OK;
 }
 
 static inline int tcp_connection_send(ConnectionInterface *thiz, char* buffer){
-    tcp_connection* tcpConnection = get_thiz_parent(tcp_connection,connectionInterface,thiz);
-    if(tcpConnection->status==TCP_STATUS_CLOSED || tcpConnection->status==TCP_STATUS_CLOSING){
-        return RET_FAIL;
-    }
-    if(tcpConnection->send_buffer==NULL){
-        tcpConnection->send_buffer = buffer;
-    }
-    select_event_add(tcpConnection->selectEvent,thiz->fd,EPOLLOUT,send_buffer_write,tcpConnection);
+    int sended;
+    do{
+        sended = send(thiz->fd,buffer, strlen(buffer),0);
+    }while (sended < 0 && errno == EINTR);
     return RET_OK;
 }
 
 static inline int tcp_connection_close(ConnectionInterface *thiz,char* message){
     tcp_connection* tcpConnection = get_thiz_parent(tcp_connection,connectionInterface,thiz);
-    if(tcpConnection->status==TCP_STATUS_CLOSED || tcpConnection->status==TCP_STATUS_CLOSING){
+    int ret;
+    ret = tcp_connection_send(thiz,message);
+    if(ret != RET_OK){
+        return ret;
+    }
+    if(close(thiz->fd)!=0){
         return RET_FAIL;
     }
-    int ret;
-    if(tcpConnection->status==TCP_STATUS_CONNECTING){
-        ret = tcp_connection_destroy(thiz);
-        if(ret != RET_OK){
-            return ret;
-        }
+    ret = tcp_connection_destroy(thiz);
+    if(ret != RET_OK){
+        return ret;
     }
-    if(tcpConnection->send_buffer!=NULL){
-        ret = tcp_connection_send(thiz,message);
-        if(ret != RET_OK){
-            return ret;
-        }
-    }
-    if(tcpConnection->send_buffer==NULL){
-        ret = tcp_connection_destroy(thiz);
-        if(ret != RET_OK){
-            return ret;
-        }
-    }else{
-        select_event_del(tcpConnection->selectEvent ,tcpConnection->fd,EPOLLIN);
-    }
+    select_event_del(tcpConnection->selectEvent ,tcpConnection->fd,EPOLLIN);
     return RET_OK;
 }
 

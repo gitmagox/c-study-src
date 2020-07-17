@@ -62,7 +62,7 @@ void select_event_del(select_event * e,int fd,int flag){
     char * key = hash_map_get_key(int,2,fd,flag);
     event_item * eventItem = map_get(e->events,key);
     if(eventItem != NULL){
-        epoll_ctl( e->epoll_fd, EPOLL_CTL_DEL, eventItem->fd, 0 );
+        epoll_ctl( e->epoll_fd, EPOLL_CTL_DEL, eventItem->fd, flag );
         hash_map_remove(e->events,key);
     }
     hash_map_free_key(key);

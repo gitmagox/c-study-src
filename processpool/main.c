@@ -42,7 +42,7 @@ print_elapsed_time(void){
 void on_message(ConnectionInterface * conn,void * request){
     char *buffer;
     buffer="HTTP/1.1 200 OK\r\nServer: swoole-http-server\r\nContent-Type: text/html\r\nContent-Length: 37\r\n\r\n<html><body>hello world</body></html>\r\n\r\n";;
-    conn->send(conn ,buffer);
+    conn->close(conn ,buffer);
 }
 
 void on_connection(int fd,void *args){

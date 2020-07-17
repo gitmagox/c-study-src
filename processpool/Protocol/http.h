@@ -42,7 +42,11 @@ static inline int http_input(ProtocolInterface *thiz, char* buffer,ConnectionInt
     CHECK_STATE checkstate = CHECK_STATE_REQUESTLINE;
     HTTP_CODE result;
     while(1){
-        data_read = recv( conn->fd, buffer + request_message->read_index, 65535 - request_message->read_index, 0 );
+
+        do{
+            data_read = recv( conn->fd, buffer + request_message->read_index, 65535 - request_message->read_index, 0 );
+        }while (data_read < 0 && errno == EINTR);
+
         if ( data_read == 0 ){
             printf( "reading failed\n" );
             return MESSAGE_READ_NOTHING;

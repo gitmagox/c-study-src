@@ -68,24 +68,29 @@ static inline char * hash_map_create_string(int  count,...){
 
 static inline char * hash_map_create_int(int  count,...){
     char * join = "k";
+    char * tmp;
     int j;
     va_list str;
     va_start(str, count);
-    char *strCount[count];
+    int strCount[count];
     int size=0;
     for(int i = 0; i < count; i++)
     {
-        j = va_arg(str, int);
-        strCount[i] = int2string(j);
-        size += strlen(strCount[i])+1;
+        strCount[i] = va_arg(str, int);
+        tmp = int2string(strCount[i]);
+        size += strlen(tmp)+1;
     }
     va_end(str);
-    char *key = malloc(size+count);
+    char *key = malloc(size+1);
     for(int i = 0; i < count; i++)
     {
         key = string_join(key,join);
-        key = string_join(key,strCount[i]);
+        strcpy(key,join);
+        key += strlen(join);
+        strcpy(key,int2string(strCount[i]));
+        key += strlen(int2string(strCount[i]));
     }
+    key -= size;
     return key;
 }
 
