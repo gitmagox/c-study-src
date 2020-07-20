@@ -39,31 +39,52 @@ static event_item * new_event_item(select_event * e,int fd,int flag,void * args,
     memset(eventItem,0,sizeof(event_item ));
     event.data.fd = fd;
     event.events = flag;
-    epoll_ctl( e->epoll_fd, EPOLL_CTL_ADD, fd, &event );
-    setnonblocking( fd );
     eventItem->event = &event;
     eventItem->fd = fd;
     eventItem->flag = flag;
     eventItem->args = args;
+    eventItem->read = NULL;
+    eventItem->write = NULL;
+    if(flag==EPOLLIN){
+        eventItem->read = handler;
+    }else if(flag==EPOLLOUT){
+        eventItem->write = handler;
+    }
     eventItem->handle = handler;
     return eventItem;
 }
 
 
 void select_event_add(select_event * e,int fd,int flag,void(*handler)(int fd,void * args),void *args){
-    event_item *eventItem;
-    eventItem = new_event_item(e,fd,flag,args,handler);
+    event_item **eventItem,*new;
     char * key = hash_map_get_key(int,2,fd,flag);
-    hash_map_set(e->events,key,eventItem);
+    eventItem = hash_map_get(e->events,key);
+    if(eventItem == NULL) {
+        new = new_event_item(e,fd,flag,args,handler);
+        epoll_ctl( e->epoll_fd, EPOLL_CTL_ADD, fd, new->event );
+    }else{
+        new = *eventItem;
+        if(flag&EPOLLOUT){
+            new->write=handler;
+        } else if (flag&EPOLLIN){
+            new->read=handler;
+        }
+        new->event->events |= flag;
+        epoll_ctl(e->epoll_fd,EPOLL_CTL_MOD,fd,new->event);
+    }
+    setnonblocking( fd );
+    hash_map_set(e->events,key,new);
     hash_map_free_key(key);
 }
 
 void select_event_del(select_event * e,int fd,int flag){
     char * key = hash_map_get_key(int,2,fd,flag);
-    event_item * eventItem = map_get(e->events,key);
-    if(eventItem != NULL){
-        epoll_ctl( e->epoll_fd, EPOLL_CTL_DEL, eventItem->fd, flag );
+    event_item ** eventItem = hash_map_get(e->events,key);
+    if((eventItem) != NULL){
+        epoll_ctl( e->epoll_fd, EPOLL_CTL_DEL, (*eventItem)->fd, NULL );
         hash_map_remove(e->events,key);
+        free(*eventItem);
+        *eventItem=NULL;
     }
     hash_map_free_key(key);
 }
@@ -84,9 +105,13 @@ void select_loop(select_event * e){
             char * key = hash_map_get_key(int,2,fd,flag);
             event_item ** eventItem = hash_map_get(e->events,key);
             hash_map_free_key(key);
-            if( (eventItem!=NULL) && ( (*eventItem)->flag & flag ))
+            if( ((*eventItem)!=NULL) && ( (*eventItem)->flag & flag ))
             {
-                (*eventItem)->handle(fd,(*eventItem)->args);
+                if((*eventItem)->flag&EPOLLOUT && (*eventItem)->write!=NULL){
+                    (*eventItem)->write(fd,(*eventItem)->args);
+                } else if ((*eventItem)->flag&EPOLLIN && (*eventItem)->read!=NULL){
+                    (*eventItem)->read(fd,(*eventItem)->args);
+                }
             }
         }
     }

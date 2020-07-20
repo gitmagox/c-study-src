@@ -5,8 +5,8 @@
 #ifndef PROCESSPOOL_HTTP_PASER_H
 #define PROCESSPOOL_HTTP_PASER_H
 
-#include "protocol.h";
-#include "request.h";
+#include "protocol.h"
+#include "request.h"
 
 
 enum HTTP_METHOD {OPTIONS,GET,HEAD,POST,PUT,DELETE,TRACE,CONNECT};
@@ -49,11 +49,16 @@ static const char *strtok_string[] ={"\r","\n", " " , "\r\n"};
 #define http_code_string(T) http_code_status_string[T]
 
 #define  isHeaderKey(T)  strncasecmp( temp, T, sizeof(T)-1 )  == 0
+# define UINT32_MAX		(4294967295U)
+
+#define GET_MAX(A, B)           ((A) > (B) ? (A) : (B))
+#define GET_MIN(A, B)           ((A) < (B) ? (A) : (B))
 
 /* 定义主状态机 的两种状态 分别表示:当前正在分析的请求行，当前正在分析头部字段*/
 typedef enum {
     CHECK_STATE_REQUESTLINE = 0,
-    CHECK_STATE_HEADER
+    CHECK_STATE_HEADER,
+    CHECK_STATE_CONTENT
 }CHECK_STATE;
 //typedef enum { CHECK_STATE_REQUESTLINE = 0; CHECK_STATE_HEADER }CHECK_STATE;
 /* 从状态机的三种可能状态,即行的读取状态，分别表示 :读取到一个完整的行，行出错和行数据尚且不完整 */
@@ -124,15 +129,20 @@ HTTP_CODE http_parse_requestline( char* temp, CHECK_STATE* checkstate,http_reque
     *url++ = '\0';
 
     char* method = temp;
-    if ( strcasecmp( method, "GET" ) == 0 ) /* 仅支持GET方法 */
-    {
-        printf( "The request method is GET\n" );
+    int count = sizeof(http_method_strings) / sizeof(http_method_strings[0]);
+    _Bool hasMethod=false;
+    for(int method_key=0;method_key<count;method_key++){
+        if ( strcasecmp( method, http_method_strings[method_key] ) == 0 ) /* 仅支持GET方法 */
+        {
+            httpRequest->method=method_key;
+            printf( "The request method is %s\n", http_method_strings[method_key]);
+            hasMethod = true;
+            break;
+        }
     }
-    else
-    {
+    if(!hasMethod){
         return BAD_REQUEST;
     }
-
     url += strspn( url, " \t" );
     char* version = strpbrk( url, " \t" );
     if ( ! version )
@@ -163,12 +173,18 @@ HTTP_CODE http_parse_requestline( char* temp, CHECK_STATE* checkstate,http_reque
 }
 
 /* 分析头部字段 */
-HTTP_CODE http_parse_headers( char* temp,http_request* httpRequest)
+HTTP_CODE http_parse_headers( char* temp, CHECK_STATE* checkstate,http_request* httpRequest)
 {
     /* 遇到一个空行,说明我们得到了一个正确的请求 */
     if( temp[ 0 ] == '\0' )
     {
-        return GET_REQUEST;
+        if(httpRequest->has_content==1 && httpRequest->content_length>0){//如果请求存在内容，分析内容
+            *checkstate = CHECK_STATE_CONTENT;
+            return NO_REQUEST;
+        }else{
+            return GET_REQUEST;
+        }
+
     }
     else if( isHeaderKey("Host:")) /* 处理"host"头部字段 */
     {
@@ -176,10 +192,35 @@ HTTP_CODE http_parse_headers( char* temp,http_request* httpRequest)
         temp += strspn( temp, " \t" );
         printf( "the request host is: %s\n", temp );
     }
+    else if(isHeaderKey("Content-Length")){
+        unsigned long long content_length;
+        // strlen("Content-Length:")
+        temp += (sizeof("Content-Length:") - 1);
+        // skip spaces
+        while (*temp == ' ')
+        {
+            temp++;
+        }
+        content_length = strtoull(temp, NULL, 10);
+        httpRequest->content_length = GET_MIN(content_length, UINT32_MAX);
+        httpRequest->has_content = 1;
+    }
     else /* 其他头部字段都不处理 */
     {
         printf( "I can not handle this header\n" );
     }
+    return NO_REQUEST;
+}
+
+HTTP_CODE http_parse_content_body( char* temp,http_request* httpRequest)
+{
+    /* 遇到一个空行,说明我们得到了一个正确的请求 */
+    if( temp[ 0 ] == '\0' )
+    {
+        return GET_REQUEST;
+    }
+    temp += httpRequest->content_length;
+    httpRequest->content = temp;
     return NO_REQUEST;
 }
 
@@ -208,7 +249,20 @@ checkstate, int* read_index, int* start_line,http_request* httpRequest)
             }
             case CHECK_STATE_HEADER:      //第二个状态，分析头部字段
             {
-                retcode = http_parse_headers( temp,httpRequest);
+                retcode = http_parse_headers( temp,checkstate,httpRequest);
+                if( retcode == BAD_REQUEST )
+                {
+                    return BAD_REQUEST;
+                }
+                else if ( retcode == GET_REQUEST )
+                {
+                    return GET_REQUEST;
+                }
+                break;
+            }
+            case CHECK_STATE_CONTENT: //分析内容
+            {
+                retcode = http_parse_content_body(temp,httpRequest);
                 if( retcode == BAD_REQUEST )
                 {
                     return BAD_REQUEST;

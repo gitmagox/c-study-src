@@ -14,6 +14,8 @@ typedef struct  {
     void * args;
     struct epoll_event *event;
     void (*handle)(int,void*);
+    void (*write)(int,void*);
+    void (*read)(int,void*);
 } event_item;
 
 typedef hash_map_t(event_item * ) map_event_item_t;

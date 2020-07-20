@@ -18,9 +18,12 @@ typedef struct http_request{
     request_mannege * requestMannege;
     uint32_t id;
     int fd;
-    int method:1;
+    int method;
+    uint32_t content_length;
+    int has_content;
     ConnectionInterface * conn;
     char * buffer;
+    char * content;
 } http_request;
 
 
@@ -96,6 +99,9 @@ static inline http_request * new_http_request(int fd,ConnectionInterface *conn, 
     httpRequest->protocolMessage.fd = fd;
     httpRequest->conn = conn;
     httpRequest->buffer = buffer;
+    httpRequest->has_content=0;
+    httpRequest->content_length=0;
+    httpRequest->method=0;
     httpRequest->protocolMessage.buffer = buffer;
     httpRequest->protocolMessage.checked_index=0;
     httpRequest->protocolMessage.read_index=0;

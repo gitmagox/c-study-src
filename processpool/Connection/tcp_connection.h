@@ -133,14 +133,16 @@ static inline int tcp_connection_set_protocol_message(ConnectionInterface *thiz,
 }
 
 static inline int tcp_connection_destroy(ConnectionInterface *thiz){
-    tcp_connection * tcpConnection = get_thiz(tcp_connection,ConnectionInterface,connectionInterface,thiz);
+    tcp_connection* tcpConnection = get_thiz_parent(tcp_connection,connectionInterface,thiz);
     char * key = hash_map_get_key(int,1,tcpConnection->fd);
     hash_map_remove(tcpConnection->connectionMannege->connections,key);
     hash_map_free_key(key);
     ProtocolMessage * protocolMessage = tcp_connection_get_protocol_message(thiz);
     protocolMessage->destroy(protocolMessage);
     free(tcpConnection->recv_buffer);
+    tcpConnection->recv_buffer=NULL;
     free(tcpConnection);
+    tcpConnection=NULL;
     return RET_OK;
 }
 
@@ -155,10 +157,13 @@ static inline int tcp_connection_send(ConnectionInterface *thiz, char* buffer){
 static inline int tcp_connection_close(ConnectionInterface *thiz,char* message){
     tcp_connection* tcpConnection = get_thiz_parent(tcp_connection,connectionInterface,thiz);
     int ret;
-    ret = tcp_connection_send(thiz,message);
-    if(ret != RET_OK){
-        return ret;
+    if(message!=NULL){
+        ret = tcp_connection_send(thiz,message);
+        if(ret != RET_OK){
+            return ret;
+        }
     }
+    select_event_del(tcpConnection->selectEvent ,tcpConnection->fd,EPOLLIN);
     if(close(thiz->fd)!=0){
         return RET_FAIL;
     }
@@ -166,7 +171,6 @@ static inline int tcp_connection_close(ConnectionInterface *thiz,char* message){
     if(ret != RET_OK){
         return ret;
     }
-    select_event_del(tcpConnection->selectEvent ,tcpConnection->fd,EPOLLIN);
     return RET_OK;
 }
 
